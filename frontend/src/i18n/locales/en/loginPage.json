@@ -1,0 +1,55 @@
+{
+  "leftSide": {
+    "hero": {
+      "title": "Welcome back",
+      "subtitle": "Sign in to continue your language learning journey."
+    },
+    "form": {
+      "email": {
+        "label": "Email",
+        "placeholder": "email@example.com"
+      },
+      "password": {
+        "label": "Password",
+        "placeholder": "********"
+      },
+      "termsAndPolicy": {
+        "label": "I agree to the",
+        "terms": "terms of service",
+        "and": "and",
+        "privacyPolicy": "privacy policy"
+      },
+
+      "signInButton": {
+        "text": "Sign in",
+        "loadingText": "Signing in..."
+      }
+    },
+    "prompt": {
+      "noAccount": {
+        "text": "Don't have an account?",
+        "linkText": "Sign up"
+      },
+      "or": "or",
+      "forgotPassword": {
+        "text": "Forgot your password?",
+        "linkText": "Reset it"
+      }
+    }
+  },
+  "rightSide": {
+    "title": "Connect with friends around the world",
+    "subtitle": "Chat, make friends, and improve your language skills together"
+  },
+  "toast": {
+    "useLogin": {
+      "success": "Sign in successful!",
+      "error": "Sign in failed. Please try again."
+    },
+    "handleLogin": {
+      "allFieldsAreRequired": "All fields are required.",
+      "termsAndPolicyNotAgreed": "You must agree to the terms of service and privacy policy.",
+      "error": "Sign in failed. Please try again."
+    }
+  }
+}

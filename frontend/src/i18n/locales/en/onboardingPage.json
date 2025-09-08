@@ -1,0 +1,58 @@
+{
+  "hero": {
+    "title": "Complete Your Profile",
+    "genAvatarButton": "Generate Random Avatar"
+  },
+  "form": {
+    "fullName": {
+      "label": "Full Name",
+      "placeholder": "Enter your full name"
+    },
+    "bio": {
+      "label": "Bio",
+      "placeholder": "Tell others about yourself and your language learning goals"
+    },
+    "location": {
+      "label": "Location",
+      "placeholder": "Your city, state, or region"
+    },
+    "nativeLanguage": {
+      "label": "Native Language",
+      "placeholder": "Select your native language"
+    },
+    "learningLanguage": {
+      "label": "Learning Language",
+      "placeholder": "Select your learning language"
+    },
+    "button": {
+      "text": "Save and Continue",
+      "loadingText": "Saving..."
+    }
+  },
+  "toast": {
+    "getNativeLanguagesMutation": {
+      "error": "Unable to fetch native languages list",
+      "success": "Fetched native languages list successfully!"
+    },
+    "getLearningLanguagesMutation": {
+      "error": "Unable to fetch learning languages list",
+      "success": "Fetched learning languages list successfully!"
+    },
+    "onboardingMutation": {
+      "error": "Unable to save profile. Please try again.",
+      "success": "Saved profile successfully!"
+    },
+    "handleRandomAvatar": {
+      "error": "Unable to generate random avatar. Please try again.",
+      "success": "Generated random avatar successfully!"
+    },
+    "handleSubmit": {
+      "error": "Unable to save profile. Please try again.",
+      "success": "Saved profile successfully!"
+    },
+    "validateOnboardingData": {
+      "error": "Please select native language and learning language",
+      "success": ""
+    }
+  }
+}

@@ -1,0 +1,18 @@
+export const FLAG_TO_LANGUAGE = {
+  gb: "English",
+  es: "Spanish",
+  fr: "French",
+  de: "German",
+  cn: "Mandarin",
+  jp: "Japanese",
+  kr: "Korean",
+  in: "Hindi",
+  ru: "Russian",
+  pt: "Portuguese",
+  sa: "Arabic",
+  it: "Italian",
+  tr: "Turkish",
+  nl: "Dutch",
+  vn: "Vietnamese",
+  th: "Thai",
+};

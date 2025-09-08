@@ -1,0 +1,23 @@
+{
+  "recentConnections": {
+    "title": "Recent Connections",
+    "subtitle": "Continue practicing your new language with your friends",
+    "empty": {
+      "title": "No friends yet",
+      "subtitle": "Start sending friend requests to connect."
+    },
+    "subButton": "Go to Chats"
+  },
+  "recommendedUsers": {
+    "title": "Meet New Learners",
+    "subtitle": "Connect with other language learners to expand your network",
+    "empty": {
+      "title": "No new learners available",
+      "subtitle": "Check back later for more language partners!"
+    },
+    "subButton": {
+      "seeMore": "See More",
+      "seeLess": "See Less"
+    }
+  }
+}

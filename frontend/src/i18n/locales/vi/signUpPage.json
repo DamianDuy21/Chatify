@@ -1,0 +1,93 @@
+{
+  "leftSide": {
+    "hero": {
+      "title": "Tạo tài khoản",
+      "subtitle": "Tham gia Chatify và bắt đầu hành trình học ngôn ngữ của bạn!"
+    },
+    "form": {
+      "fullName": {
+        "label": "Họ và tên",
+        "placeholder": "Nhập họ và tên của bạn",
+        "helperText": "Bạn sẽ không thể thay đổi họ và tên của mình."
+      },
+      "email": {
+        "label": "Email",
+        "placeholder": "email@example.com"
+      },
+      "password": {
+        "label": "Mật khẩu",
+        "placeholder": "********"
+      },
+      "termsAndPolicy": {
+        "label": "Tôi đồng ý với",
+        "terms": "điều khoản dịch vụ",
+        "and": "và",
+        "privacyPolicy": "chính sách bảo mật"
+      },
+
+      "signUpButton": {
+        "text": "Đăng ký",
+        "loadingText": "Đang đăng ký..."
+      }
+    },
+    "prompt": {
+      "alreadyHaveAccount": {
+        "text": "Đã có tài khoản?",
+        "linkText": "Đăng nhập"
+      }
+    }
+  },
+  "rightSide": {
+    "title": "Kết nối bạn bè trên toàn thế giới",
+    "subtitle": "Trò chuyện, kết bạn và nâng cao khả năng ngoại ngữ"
+  },
+  "verificationStep": {
+    "title": "Xác thực tài khoản",
+    "subtitle": "Nhập mã xác thực đã gửi đến email của bạn",
+    "form": {
+      "verificationCode": {
+        "label": "Mã xác thực",
+        "placeholder": "Nhập mã xác thực"
+      },
+      "resendCode": {
+        "text": "Gửi lại"
+      },
+      "verifyButton": {
+        "text": "Xác thực",
+        "loadingText": "Đang xác thực..."
+      }
+    }
+  },
+
+  "toast": {
+    "signUpMutation": {
+      "success": "Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản.",
+      "error": "Đăng ký không thành công. Vui lòng thử lại."
+    },
+    "signUpVerificationMutation": {
+      "success": "Xác thực thành công! Bạn có thể đăng nhập ngay bây giờ.",
+      "error": "Xác thực không thành công. Vui lòng thử lại."
+    },
+    "resendVerificationCodeMutation": {
+      "success": "Mã xác thực đã được gửi lại. Vui lòng kiểm tra email của bạn.",
+      "error": "Gửi mã xác thực không thành công. Vui lòng thử lại."
+    },
+    "validateSignUpData": {
+      "allFieldsAreRequired": "Tất cả các trường đều bắt buộc.",
+      "invalidFullName": "Họ và tên chỉ chứa chữ cái.",
+      "invalidEmail": "Email không hợp lệ.",
+      "invalidPassword": "Mật khẩu phải chứa ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt.",
+      "termsAndPolicyNotAgreed": "Bạn phải đồng ý với điều khoản dịch vụ và chính sách bảo mật."
+    },
+    "handleSignup": {
+      "error": "Đăng ký không thành công. Vui lòng thử lại."
+    },
+    "handleResendVerificationCode": {
+      "error": "Gửi mã xác thực không thành công. Vui lòng thử lại."
+    },
+    "handleSignUpVerification": {
+      "emptyVerificationCode": "Vui lòng nhập mã xác thực",
+      "error": "Xác thực không thành công. Vui lòng thử lại."
+    }
+  }
+}

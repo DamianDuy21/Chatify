@@ -1,0 +1,37 @@
+{
+  "hero": {
+    "title": "Your Profile",
+    "genAvatarButton": "Generate Random Avatar"
+  },
+  "form": {
+    "email": {
+      "label": "Email",
+      "placeholder": "email@example.com"
+    },
+    "fullName": {
+      "label": "Full Name",
+      "placeholder": "Enter your full name"
+    },
+    "changePasswordButton": "Change Password",
+    "bio": {
+      "label": "Bio",
+      "placeholder": "Tell others about yourself and your language learning goals"
+    },
+    "location": {
+      "label": "Location",
+      "placeholder": "Your city, state, or region"
+    },
+    "nativeLanguage": {
+      "label": "Native Language",
+      "placeholder": "Select your native language"
+    },
+    "learningLanguage": {
+      "label": "Learning Language",
+      "placeholder": "Select your learning language"
+    },
+    "submitButton": {
+      "text": "Update Profile",
+      "loadingText": "Saving..."
+    }
+  }
+}

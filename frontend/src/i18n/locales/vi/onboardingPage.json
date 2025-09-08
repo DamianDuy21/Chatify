@@ -1,0 +1,58 @@
+{
+  "hero": {
+    "title": "Hoàn thiện hồ sơ",
+    "genAvatarButton": "Tạo hình đại diện ngẫu nhiên"
+  },
+  "form": {
+    "fullName": {
+      "label": "Họ và tên",
+      "placeholder": "Nhập họ và tên của bạn"
+    },
+    "bio": {
+      "label": "Giới thiệu",
+      "placeholder": "Giới thiệu bản thân và mục tiêu học ngoại ngữ của bạn"
+    },
+    "location": {
+      "label": "Vị trí",
+      "placeholder": "Thành phố, bang hoặc khu vực bạn đang sống"
+    },
+    "nativeLanguage": {
+      "label": "Ngôn ngữ mẹ đẻ",
+      "placeholder": "Chọn ngôn ngữ mẹ đẻ"
+    },
+    "learningLanguage": {
+      "label": "Ngôn ngữ bạn đang học",
+      "placeholder": "Chọn ngôn ngữ bạn đang học"
+    },
+    "button": {
+      "text": "Lưu và tiếp tục",
+      "loadingText": "Đang lưu..."
+    }
+  },
+  "toast": {
+    "getNativeLanguagesMutation": {
+      "error": "Không thể lấy danh sách ngôn ngữ mẹ đẻ",
+      "success": "Lấy danh sách ngôn ngữ mẹ đẻ thành công"
+    },
+    "getLearningLanguagesMutation": {
+      "error": "Không thể lấy danh sách ngôn ngữ bạn đang học",
+      "success": "Lấy danh sách ngôn ngữ bạn đang học thành công"
+    },
+    "onboardingMutation": {
+      "error": "Không thể lưu hồ sơ. Vui lòng thử lại.",
+      "success": "Lưu hồ sơ thành công"
+    },
+    "handleRandomAvatar": {
+      "error": "Không thể tạo hình đại diện ngẫu nhiên. Vui lòng thử lại.",
+      "success": "Tạo hình đại diện ngẫu nhiên thành công"
+    },
+    "handleSubmit": {
+      "error": "Không thể lưu hồ sơ. Vui lòng thử lại.",
+      "success": "Hồ sơ đã được lưu thành công"
+    },
+    "validateOnboardingData": {
+      "error": "Vui lòng chọn ngôn ngữ mẹ đẻ và ngôn ngữ bạn đang học",
+      "success": ""
+    }
+  }
+}

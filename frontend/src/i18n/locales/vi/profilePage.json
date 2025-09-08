@@ -1,0 +1,37 @@
+{
+  "hero": {
+    "title": "Hồ sơ cá nhân",
+    "genAvatarButton": "Tạo hình đại diện ngẫu nhiên"
+  },
+  "form": {
+    "email": {
+      "label": "Email",
+      "placeholder": "Nhập email của bạn"
+    },
+    "fullName": {
+      "label": "Họ và tên",
+      "placeholder": "Nhập họ và tên của bạn"
+    },
+    "changePasswordButton": "Đổi mật khẩu",
+    "bio": {
+      "label": "Giới thiệu",
+      "placeholder": "Giới thiệu bản thân và mục tiêu học ngoại ngữ của bạn"
+    },
+    "location": {
+      "label": "Vị trí",
+      "placeholder": "Thành phố, bang hoặc khu vực bạn đang sống"
+    },
+    "nativeLanguage": {
+      "label": "Ngôn ngữ mẹ đẻ",
+      "placeholder": "Chọn ngôn ngữ mẹ đẻ"
+    },
+    "learningLanguage": {
+      "label": "Ngôn ngữ bạn đang học",
+      "placeholder": "Chọn ngôn ngữ bạn đang học"
+    },
+    "submitButton": {
+      "text": "Cập nhật hồ sơ",
+      "loadingText": "Đang lưu..."
+    }
+  }
+}

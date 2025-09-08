@@ -1,0 +1,13 @@
+{
+  "pages": {
+    "home": "Khám phá",
+    "friends": "Bạn bè",
+    "chats": "Trò chuyện",
+    "notifications": "Thông báo"
+  },
+  "user": {
+    "status": {
+      "online": "Trực tuyến"
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "pages": {
+    "home": "Explore",
+    "friends": "Friends",
+    "chats": "Chats",
+    "notifications": "Notifications"
+  },
+  "user": {
+    "status": {
+      "online": "Online"
+    }
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "leftSide": {
+    "hero": {
+      "title": "Chào mừng trở lại",
+      "subtitle": "Đăng nhập để tiếp tục hành trình học ngôn ngữ của bạn."
+    },
+    "form": {
+      "email": {
+        "label": "Email",
+        "placeholder": "email@example.com"
+      },
+      "password": {
+        "label": "Mật khẩu",
+        "placeholder": "********"
+      },
+      "termsAndPolicy": {
+        "label": "Tôi đồng ý với",
+        "terms": "điều khoản dịch vụ",
+        "and": "và",
+        "privacyPolicy": "chính sách bảo mật"
+      },
+
+      "signInButton": {
+        "text": "Đăng nhập",
+        "loadingText": "Đang đăng nhập..."
+      }
+    },
+    "prompt": {
+      "noAccount": {
+        "text": "Chưa có tài khoản?",
+        "linkText": "Đăng ký"
+      },
+      "or": "hoặc",
+      "forgotPassword": {
+        "text": "Quên mật khẩu?",
+        "linkText": "Khôi phục"
+      }
+    }
+  },
+  "rightSide": {
+    "title": "Kết nối bạn bè trên toàn thế giới",
+    "subtitle": "Trò chuyện, kết bạn và nâng cao khả năng ngoại ngữ"
+  },
+  "toast": {
+    "useLogin": {
+      "success": "Đăng nhập thành công!",
+      "error": "Đăng nhập thất bại. Vui lòng thử lại."
+    },
+    "handleLogin": {
+      "allFieldsAreRequired": "Tất cả các trường đều bắt buộc.",
+      "termsAndPolicyNotAgreed": "Bạn phải đồng ý với điều khoản dịch vụ và chính sách bảo mật.",
+      "error": "Đăng nhập không thành công. Vui lòng thử lại."
+    }
+  }
+}

@@ -1,0 +1,92 @@
+{
+  "leftSide": {
+    "hero": {
+      "title": "Create an Account",
+      "subtitle": "Join Chatify and start your language learning journey!"
+    },
+    "form": {
+      "fullName": {
+        "label": "Full Name",
+        "placeholder": "Enter your full name",
+        "helperText": "You will not able to change your full name later."
+      },
+      "email": {
+        "label": "Email",
+        "placeholder": "email@example.com"
+      },
+      "password": {
+        "label": "Password",
+        "placeholder": "********"
+      },
+      "termsAndPolicy": {
+        "label": "I agree to the",
+        "terms": "terms of service",
+        "and": "and",
+        "privacyPolicy": "privacy policy"
+      },
+
+      "signUpButton": {
+        "text": "Create Account",
+        "loadingText": "Signing up..."
+      }
+    },
+    "prompt": {
+      "alreadyHaveAccount": {
+        "text": "Already have an account?",
+        "linkText": "Sign in"
+      }
+    }
+  },
+  "rightSide": {
+    "title": "Connect with friends around the world",
+    "subtitle": "Chat, make friends, and improve your language skills together"
+  },
+  "verificationStep": {
+    "title": "Account Verification",
+    "subtitle": "Enter verification code sent to your email",
+    "form": {
+      "verificationCode": {
+        "label": "Verification Code",
+        "placeholder": "Enter verification code"
+      },
+      "resendCode": {
+        "text": "Resend"
+      },
+      "verifyButton": {
+        "text": "Verify",
+        "loadingText": "Verifying..."
+      }
+    }
+  },
+  "toast": {
+    "signUpMutation": {
+      "success": "Sign up successful! Please check your email to verify your account.",
+      "error": "Sign up failed. Please try again."
+    },
+    "signUpVerificationMutation": {
+      "success": "Verification successful! You can log in now.",
+      "error": "Verification failed. Please try again."
+    },
+    "resendVerificationCodeMutation": {
+      "success": "Verification code has been resent. Please check your email.",
+      "error": "Failed to resend verification code. Please try again."
+    },
+    "validateSignUpData": {
+      "allFieldsAreRequired": "All fields are required.",
+      "invalidFullName": "Full name must contain only letters.",
+      "invalidEmail": "Invalid email address.",
+      "invalidPassword": "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.",
+      "termsAndPolicyNotAgreed": "You must agree to the terms of service and privacy policy."
+    },
+    "handleSignup": {
+      "error": "Sign up failed. Please try again."
+    },
+    "handleResendVerificationCode": {
+      "error": "Failed to resend verification code. Please try again."
+    },
+    "handleSignUpVerification": {
+      "emptyVerificationCode": "Please enter the verification code.",
+      "error": "Verification failed. Please try again."
+    }
+  }
+}
