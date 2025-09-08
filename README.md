@@ -51,7 +51,7 @@ Chatify giúp bạn:
 
 ### 🔹 Nhắn tin riêng
 <p align="center">
-  <img src="https://github.com/user-attachments/assets/1b032fa0-7f8d-48d8-bd6d-eaba9e19b57e" alt="chatify-private-chat" width="800">
+  <img src="https://github.com/user-attachments/assets/1497ccff-f6bd-4843-bb40-5fb5fb1db46d" alt="chatify-private-chat" width="800">
 </p>
 
 - Nhắn tin 1-1 nhanh, mượt  
