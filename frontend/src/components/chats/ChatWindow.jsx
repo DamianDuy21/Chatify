@@ -420,6 +420,7 @@ const ChatWindow = () => {
       });
       // getMessages(selectedConversation.conversation._id);
     }
+    setText("");
   }, [selectedConversation.conversation._id]);
 
   useEffect(() => {
