@@ -12,7 +12,9 @@ const openaiRoute = express.Router();
 openaiRoute.use(protectedRoute);
 
 openaiRoute.post("/create-chatbot", openaiCreateChatBot);
+
 openaiRoute.post("/translate-message", openaiTranslateMessage);
+
 openaiRoute.post("/chat/send-message/:id", openaiSendMessageChatbot);
 openaiRoute.post("/chat/wait-message/:id", openaiResponseMessageChatbot);
 

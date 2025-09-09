@@ -13,11 +13,11 @@ const conversationSchema = new mongoose.Schema(
       required: true,
       index: true,
     },
-    sortTimestamp: {
-      type: Date,
-      default: Date.now,
-      index: true,
-    },
+    // sortTimestamp: {
+    //   type: Date,
+    //   default: Date.now,
+    //   index: true,
+    // },
   },
   { timestamps: true }
 );

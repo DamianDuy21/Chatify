@@ -2,6 +2,7 @@ import {
   Badge,
   BellIcon,
   Hexagon,
+  LoaderIcon,
   MessageCircle,
   UsersRound,
 } from "lucide-react";
@@ -14,6 +15,7 @@ import { useChatStore } from "../../stores/useChatStore";
 const Sidebar = () => {
   const authUser = useAuthStore((s) => s.authUser);
   const conversations = useChatStore((s) => s.conversations);
+  const isGettingConversations = useChatStore((s) => s.isGettingConversations);
 
   const { t } = useTranslation("sidebar");
   const location = useLocation();
@@ -103,10 +105,16 @@ const Sidebar = () => {
             {!isProfilePage && !isChatPage && !isChangePasswordPage ? (
               <span className="hidden lg:block">{t("pages.chats")}</span>
             ) : null}
-            {totalUnseenMessages > 0 && (
-              <div className="absolute right-1 -top-0 lg:right-4 lg:top-1/2 lg:transform lg:-translate-y-1/2">
-                <span className="size-2 rounded-full bg-primary inline-block opacity-100" />
+            {isGettingConversations ? (
+              <div className="absolute right-[2px] top-[2px] lg:right-[14px] lg:top-1/2 lg:transform lg:-translate-y-1/2">
+                <LoaderIcon className="size-3 animate-spin" />
               </div>
+            ) : (
+              totalUnseenMessages > 0 && (
+                <div className="absolute right-1 -top-0 lg:right-4 lg:top-1/2 lg:transform lg:-translate-y-1/2">
+                  <span className="size-2 rounded-full bg-primary inline-block opacity-100" />
+                </div>
+              )
             )}
           </Link>
           <Link

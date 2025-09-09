@@ -21,7 +21,6 @@ authRoute.post("/reset-password/verify-otp", verifyResetPasswordOtpController);
 
 authRoute.post("/login", loginController);
 authRoute.post("/logout", protectedRoute, logoutController);
-
 authRoute.post("/onboarding", protectedRoute, onboardController);
 
 authRoute.get("/me", protectedRoute, getMeController);

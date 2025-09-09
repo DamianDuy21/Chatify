@@ -230,7 +230,7 @@ export const changePasswordVerificationAPI = async (otp) => {
 // CHAT PAGE
 
 export const deleteConversationAPI = async (conversationId) => {
-  const response = await axiosInstance.delete(
+  const response = await axiosInstanceChat.delete(
     `/chat/delete-conversation/${conversationId}`
   );
   return response.data;
@@ -243,7 +243,7 @@ export const markMessageAsSeenAPI = async (messageId) => {
 };
 
 export const markAllMessagesAsSeenAPI = async (conversationId) => {
-  const response = await axiosInstance.post(
+  const response = await axiosInstanceChat.post(
     `/chat/mark-all-messages-as-seen/${conversationId}`
   );
   return response.data;
@@ -272,7 +272,7 @@ export const getConversationsAPI = async (args = {}) => {
 export const getMessagesAPI = async (conversationId, args = {}) => {
   const { page = 1, limit = 10 } = args;
   const response = await axiosInstanceChat.get(
-    `/chat/get-messages/${conversationId}`,
+    `/chat/get-conversation-messages/${conversationId}`,
     {
       params: { page, limit },
     }
@@ -336,7 +336,7 @@ export const waitForResponseChatbotAPI = async ({
 };
 
 export const createGroupAPI = async ({ name, memberIds }) => {
-  const response = await axiosInstance.post("/chat/create-group", {
+  const response = await axiosInstanceChat.post("/chat/create-group", {
     name,
     memberIds,
   });
@@ -355,7 +355,7 @@ export const getFriendsCouldBeAddedToGroupAPI = async (
     limit = 10,
   } = args;
   const response = await axiosInstance.post(
-    `/user/friends/get-friends-could-be-added-to-group/${conversationId}`,
+    `/user/get-friends-could-be-added-to-group/${conversationId}`,
     {
       fullName,
       nativeLanguage,
@@ -369,7 +369,7 @@ export const getFriendsCouldBeAddedToGroupAPI = async (
 };
 
 export const addMembersToGroupAPI = async ({ conversationId, memberIds }) => {
-  const response = await axiosInstance.post(
+  const response = await axiosInstanceChat.post(
     `/chat/add-members-to-group/${conversationId}`,
     {
       memberIds,
@@ -382,7 +382,7 @@ export const deleteMemberFromGroupAPI = async ({
   conversationId,
   memberId,
 }) => {
-  const response = await axiosInstance.post(
+  const response = await axiosInstanceChat.post(
     `/chat/delete-member-from-group/${conversationId}`,
     {
       memberId,
@@ -409,7 +409,7 @@ export const leaveGroupAPI = async ({
   isKeyMember = false,
   newKeyMemberId = null,
 } = {}) => {
-  const response = await axiosInstance.post(
+  const response = await axiosInstanceChat.post(
     `/chat/leave-group/${conversationId}`,
     {
       isKeyMember,
@@ -418,18 +418,3 @@ export const leaveGroupAPI = async ({
   );
   return response.data;
 };
-
-// export const updateMemberRoleInGroupAPI = async ({
-//   conversationId,
-//   memberId,
-//   isKeyMember = true,
-// }) => {
-//   const response = await axiosInstance.post(
-//     `/chat/update-member-role-in-group/${conversationId}`,
-//     {
-//       memberId,
-//       isKeyMember,
-//     }
-//   );
-//   return response.data;
-// };
