@@ -67,7 +67,7 @@ const Navbar = () => {
 
               <div className="avatar">
                 <Link to={`/profile`} className="group">
-                  <div className="size-8 rounded-full mx-2 overflow-hidden group-hover:scale-125 transition-transform">
+                  <div className="size-8 rounded-full overflow-hidden mx-2 group-hover:scale-125 transition-transform">
                     <img
                       src={
                         authUser?.user?.profile?.profilePic ||

@@ -7,6 +7,6 @@ const chatRoute = express.Router();
 
 chatRoute.use(protectedRoute);
 
-chatRoute.post("/get-conversations", getConversationsController);
+chatRoute.get("/conversations", getConversationsController);
 
 export default chatRoute;

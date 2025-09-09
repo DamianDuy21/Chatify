@@ -21,36 +21,41 @@ const userRoute = express.Router();
 
 userRoute.use(protectedRoute);
 
-userRoute.put("/update-profile", updateProfileController);
+//update profile
+userRoute.put("/profile", updateProfileController);
 
-userRoute.get("/category/get-languages", getLanguagesController);
+//get languages
+userRoute.get("/category/languages", getLanguagesController);
 
+//change password
 userRoute.post("/change-password", changePasswordController);
 userRoute.post(
   "/change-password/verify-otp",
   verifyChangePasswordOtpController
 );
 
-userRoute.post("/get-recommend-users", getRecommendedUsersController);
+// get recommended users
+userRoute.get("/recommend-users", getRecommendedUsersController);
 
-userRoute.post("/get-friends", getFriendsController);
-userRoute.delete("/delete-friend/:id", deleteFriendController);
-userRoute.post(
-  "/get-friends-could-be-added-to-group/:id",
+// friends
+userRoute.get("/friends", getFriendsController);
+userRoute.delete("/friend/:id", deleteFriendController);
+userRoute.get(
+  "/friends/could-be-added-to-group/:id",
   getFriendsCouldBeAddedToGroupController
 );
-userRoute.post("/send-friend-request/:id", sendFriendRequestController);
+userRoute.post("/friend-request/:id", sendFriendRequestController);
 userRoute.get(
-  "/get-outgoing-friend-requests",
+  "/friends/outgoing-friend-requests",
   getOutgoingFriendRequestsController
 );
-userRoute.put("/update-friend-request/:id", updateFriendRequestController);
+userRoute.put("/friend-request/:id", updateFriendRequestController);
 userRoute.get(
-  "/get-incoming-friend-requests",
+  "/friends/incoming-friend-requests",
   getIncomingFriendRequestsController
 );
 
-userRoute.get("/get-notifications", getNotificationsController);
-userRoute.put("/update-notification/:id", updateNotificationController);
+userRoute.get("/notifications", getNotificationsController);
+userRoute.put("/notification/:id", updateNotificationController);
 
 export default userRoute;

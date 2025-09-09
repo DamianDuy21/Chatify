@@ -203,7 +203,7 @@ export const useChatStore = create((set, get) => ({
             }
           : null,
       }));
-      // await axiosInstanceChat.put(`/chat/mark-message-as-seen/${data.message._id}`);
+
       await markMessageAsSeenAPI(data.message._id);
     } catch (error) {
       console.error("Failed to wait for chatbot response:", error);

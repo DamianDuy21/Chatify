@@ -18,7 +18,7 @@ export const getConversationsController = async (req, res) => {
     const limit = Math.min(50, Math.max(1, Number(req.query.limit) || 50));
     const offset = (page - 1) * limit;
 
-    const { conversationName = null, conversationId = null } = req.body || {};
+    const { conversationName = null, conversationId = null } = req.query || {};
 
     let conversations;
 

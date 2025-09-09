@@ -194,7 +194,7 @@ export const getRecommendedUsersController = async (req, res) => {
       fullName,
       nativeLanguage: nativeLang,
       learningLanguage: learnLang,
-    } = req.body || {};
+    } = req.query || {};
 
     const friendRequests = await FriendRequest.find({
       $or: [{ senderId: currentUserId }, { recipientId: currentUserId }],
@@ -295,7 +295,7 @@ export const getFriendsController = async (req, res) => {
       fullName,
       nativeLanguage: nativeLang,
       learningLanguage: learnLang,
-    } = req.body || {};
+    } = req.query || {};
 
     const fullDataFriends = await Promise.all(
       friends.map(async (friend) => {
@@ -943,7 +943,7 @@ export const getFriendsCouldBeAddedToGroupController = async (req, res) => {
       fullName,
       nativeLanguage: nativeLang,
       learningLanguage: learnLang,
-    } = req.body || {};
+    } = req.query || {};
 
     const fullDataFriends = await Promise.all(
       friends.map(async (friend) => {

@@ -3,12 +3,12 @@ import { axiosInstanceChat } from "./axiosInstanceChat";
 
 // AUTH
 export const getLanguagesAPI = async () => {
-  const response = await axiosInstance.get("/user/category/get-languages");
+  const response = await axiosInstance.get("/user/category/languages");
   return response.data;
 };
 
-export const signUpAPI = async (signUpData) => {
-  const response = await axiosInstance.post("/auth/signup", signUpData);
+export const signUpAPI = async (data) => {
+  const response = await axiosInstance.post("/auth/signup", data);
   return response.data;
 };
 export const signUpVerificationAPI = async ({
@@ -26,8 +26,8 @@ export const signUpVerificationAPI = async ({
   return response.data;
 };
 
-export const loginAPI = async (loginData) => {
-  const response = await axiosInstance.post("/auth/login", loginData);
+export const loginAPI = async (data) => {
+  const response = await axiosInstance.post("/auth/login", data);
 
   return response.data;
 };
@@ -43,12 +43,12 @@ export const getAuthUserAPI = async () => {
   return response.data;
 };
 
-export const onboardingAPI = async (userData) => {
-  const response = await axiosInstance.post("/auth/onboarding", userData);
+export const onboardingAPI = async (data) => {
+  const response = await axiosInstance.post("/auth/onboard", data);
   return response.data;
 };
 
-export const resetPasswordAPI = async (email) => {
+export const resetPasswordAPI = async ({ email }) => {
   const response = await axiosInstance.post("/auth/reset-password", {
     email,
   });
@@ -78,11 +78,9 @@ export const getRecommendedUsersAPI = async (args = {}) => {
     limit = 10,
   } = args;
 
-  const response = await axiosInstance.post(
-    "/user/get-recommend-users",
-    { fullName, nativeLanguage, learningLanguage },
-    { params: { page, limit } }
-  );
+  const response = await axiosInstance.get("/user/recommend-users", {
+    params: { page, limit, fullName, nativeLanguage, learningLanguage },
+  });
   return response.data;
 };
 
@@ -90,7 +88,7 @@ export const getOutgoingFriendRequestsAPI = async (args = {}) => {
   const { page = 1, limit = 10 } = args;
 
   const response = await axiosInstance.get(
-    "/user/get-outgoing-friend-requests",
+    "/user/friends/outgoing-friend-requests",
     {
       params: { page, limit },
     }
@@ -99,15 +97,13 @@ export const getOutgoingFriendRequestsAPI = async (args = {}) => {
 };
 
 export const sendFriendRequestAPI = async (userId) => {
-  const response = await axiosInstance.post(
-    `/user/send-friend-request/${userId}`
-  );
+  const response = await axiosInstance.post(`/user/friend-request/${userId}`);
   return response.data;
 };
 
 export const cancelFriendRequestAPI = async (requestId) => {
   const response = await axiosInstance.put(
-    `/user/update-friend-request/${requestId}`,
+    `/user/friend-request/${requestId}`,
     {
       type: "cancel",
     }
@@ -119,7 +115,7 @@ export const cancelFriendRequestAPI = async (requestId) => {
 export const getIncomingFriendRequestsAPI = async (args = {}) => {
   const { page = 1, limit = 10 } = args;
   const response = await axiosInstance.get(
-    "/user/get-incoming-friend-requests",
+    "/user/friends/incoming-friend-requests",
     {
       params: { page, limit },
     }
@@ -129,7 +125,7 @@ export const getIncomingFriendRequestsAPI = async (args = {}) => {
 
 export const getNotificationsAPI = async (args = {}) => {
   const { page = 1, limit = 10 } = args;
-  const response = await axiosInstance.get("/user/get-notifications", {
+  const response = await axiosInstance.get("/user/notifications", {
     params: { page, limit },
   });
   return response.data;
@@ -137,7 +133,7 @@ export const getNotificationsAPI = async (args = {}) => {
 
 export const acceptFriendRequestAPI = async (requestId) => {
   const response = await axiosInstance.put(
-    `/user/update-friend-request/${requestId}`,
+    `/user/friend-request/${requestId}`,
     {
       type: "accept",
     }
@@ -147,7 +143,7 @@ export const acceptFriendRequestAPI = async (requestId) => {
 
 export const rejectFriendRequestAPI = async (requestId) => {
   const response = await axiosInstance.put(
-    `/user/update-friend-request/${requestId}`,
+    `/user/friend-request/${requestId}`,
     {
       type: "reject",
     }
@@ -157,7 +153,7 @@ export const rejectFriendRequestAPI = async (requestId) => {
 
 export const acceptNotificationAPI = async (notificationId) => {
   const response = await axiosInstance.put(
-    `/user/update-notification/${notificationId}`,
+    `/user/notification/${notificationId}`,
     {
       type: "accept",
     }
@@ -167,7 +163,7 @@ export const acceptNotificationAPI = async (notificationId) => {
 
 export const deleteNotificationAPI = async (notificationId) => {
   const response = await axiosInstance.put(
-    `/user/update-notification/${notificationId}`,
+    `/user/notification/${notificationId}`,
     {
       type: "delete",
     }
@@ -184,28 +180,24 @@ export const getFriendsAPI = async (args = {}) => {
     page = 1,
     limit = 10,
   } = args;
-  const response = await axiosInstance.post(
-    "/user/get-friends",
+  const response = await axiosInstance.get(
+    "/user/friends",
+
     {
-      fullName,
-      nativeLanguage,
-      learningLanguage,
-    },
-    {
-      params: { page, limit },
+      params: { page, limit, fullName, nativeLanguage, learningLanguage },
     }
   );
   return response.data;
 };
 
 export const deleteFriendAPI = async (id) => {
-  const response = await axiosInstance.delete(`/user/delete-friend/${id}`);
+  const response = await axiosInstance.delete(`/user/friend/${id}`);
   return response.data;
 };
 
 // PROFILE PAGE
 export const updateProfileAPI = async (profileData) => {
-  const response = await axiosInstance.put("/user/update-profile", profileData);
+  const response = await axiosInstance.put("/user/profile", profileData);
   return response.data;
 };
 
@@ -237,14 +229,14 @@ export const deleteConversationAPI = async (conversationId) => {
 };
 export const markMessageAsSeenAPI = async (messageId) => {
   const response = await axiosInstanceChat.put(
-    `/chat/mark-message-as-seen/${messageId}`
+    `/chat/message/mark/${messageId}`
   );
   return response.data;
 };
 
 export const markAllMessagesAsSeenAPI = async (conversationId) => {
   const response = await axiosInstanceChat.post(
-    `/chat/mark-all-messages-as-seen/${conversationId}`
+    `/chat/message/mark-all/${conversationId}`
   );
   return response.data;
 };
@@ -256,14 +248,11 @@ export const getConversationsAPI = async (args = {}) => {
     conversationName = null,
     conversationId = null,
   } = args;
-  const response = await axiosInstance.post(
-    "/chat/get-conversations",
+  const response = await axiosInstance.get(
+    "/chat/conversations",
+
     {
-      conversationName,
-      conversationId,
-    },
-    {
-      params: { page, limit },
+      params: { page, limit, conversationName, conversationId },
     }
   );
   return response.data;
@@ -272,7 +261,7 @@ export const getConversationsAPI = async (args = {}) => {
 export const getMessagesAPI = async (conversationId, args = {}) => {
   const { page = 1, limit = 10 } = args;
   const response = await axiosInstanceChat.get(
-    `/chat/get-conversation-messages/${conversationId}`,
+    `/chat/conversation/messages/${conversationId}`,
     {
       params: { page, limit },
     }
@@ -282,7 +271,7 @@ export const getMessagesAPI = async (conversationId, args = {}) => {
 
 export const sendMessageAPI = async ({ conversationId, messageData }) => {
   const response = await axiosInstanceChat.post(
-    `/chat/send-message/${conversationId}`,
+    `/chat/message/${conversationId}`,
     messageData,
     {
       headers: { "Content-Type": undefined, Accept: "application/json" },
@@ -293,15 +282,12 @@ export const sendMessageAPI = async ({ conversationId, messageData }) => {
 };
 
 export const translateMessageAPI = async (data) => {
-  const response = await axiosInstanceChat.post(
-    `/openai/translate-message`,
-    data
-  );
+  const response = await axiosInstanceChat.post(`/openai/chat/translate`, data);
   return response.data;
 };
 
 export const createChatbotAPI = async () => {
-  const response = await axiosInstanceChat.post(`/openai/create-chatbot`);
+  const response = await axiosInstanceChat.post(`/openai/conversation`);
   return response.data;
 };
 
@@ -310,7 +296,7 @@ export const sendMessageChatbotAPI = async ({
   messageData,
 }) => {
   const response = await axiosInstanceChat.post(
-    `/openai/chat/send-message/${conversationId}`,
+    `/openai/chat/send/${conversationId}`,
     messageData,
     {
       headers: { "Content-Type": undefined, Accept: "application/json" },
@@ -326,7 +312,7 @@ export const waitForResponseChatbotAPI = async ({
   language,
 }) => {
   const response = await axiosInstanceChat.post(
-    `/openai/chat/wait-message/${conversationId}`,
+    `/openai/chat/wait/${conversationId}`,
     {
       messageData,
       language,
@@ -336,7 +322,7 @@ export const waitForResponseChatbotAPI = async ({
 };
 
 export const createGroupAPI = async ({ name, memberIds }) => {
-  const response = await axiosInstanceChat.post("/chat/create-group", {
+  const response = await axiosInstanceChat.post("/chat/group", {
     name,
     memberIds,
   });
@@ -354,15 +340,10 @@ export const getFriendsCouldBeAddedToGroupAPI = async (
     page = 1,
     limit = 10,
   } = args;
-  const response = await axiosInstance.post(
-    `/user/get-friends-could-be-added-to-group/${conversationId}`,
+  const response = await axiosInstance.get(
+    `/user/friends/could-be-added-to-group/${conversationId}`,
     {
-      fullName,
-      nativeLanguage,
-      learningLanguage,
-    },
-    {
-      params: { page, limit },
+      params: { page, limit, fullName, nativeLanguage, learningLanguage },
     }
   );
   return response.data;
@@ -370,7 +351,7 @@ export const getFriendsCouldBeAddedToGroupAPI = async (
 
 export const addMembersToGroupAPI = async ({ conversationId, memberIds }) => {
   const response = await axiosInstanceChat.post(
-    `/chat/add-members-to-group/${conversationId}`,
+    `/chat/group/members/${conversationId}`,
     {
       memberIds,
     }
@@ -382,23 +363,26 @@ export const deleteMemberFromGroupAPI = async ({
   conversationId,
   memberId,
 }) => {
-  const response = await axiosInstanceChat.post(
-    `/chat/delete-member-from-group/${conversationId}`,
+  const response = await axiosInstanceChat.delete(
+    `/chat/group/member/${conversationId}`,
     {
-      memberId,
+      params: { memberId },
     }
   );
   return response.data;
 };
 
 export const getVideoCallTokenAPI = async () => {
-  const response = await axiosInstanceChat.get("/chat/video-call/get-token");
+  const response = await axiosInstanceChat.get("/chat/video-call/token");
   return response.data;
 };
 
-export const updateChatSettingsAPI = async ({ conversationId, settings }) => {
+export const updateConversationSettingsAPI = async ({
+  conversationId,
+  settings,
+}) => {
   const response = await axiosInstanceChat.put(
-    `/chat/update-chat-settings/${conversationId}`,
+    `/chat/conversation/settings/${conversationId}`,
     settings
   );
   return response.data;

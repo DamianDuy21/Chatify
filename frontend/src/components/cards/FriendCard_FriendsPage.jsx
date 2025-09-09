@@ -42,8 +42,10 @@ const FriendCard_v2_FriendsPage = ({
     >
       <div className="card-body p-4 space-y-2">
         <div className="flex items-center gap-3">
-          <div className="avatar size-10 rounded-full">
-            <img src={friend.profile.profilePic} alt={friend.fullName} />
+          <div className="avatar">
+            <div className="w-10 rounded-full">
+              <img src={friend.profile.profilePic} alt={friend.fullName} />
+            </div>
           </div>
 
           <div>

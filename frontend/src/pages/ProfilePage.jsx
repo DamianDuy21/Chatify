@@ -21,8 +21,6 @@ const ProfilePage = () => {
   const setAuthUser = useAuthStore((s) => s.setAuthUser);
   const authUser = useAuthStore((s) => s.authUser);
 
-  console.log("Auth User: ", authUser);
-
   const languages = useLanguageStore((s) => s.languages);
 
   const { t } = useTranslation("profilePage");
@@ -145,10 +143,13 @@ const ProfilePage = () => {
   };
 
   useEffect(() => {
+    setProfilePic(authUser?.user?.profile?.profilePic || "");
+  }, [authUser]);
+
+  useEffect(() => {
     setNativeLanguageSelection(languages);
     setLearningLanguageSelection(languages);
-    setProfilePic(authUser?.user?.profile?.profilePic || "");
-  }, [languages, authUser]);
+  }, [languages]);
 
   return (
     <>

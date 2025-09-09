@@ -37,8 +37,10 @@ const RecommendedUserCard_HomePage = ({ user, onSuccess, onError }) => {
     >
       <div className="card-body p-4 space-y-2">
         <div className="flex items-center gap-3">
-          <div className="avatar size-10 rounded-full">
-            <img src={user.profile.profilePic} alt={user.fullName} />
+          <div className="avatar">
+            <div className="w-10 rounded-full">
+              <img src={user.profile.profilePic} alt={user.fullName} />
+            </div>
           </div>
 
           <div>

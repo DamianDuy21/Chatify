@@ -22,7 +22,7 @@ import {
   getFriendsCouldBeAddedToGroupAPI,
   getVideoCallTokenAPI,
   leaveGroupAPI,
-  updateChatSettingsAPI,
+  updateConversationSettingsAPI,
 } from "../../lib/api.js";
 import { useChatStore } from "../../stores/useChatStore";
 import { useLanguageStore } from "../../stores/useLanguageStore.js";
@@ -190,7 +190,7 @@ const ChatWindow = () => {
     mutate: updateChatSettingsMutation,
     isPending: isUpdatingChatSettings,
   } = useMutation({
-    mutationFn: updateChatSettingsAPI,
+    mutationFn: updateConversationSettingsAPI,
     onSuccess: (data) => {
       console.log("Update chat settings data:", data);
       setConversations(

@@ -212,6 +212,13 @@ const NotificationsPage = () => {
       fetchIncomingFriendRequests({
         page: currentPage,
       });
+      return;
+    }
+    if (isShowMoreNotifications) {
+      fetchNotifications({
+        currentPage: currentPage,
+      });
+      return;
     }
   }, [currentPage]);
 

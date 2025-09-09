@@ -42,7 +42,7 @@ const ConversationCard_ChatsPage_Sidebar = ({
       }}
     >
       <div className="flex items-center gap-3 relative">
-        <div className="avatar ">
+        <div className="avatar">
           <div className="w-10 rounded-full">
             {conversation.conversation?.type == "private" ? (
               <img

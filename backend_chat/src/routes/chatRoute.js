@@ -4,16 +4,13 @@ import {
   createGroupController,
   deleteConversationController,
   deleteMemberFromGroupController,
-  getConversationFiles,
-  getConversationMedia,
-  getConversationMembers,
   getConversationMessages,
   getVideoCallToken,
   leaveGroupController,
   markAllMessagesAsSeenController,
   markMessageAsSeen,
   sendMessage,
-  updateChatSettings,
+  updateConversationSettings,
 } from "../controllers/chatController.js";
 import { protectedRoute } from "../middleware/auth.middleware.js";
 
@@ -21,29 +18,28 @@ const chatRoute = express.Router();
 
 chatRoute.use(protectedRoute);
 
-chatRoute.get("/get-conversation-messages/:id", getConversationMessages);
+chatRoute.get("/conversation/messages/:id", getConversationMessages);
 // chatRoute.get("/get-conversation-members/:id", getConversationMembers);
 // chatRoute.get("/get-conversation-media/:id", getConversationMedia);
 // chatRoute.get("/get-conversation-files/:id", getConversationFiles);
 
-chatRoute.put("/update-chat-settings/:id", updateChatSettings);
+// update conversation settings
+chatRoute.put("/conversation/settings/:id", updateConversationSettings);
 
-chatRoute.get("/video-call/get-token", getVideoCallToken);
+// get video call token
+chatRoute.get("/video-call/token", getVideoCallToken);
 
-chatRoute.post("/send-message/:id", sendMessage);
+// send message
+chatRoute.post("/message/:id", sendMessage);
 
-chatRoute.put("/mark-message-as-seen/:id", markMessageAsSeen);
-chatRoute.post(
-  "/mark-all-messages-as-seen/:id",
-  markAllMessagesAsSeenController
-);
+// mark message as seen
+chatRoute.put("/message/mark/:id", markMessageAsSeen);
+chatRoute.post("/messages/mark-all/:id", markAllMessagesAsSeenController);
 
-chatRoute.post("/create-group", createGroupController);
-chatRoute.post("/add-members-to-group/:id", addMembersToGroupController);
-chatRoute.post(
-  "/delete-member-from-group/:id",
-  deleteMemberFromGroupController
-);
+// group chat
+chatRoute.post("/group", createGroupController);
+chatRoute.post("/group/members/:id", addMembersToGroupController);
+chatRoute.delete("/group/member/:id", deleteMemberFromGroupController);
 chatRoute.delete("/delete-conversation/:id", deleteConversationController);
 chatRoute.post("/leave-group/:id", leaveGroupController);
 

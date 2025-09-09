@@ -260,7 +260,10 @@ export const loginController = async (req, res) => {
 
 export const logoutController = async (req, res) => {
   try {
+    const token = req.token;
+    await JWT.updateOne({ token }, { $set: { expire_at: new Date() } });
     res.clearCookie("jwt");
+
     res
       .status(200)
       .json({ success: true, message: "Đăng xuất thành công", data: {} });

@@ -89,7 +89,7 @@ const ForgotPasswordPage = () => {
     }
     try {
       const trimmedEmail = email.trim();
-      resetPasswordMutation(trimmedEmail);
+      resetPasswordMutation({ email: trimmedEmail });
     } catch (error) {
       console.error(error);
       showToast({

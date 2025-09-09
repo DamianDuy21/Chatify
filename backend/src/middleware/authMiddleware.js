@@ -1,5 +1,6 @@
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
+import JWT from "../models/JWT.js";
 
 export const protectedRoute = async (req, res, next) => {
   const token = req.cookies.jwt;
@@ -11,6 +12,7 @@ export const protectedRoute = async (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
     if (!decoded) {
+      await JWT.updateOne({ token }, { $set: { expire_at: new Date() } });
       return res.status(401).json({
         message: "Không có quyền truy cập - Mã xác thực không hợp lệ",
       });
@@ -22,6 +24,7 @@ export const protectedRoute = async (req, res, next) => {
       });
     }
     req.user = user;
+    req.token = token;
     next();
   } catch (error) {
     console.error("Error in protected route middleware:", error);

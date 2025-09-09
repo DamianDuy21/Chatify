@@ -56,8 +56,10 @@ const NotificationCard_NotificationsPage = ({
     <div key={notification._id} className="card bg-base-200 shadow-sm">
       <div className={`card-body p-4 pr-[106px]`}>
         <div className="flex items-start gap-3">
-          <div className="avatar size-10 rounded-full">
-            <img src={user?.profile?.profilePic} alt={""} />
+          <div className="avatar">
+            <div className="w-10 rounded-full">
+              <img src={user?.profile?.profilePic} alt={""} />
+            </div>
           </div>
           <div className="flex-1">
             <h3 className="font-semibold text-sm">{user?.fullName}</h3>

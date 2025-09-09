@@ -49,7 +49,7 @@ const App = () => {
 
   useEffect(() => {
     getLanguages();
-  }, [getLanguages, authUser]);
+  }, [getLanguages]);
 
   useEffect(() => {
     if (!socket) return;

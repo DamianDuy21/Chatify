@@ -526,7 +526,7 @@ export const getVideoCallToken = async (req, res) => {
   }
 };
 
-export const updateChatSettings = async (req, res) => {
+export const updateConversationSettings = async (req, res) => {
   const { id: conversationId } = req.params;
   const { getNotifications, isPinned, language, translatedTo } = req.body;
   const userId = req.user._id;
@@ -789,7 +789,7 @@ export const addMembersToGroupController = async (req, res) => {
 
 export const deleteMemberFromGroupController = async (req, res) => {
   const conversationId = req.params.id;
-  const { memberId } = req.body;
+  const { memberId } = req.query;
   try {
     if (!memberId) {
       return res.status(400).json({ message: "Invalid member data" });

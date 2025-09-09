@@ -141,7 +141,7 @@ const Sidebar = () => {
         <div className="h-16 border-t border-base-300 mt-auto flex items-center justify-center lg:justify-start px-4">
           <div className="flex items-center gap-3 relative">
             <div className="avatar">
-              <div className="w-10 rounded-full ">
+              <div className="w-10 rounded-full">
                 <img
                   src={
                     authUser?.user?.profile?.profilePic ||
