@@ -4,7 +4,7 @@ import dotenv from "dotenv";
 import express from "express";
 import { connectDB } from "./lib/db.js";
 
-import path from "path";
+// import path from "path";
 import { app, server } from "./lib/socket.js";
 import chatRoute from "./routes/chatRoute.js";
 import openaiRoute from "./routes/openaiRoute.js";
@@ -12,7 +12,7 @@ dotenv.config();
 
 const PORT = process.env.PORT || 8000;
 
-const __dirname = path.resolve();
+// const __dirname = path.resolve();
 
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
@@ -27,12 +27,12 @@ app.use(
 app.use("/api/chat", chatRoute);
 app.use("/api/openai", openaiRoute);
 
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "../front-end/dist")));
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "../front-end/dist/index.html"));
-  });
-}
+// if (process.env.NODE_ENV === "production") {
+//   app.use(express.static(path.join(__dirname, "../front-end/dist")));
+//   app.get("*", (req, res) => {
+//     res.sendFile(path.join(__dirname, "../front-end/dist/index.html"));
+//   });
+// }
 
 server.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
