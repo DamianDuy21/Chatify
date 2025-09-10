@@ -35,6 +35,9 @@ const App = () => {
   const setConversationNameFilter = useChatStore(
     (s) => s.setConversationNameFilter
   );
+  const setSelectedConversation = useChatStore(
+    (s) => s.setSelectedConversation
+  );
 
   const socket = useAuthStore((s) => s.socket);
 
@@ -56,7 +59,9 @@ const App = () => {
 
   useEffect(() => {
     getTotalConversationQuantityAboveFilter();
-  }, [getTotalConversationQuantityAboveFilter]);
+    setConversationNameFilter("");
+    setSelectedConversation(null);
+  }, [authUser]);
 
   useEffect(() => {
     getLanguages();
@@ -69,10 +74,6 @@ const App = () => {
       unsubscribeFromMessages();
     };
   }, [socket]);
-
-  useEffect(() => {
-    setConversationNameFilter("");
-  }, [setConversationNameFilter, authUser]);
 
   if (isGettingAuthUser) {
     return <CommonPageLoader />;
