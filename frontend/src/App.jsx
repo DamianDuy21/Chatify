@@ -1,6 +1,6 @@
 import { Toaster } from "react-hot-toast";
 import { Navigate, Route, Routes } from "react-router";
-import { useEffect } from "react";
+import { use, useEffect } from "react";
 import MainLayout from "./layouts/MainLayout.jsx";
 import CommonPageLoader from "./components/loaders/CommonPageLoader.jsx";
 import ChangePasswordPage from "./pages/ChangePasswordPage.jsx";
@@ -29,6 +29,13 @@ const App = () => {
   const unsubscribeFromMessages = useChatStore(
     (s) => s.unsubscribeFromMessages
   );
+  const getTotalConversationQuantityAboveFilter = useChatStore(
+    (s) => s.getTotalConversationQuantityAboveFilter
+  );
+  const setConversationNameFilter = useChatStore(
+    (s) => s.setConversationNameFilter
+  );
+
   const socket = useAuthStore((s) => s.socket);
 
   const getLanguages = useLanguageStore((s) => s.getLanguages);
@@ -48,6 +55,10 @@ const App = () => {
   }, [getConversations]);
 
   useEffect(() => {
+    getTotalConversationQuantityAboveFilter();
+  }, [getTotalConversationQuantityAboveFilter]);
+
+  useEffect(() => {
     getLanguages();
   }, [getLanguages]);
 
@@ -58,6 +69,10 @@ const App = () => {
       unsubscribeFromMessages();
     };
   }, [socket]);
+
+  useEffect(() => {
+    setConversationNameFilter("");
+  }, [setConversationNameFilter, authUser]);
 
   if (isGettingAuthUser) {
     return <CommonPageLoader />;

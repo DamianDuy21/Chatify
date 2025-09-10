@@ -220,7 +220,6 @@ export const changePasswordVerificationAPI = async (otp) => {
 };
 
 // CHAT PAGE
-
 export const deleteConversationAPI = async (conversationId) => {
   const response = await axiosInstanceChat.delete(
     `/chat/delete-conversation/${conversationId}`
@@ -244,7 +243,7 @@ export const markAllMessagesAsSeenAPI = async (conversationId) => {
 export const getConversationsAPI = async (args = {}) => {
   const {
     page = 1,
-    limit = 10,
+    limit = 12,
     conversationName = null,
     conversationId = null,
   } = args;
@@ -255,6 +254,11 @@ export const getConversationsAPI = async (args = {}) => {
       params: { page, limit, conversationName, conversationId },
     }
   );
+  return response.data;
+};
+
+export const getTotalConversationQuantityAboveFilterAPI = async () => {
+  const response = await axiosInstance.get("/chat/conversations/total");
   return response.data;
 };
 

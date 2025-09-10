@@ -10,12 +10,34 @@ import Profile from "../models/Profile.js";
 import SeenBy from "../models/SeenBy.js";
 import User from "../models/User.js";
 
+export const getTotalConversationQuantityAboveFilter = async (req, res) => {
+  try {
+    const currentUserId = req.user._id;
+    const quantity = await ConversationMember.countDocuments({
+      userId: currentUserId,
+    });
+
+    res.status(200).json({
+      success: true,
+      data: {
+        total: {
+          conversations: quantity,
+        },
+      },
+      message: "Lấy tổng số lượng cuộc trò chuyện thành công",
+    });
+  } catch (error) {
+    console.error("Error fetching total conversation quantity:", error);
+    res.status(500).json({ message: "Lỗi máy chủ nội bộ" });
+  }
+};
+
 export const getConversationsController = async (req, res) => {
   try {
     const currentUserId = req.user._id;
 
     const page = Math.max(1, Number(req.query.page) || 1);
-    const limit = Math.min(3, Math.max(1, Number(req.query.limit) || 50));
+    const limit = Math.min(50, Math.max(1, Number(req.query.limit) || 50));
     const offset = (page - 1) * limit;
 
     const { conversationName = null, conversationId = null } = req.query || {};
@@ -75,7 +97,7 @@ export const getConversationsController = async (req, res) => {
           (a, b) => b.sortAt - a.sortAt
         );
 
-        const limitedIds = merged.slice(0, page * limit).map((x) => x._id);
+        const limitedIds = merged.map((x) => x._id);
 
         const unsortedConversations = await Conversation.find({
           _id: { $in: limitedIds },
@@ -227,7 +249,7 @@ export const getConversationsController = async (req, res) => {
           conversationId: { $in: conversation._id },
         })
           .sort({ createdAt: -1 })
-          .limit(20)
+          .limit(16)
           .select("-__v ");
 
         const sortedMessages = [...recentMessages].reverse();

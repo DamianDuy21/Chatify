@@ -10,6 +10,9 @@ const NoChatSelected = ({ hasFriends }) => {
   const setSelectedConversation = useChatStore(
     (s) => s.setSelectedConversation
   );
+  const setTotalConversationQuantityAboveFilter = useChatStore(
+    (s) => s.setTotalConversationQuantityAboveFilter
+  );
 
   return (
     <div className="relative aspect-square max-w-sm mx-auto">
@@ -41,6 +44,7 @@ const NoChatSelected = ({ hasFriends }) => {
                 console.log(newChatbotConversation);
                 setConversations([newChatbotConversation, ...conversations]);
                 setSelectedConversation(newChatbotConversation);
+                setTotalConversationQuantityAboveFilter(1);
               }
             }}
           >

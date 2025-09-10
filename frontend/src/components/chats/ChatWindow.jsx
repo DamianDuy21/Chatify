@@ -62,6 +62,12 @@ const ChatWindow = () => {
   const setSelectedConversation = useChatStore(
     (s) => s.setSelectedConversation
   );
+  const setTotalConversationQuantityAboveFilter = useChatStore(
+    (s) => s.setTotalConversationQuantityAboveFilter
+  );
+  const totalConversationQuantityAboveFilter = useChatStore(
+    (s) => s.totalConversationQuantityAboveFilter
+  );
 
   const conversations = useChatStore((s) => s.conversations);
   const setConversations = useChatStore((s) => s.setConversations);
@@ -290,7 +296,11 @@ const ChatWindow = () => {
     const conversationId = selectedConversation?.conversation?._id;
     if (!conversationId) return;
     deleteConversationMutation(conversationId);
+    setTotalConversationQuantityAboveFilter(
+      totalConversationQuantityAboveFilter - 1
+    );
   };
+  console.log({ totalConversationQuantityAboveFilter });
 
   const handleLeaveGroup = async () => {
     const conversationId = selectedConversation?.conversation?._id;

@@ -229,30 +229,32 @@ export const getRecommendedUsersController = async (req, res) => {
       ],
     }).select("-password -createdAt -updatedAt -__v");
 
-    const fullDataRecommendedUsers = await Promise.all(
-      recommendedUsers.map(async (user) => {
-        const profileFilter = { userId: user._id };
-        if (nativeLang) {
-          profileFilter.nativeLanguage = { $eq: nativeLang };
-        }
-        if (learnLang) {
-          profileFilter.learningLanguage = { $eq: learnLang };
-        }
-        const profile = await Profile.findOne(profileFilter).select(
-          "-userId -_id -createdAt -updatedAt -__v"
-        );
-        if (!profile) return null;
-        if (!user) return null;
-        return {
-          user: {
-            ...user.toObject(),
-            profile: {
-              ...profile.toObject(),
+    const fullDataRecommendedUsers = (
+      await Promise.all(
+        recommendedUsers.map(async (user) => {
+          const profileFilter = { userId: user._id };
+          if (nativeLang) {
+            profileFilter.nativeLanguage = { $eq: nativeLang };
+          }
+          if (learnLang) {
+            profileFilter.learningLanguage = { $eq: learnLang };
+          }
+          const profile = await Profile.findOne(profileFilter).select(
+            "-userId -_id -createdAt -updatedAt -__v"
+          );
+          if (!profile || !user) return null;
+
+          return {
+            user: {
+              ...user.toObject(),
+              profile: {
+                ...profile.toObject(),
+              },
             },
-          },
-        };
-      })
-    );
+          };
+        })
+      )
+    ).filter((item) => item !== null);
 
     const users = fullDataRecommendedUsers.filter(Boolean);
 
@@ -297,75 +299,81 @@ export const getFriendsController = async (req, res) => {
       learningLanguage: learnLang,
     } = req.query || {};
 
-    const fullDataFriends = await Promise.all(
-      friends.map(async (friend) => {
-        const profileFilter = {
-          userId:
-            friend.firstId == currentUserId ? friend.secondId : friend.firstId,
-        };
-        if (nativeLang) {
-          profileFilter.nativeLanguage = { $eq: nativeLang };
-        }
-        if (learnLang) {
-          profileFilter.learningLanguage = { $eq: learnLang };
-        }
-        const profile = await Profile.findOne(profileFilter).select(
-          "-userId -_id -createdAt -updatedAt -__v"
-        );
-        if (!profile) return null;
+    const fullDataFriends = (
+      await Promise.all(
+        friends.map(async (friend) => {
+          const profileFilter = {
+            userId:
+              friend.firstId == currentUserId
+                ? friend.secondId
+                : friend.firstId,
+          };
+          if (nativeLang) {
+            profileFilter.nativeLanguage = { $eq: nativeLang };
+          }
+          if (learnLang) {
+            profileFilter.learningLanguage = { $eq: learnLang };
+          }
+          const profile = await Profile.findOne(profileFilter).select(
+            "-userId -_id -createdAt -updatedAt -__v"
+          );
+          if (!profile) return null;
 
-        const user = await User.find({
-          $and: [
-            {
-              _id:
-                friend.firstId == currentUserId
-                  ? friend.secondId
-                  : friend.firstId,
-            },
-            fullName ? { fullName: { $regex: fullName, $options: "i" } } : {},
-          ],
-        }).select("-password -createdAt -updatedAt -__v");
+          const user = await User.find({
+            $and: [
+              {
+                _id:
+                  friend.firstId == currentUserId
+                    ? friend.secondId
+                    : friend.firstId,
+              },
+              fullName ? { fullName: { $regex: fullName, $options: "i" } } : {},
+            ],
+          }).select("-password -createdAt -updatedAt -__v");
 
-        // Lấy private conversation giữa 2 user
-        const conversationsMember1 = await ConversationMember.find({
-          userId: currentUserId,
-        });
-        const conversationsMember2 = await ConversationMember.find({
-          userId:
-            friend.firstId == currentUserId ? friend.secondId : friend.firstId,
-        });
-
-        const conversationId = conversationsMember1
-          .map((m1) => {
-            const match = conversationsMember2.find(
-              (m2) =>
-                m2.conversationId.toString() === m1.conversationId.toString()
-            );
-            return match ? match.conversationId : null;
-          })
-          .filter(Boolean); // loại bỏ null
-
-        let conversation;
-        if (conversationId.length > 0) {
-          conversation = await Conversation.findOne({
-            _id: { $in: conversationId },
-            type: "private",
+          // Lấy private conversation giữa 2 user
+          const conversationsMember1 = await ConversationMember.find({
+            userId: currentUserId,
           });
-        }
+          const conversationsMember2 = await ConversationMember.find({
+            userId:
+              friend.firstId == currentUserId
+                ? friend.secondId
+                : friend.firstId,
+          });
 
-        if (user.length === 0) return null;
+          const conversationId = conversationsMember1
+            .map((m1) => {
+              const match = conversationsMember2.find(
+                (m2) =>
+                  m2.conversationId.toString() === m1.conversationId.toString()
+              );
+              return match ? match.conversationId : null;
+            })
+            .filter(Boolean); // loại bỏ null
 
-        return {
-          user: {
-            ...user[0].toObject(),
-            profile: {
-              ...profile.toObject(),
+          let conversation;
+          if (conversationId.length > 0) {
+            conversation = await Conversation.findOne({
+              _id: { $in: conversationId },
+              type: "private",
+            });
+          }
+
+          if (!user || user.length === 0) return null;
+
+          return {
+            user: {
+              ...user[0].toObject(),
+              profile: {
+                ...profile.toObject(),
+              },
             },
-          },
-          conversation,
-        };
-      })
-    );
+            conversation,
+          };
+        })
+      )
+    ).filter((item) => item !== null);
     const users = fullDataFriends.filter(Boolean);
 
     const total = users.length;
@@ -476,26 +484,30 @@ export const getOutgoingFriendRequestsController = async (req, res) => {
       status: "pending",
     }).sort({ createdAt: -1 });
 
-    const fullDataOutgoingRequests = await Promise.all(
-      outgoingRequests.map(async (request) => {
-        const profile = await Profile.findOne({
-          userId: request.recipientId,
-        }).select("-userId -_id -createdAt -updatedAt -__v");
-        const user = await User.findById(request.recipientId).select(
-          "-password -createdAt -updatedAt -__v"
-        );
+    const fullDataOutgoingRequests = (
+      await Promise.all(
+        outgoingRequests.map(async (request) => {
+          const profile = await Profile.findOne({
+            userId: request.recipientId,
+          }).select("-userId -_id -createdAt -updatedAt -__v");
+          const user = await User.findById(request.recipientId).select(
+            "-password -createdAt -updatedAt -__v"
+          );
 
-        return {
-          request: { ...request.toObject() },
-          user: {
-            ...user.toObject(),
-            profile: {
-              ...profile.toObject(),
+          if (!user) return null;
+
+          return {
+            request: { ...request.toObject() },
+            user: {
+              ...user.toObject(),
+              profile: {
+                ...profile.toObject(),
+              },
             },
-          },
-        };
-      })
-    );
+          };
+        })
+      )
+    ).filter((item) => item !== null);
 
     const total = fullDataOutgoingRequests.length;
     const totalPages = Math.max(1, Math.ceil(total / limit));
@@ -683,26 +695,29 @@ export const getIncomingFriendRequestsController = async (req, res) => {
       status: "pending",
     }).sort({ createdAt: -1 });
 
-    const fullDataIncomingFriendRequests = await Promise.all(
-      incomingFriendRequests.map(async (request) => {
-        const profile = await Profile.findOne({
-          userId: request.senderId,
-        }).select("-userId -_id -createdAt -updatedAt -__v");
-        const user = await User.findById(request.senderId).select(
-          "-password -createdAt -updatedAt -__v"
-        );
+    const fullDataIncomingFriendRequests = (
+      await Promise.all(
+        incomingFriendRequests.map(async (request) => {
+          const profile = await Profile.findOne({
+            userId: request.senderId,
+          }).select("-userId -_id -createdAt -updatedAt -__v");
 
-        return {
-          request: { ...request.toObject() },
-          user: {
-            ...user.toObject(),
-            profile: {
-              ...profile.toObject(),
+          const user = await User.findById(request.senderId).select(
+            "-password -createdAt -updatedAt -__v"
+          );
+
+          if (!user) return null;
+
+          return {
+            request: request.toObject(),
+            user: {
+              ...user.toObject(),
+              profile: profile ? profile.toObject() : null,
             },
-          },
-        };
-      })
-    );
+          };
+        })
+      )
+    ).filter((item) => item !== null);
 
     const total = fullDataIncomingFriendRequests.length;
     const totalPages = Math.max(1, Math.ceil(total / limit));
@@ -824,39 +839,41 @@ export const getNotificationsController = async (req, res) => {
       createdAt: -1,
     });
 
-    const fullDataNotifications = await Promise.all(
-      notifications.map(async (notification) => {
-        if (notification.userIdRef) {
-          const profile = await Profile.findOne({
-            userId: notification.userIdRef,
-          }).select("-userId -_id -createdAt -updatedAt -__v");
-          const user = await User.findById(notification.userIdRef).select(
-            "-password -createdAt -updatedAt -__v"
-          );
+    const fullDataNotifications = (
+      await Promise.all(
+        notifications.map(async (notification) => {
+          if (notification.userIdRef) {
+            const profile = await Profile.findOne({
+              userId: notification.userIdRef,
+            }).select("-userId -_id -createdAt -updatedAt -__v");
+            const user = await User.findById(notification.userIdRef).select(
+              "-password -createdAt -updatedAt -__v"
+            );
 
-          if (!user) return;
+            if (!user) return;
 
-          return {
-            notification: {
-              ...notification.toObject(),
-            },
-            user: {
-              ...user.toObject(),
-              profile: {
-                ...profile.toObject(),
+            return {
+              notification: {
+                ...notification.toObject(),
               },
-            },
-          };
-        } else {
-          return {
-            notification: {
-              ...notification.toObject(),
-            },
-            user: null,
-          };
-        }
-      })
-    );
+              user: {
+                ...user.toObject(),
+                profile: {
+                  ...profile.toObject(),
+                },
+              },
+            };
+          } else {
+            return {
+              notification: {
+                ...notification.toObject(),
+              },
+              user: null,
+            };
+          }
+        })
+      )
+    ).filter((item) => item !== null);
 
     const total = fullDataNotifications.length;
     const totalPages = Math.max(1, Math.ceil(total / limit));
@@ -945,75 +962,81 @@ export const getFriendsCouldBeAddedToGroupController = async (req, res) => {
       learningLanguage: learnLang,
     } = req.query || {};
 
-    const fullDataFriends = await Promise.all(
-      friends.map(async (friend) => {
-        const profileFilter = {
-          userId:
-            friend.firstId == currentUserId ? friend.secondId : friend.firstId,
-        };
-        if (nativeLang) {
-          profileFilter.nativeLanguage = { $eq: nativeLang };
-        }
-        if (learnLang) {
-          profileFilter.learningLanguage = { $eq: learnLang };
-        }
-        const profile = await Profile.findOne(profileFilter).select(
-          "-userId -_id -createdAt -updatedAt -__v"
-        );
-        if (!profile) return null;
+    const fullDataFriends = (
+      await Promise.all(
+        friends.map(async (friend) => {
+          const profileFilter = {
+            userId:
+              friend.firstId == currentUserId
+                ? friend.secondId
+                : friend.firstId,
+          };
+          if (nativeLang) {
+            profileFilter.nativeLanguage = { $eq: nativeLang };
+          }
+          if (learnLang) {
+            profileFilter.learningLanguage = { $eq: learnLang };
+          }
+          const profile = await Profile.findOne(profileFilter).select(
+            "-userId -_id -createdAt -updatedAt -__v"
+          );
+          if (!profile) return null;
 
-        const user = await User.find({
-          $and: [
-            {
-              _id:
-                friend.firstId == currentUserId
-                  ? friend.secondId
-                  : friend.firstId,
-            },
-            fullName ? { fullName: { $regex: fullName, $options: "i" } } : {},
-          ],
-        }).select("-password -createdAt -updatedAt -__v");
+          const user = await User.find({
+            $and: [
+              {
+                _id:
+                  friend.firstId == currentUserId
+                    ? friend.secondId
+                    : friend.firstId,
+              },
+              fullName ? { fullName: { $regex: fullName, $options: "i" } } : {},
+            ],
+          }).select("-password -createdAt -updatedAt -__v");
 
-        // Lấy private conversation giữa 2 user
-        const conversationsMember1 = await ConversationMember.find({
-          userId: currentUserId,
-        });
-        const conversationsMember2 = await ConversationMember.find({
-          userId:
-            friend.firstId == currentUserId ? friend.secondId : friend.firstId,
-        });
-
-        const conversationId = conversationsMember1
-          .map((m1) => {
-            const match = conversationsMember2.find(
-              (m2) =>
-                m2.conversationId.toString() === m1.conversationId.toString()
-            );
-            return match ? match.conversationId : null;
-          })
-          .filter(Boolean); // loại bỏ null
-
-        let conversation;
-        if (conversationId.length > 0) {
-          conversation = await Conversation.findOne({
-            _id: { $in: conversationId },
-            type: "private",
+          // Lấy private conversation giữa 2 user
+          const conversationsMember1 = await ConversationMember.find({
+            userId: currentUserId,
           });
-        }
+          const conversationsMember2 = await ConversationMember.find({
+            userId:
+              friend.firstId == currentUserId
+                ? friend.secondId
+                : friend.firstId,
+          });
 
-        if (user.length === 0) return null;
+          const conversationId = conversationsMember1
+            .map((m1) => {
+              const match = conversationsMember2.find(
+                (m2) =>
+                  m2.conversationId.toString() === m1.conversationId.toString()
+              );
+              return match ? match.conversationId : null;
+            })
+            .filter(Boolean); // loại bỏ null
 
-        return {
-          user: {
-            ...user[0].toObject(),
-            profile: {
-              ...profile.toObject(),
+          let conversation;
+          if (conversationId.length > 0) {
+            conversation = await Conversation.findOne({
+              _id: { $in: conversationId },
+              type: "private",
+            });
+          }
+
+          if (!user || user.length === 0) return null;
+
+          return {
+            user: {
+              ...user[0].toObject(),
+              profile: {
+                ...profile.toObject(),
+              },
             },
-          },
-          conversation,
-        };
-      })
-    );
+            conversation,
+          };
+        })
+      )
+    ).filter((item) => item !== null);
     const users = fullDataFriends.filter(Boolean);
 
     const total = users.length;

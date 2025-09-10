@@ -2,6 +2,7 @@ import { create } from "zustand";
 import {
   getConversationsAPI,
   getMessagesAPI,
+  getTotalConversationQuantityAboveFilterAPI,
   markMessageAsSeenAPI,
   sendMessageAPI,
   sendMessageChatbotAPI,
@@ -20,6 +21,7 @@ export const useChatStore = create((set, get) => ({
   isGettingConversations: false,
 
   conversationNameFilter: "",
+  totalConversationQuantityAboveFilter: 0,
 
   setSelectedConversation: (conversation) =>
     set({ selectedConversation: conversation }),
@@ -27,6 +29,22 @@ export const useChatStore = create((set, get) => ({
   setConversations: (conversations) => set({ conversations }),
 
   setConversationNameFilter: (name) => set({ conversationNameFilter: name }),
+
+  setTotalConversationQuantityAboveFilter: (quantity) =>
+    set({ totalConversationQuantityAboveFilter: quantity }),
+
+  getTotalConversationQuantityAboveFilter: async () => {
+    try {
+      const { data } = await getTotalConversationQuantityAboveFilterAPI();
+
+      set({ totalConversationQuantityAboveFilter: data.total.conversations });
+    } catch (error) {
+      console.error(
+        "Failed to fetch total conversations quantity above filter:",
+        error
+      );
+    }
+  },
 
   getConversations: async (args = {}) => {
     try {
