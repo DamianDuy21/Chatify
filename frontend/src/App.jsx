@@ -25,6 +25,7 @@ const App = () => {
   const isGettingAuthUser = useAuthStore((s) => s.isGettingAuthUser);
 
   const getConversations = useChatStore((s) => s.getConversations);
+  const setConversations = useChatStore((s) => s.setConversations);
   const subscribeToMessages = useChatStore((s) => s.subscribeToMessages);
   const unsubscribeFromMessages = useChatStore(
     (s) => s.unsubscribeFromMessages
@@ -58,6 +59,9 @@ const App = () => {
   }, [getConversations]);
 
   useEffect(() => {
+    if (!authUser) {
+      setConversations([]);
+    }
     getTotalConversationQuantityAboveFilter();
     setConversationNameFilter("");
     setSelectedConversation(null);

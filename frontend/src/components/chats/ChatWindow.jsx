@@ -69,6 +69,13 @@ const ChatWindow = () => {
     (s) => s.totalConversationQuantityAboveFilter
   );
 
+  const setTotalConversationQuantityUnderFilter = useChatStore(
+    (s) => s.setTotalConversationQuantityUnderFilter
+  );
+  const totalConversationQuantityUnderFilter = useChatStore(
+    (s) => s.totalConversationQuantityUnderFilter
+  );
+
   const conversations = useChatStore((s) => s.conversations);
   const setConversations = useChatStore((s) => s.setConversations);
 
@@ -247,6 +254,12 @@ const ChatWindow = () => {
           )
         );
         setSelectedConversation(null);
+        setTotalConversationQuantityAboveFilter(
+          totalConversationQuantityAboveFilter - 1
+        );
+        setTotalConversationQuantityUnderFilter(
+          totalConversationQuantityUnderFilter - 1
+        );
         if (closeLeaveGroupRef.current) closeLeaveGroupRef.current();
         showToast({
           message: data?.message || "Left group successfully!",
@@ -269,7 +282,6 @@ const ChatWindow = () => {
   } = useMutation({
     mutationFn: deleteConversationAPI,
     onSuccess: (data) => {
-      console.log("Delete conversation data:", data);
       setConversations(
         conversations.filter(
           (conversation) =>
@@ -277,6 +289,12 @@ const ChatWindow = () => {
         )
       );
       setSelectedConversation(null);
+      setTotalConversationQuantityAboveFilter(
+        totalConversationQuantityAboveFilter - 1
+      );
+      setTotalConversationQuantityUnderFilter(
+        totalConversationQuantityUnderFilter - 1
+      );
       showToast({
         message: data?.message || "Delete conversation successfully!",
         type: "success",
@@ -296,9 +314,6 @@ const ChatWindow = () => {
     const conversationId = selectedConversation?.conversation?._id;
     if (!conversationId) return;
     deleteConversationMutation(conversationId);
-    setTotalConversationQuantityAboveFilter(
-      totalConversationQuantityAboveFilter - 1
-    );
   };
   console.log({ totalConversationQuantityAboveFilter });
 

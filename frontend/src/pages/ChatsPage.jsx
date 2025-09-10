@@ -1,4 +1,11 @@
-import { ChevronLeft, ChevronRight, LoaderIcon, Plus } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  ChevronsDown,
+  ChevronUp,
+  LoaderIcon,
+  Plus,
+} from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { useMutation } from "@tanstack/react-query";
@@ -32,10 +39,18 @@ const ChatsPage = () => {
   const totalConversationQuantityAboveFilter = useChatStore(
     (s) => s.totalConversationQuantityAboveFilter
   );
-
-  const setTotalConversationQuantityAboveFilter = useChatStore(
-    (s) => s.setTotalConversationQuantityAboveFilter
+  const totalConversationQuantityUnderFilter = useChatStore(
+    (s) => s.totalConversationQuantityUnderFilter
   );
+
+  const currentConversationPage = useChatStore(
+    (s) => s.currentConversationPage
+  );
+  const setCurrentConversationPage = useChatStore(
+    (s) => s.setCurrentConversationPage
+  );
+  const [isLoadingByMoreConversations, setIsLoadingByMoreConversations] =
+    useState(false);
 
   const subscribeToMessages = useChatStore((s) => s.subscribeToMessages);
   const unsubscribeFromMessages = useChatStore(
@@ -176,10 +191,24 @@ const ChatsPage = () => {
       didMountRef.current = true;
       return;
     }
+    setCurrentConversationPage(1);
     getConversations({
       conversationName: conversationNameFilter || null,
+      page: 1,
     });
   }, [conversationNameFilter]);
+
+  useEffect(() => {
+    if (!didMountRef.current) {
+      didMountRef.current = true;
+      return;
+    }
+    if (currentConversationPage === 1) return;
+    getConversations({
+      conversationName: conversationNameFilter || null,
+      page: currentConversationPage,
+    });
+  }, [currentConversationPage]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -198,6 +227,12 @@ const ChatsPage = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (isLoadingByMoreConversations && !isGettingConversations) {
+      setIsLoadingByMoreConversations(false);
+    }
+  }, [isGettingConversations]);
+
   // useEffect(() => {
   //   if (!socket) return;
   //   subscribeToMessages();
@@ -209,8 +244,6 @@ const ChatsPage = () => {
   if (isGettingConversations && !didMountRef.current) {
     return <CommonPageLoader className={"!min-h-[calc(100vh-64px)]"} />;
   }
-
-  console.log({ totalConversationQuantityAboveFilter });
 
   return (
     <>
@@ -243,7 +276,9 @@ const ChatsPage = () => {
                   setConversationNameFilter(value);
                 }}
                 // searchIcon={isOpenSearchFriendsInSmallScreen ? false : true}
-                isSearching={isGettingConversations}
+                isSearching={
+                  isGettingConversations && !isLoadingByMoreConversations
+                }
               />
               <CostumedModal
                 trigger={
@@ -375,6 +410,25 @@ const ChatsPage = () => {
                   />
                 </div>
               ))}
+              {conversations.length < totalConversationQuantityUnderFilter && (
+                <div className="flex justify-center items-center h-[62px]">
+                  <CommonRoundedButton
+                    onClick={() => {
+                      setCurrentConversationPage(currentConversationPage + 1);
+                      setIsLoadingByMoreConversations(true);
+                    }}
+                    className={`${
+                      isLoadingByMoreConversations ? "pointer-events-none" : ""
+                    }`}
+                  >
+                    {isLoadingByMoreConversations ? (
+                      <LoaderIcon className="size-4 animate-spin" />
+                    ) : (
+                      <ChevronsDown className="size-4" />
+                    )}
+                  </CommonRoundedButton>
+                </div>
+              )}
             </div>
           ) : (
             <div className="flex items-center justify-center">

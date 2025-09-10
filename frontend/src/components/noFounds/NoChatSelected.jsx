@@ -2,6 +2,7 @@ import React from "react";
 import { useThemeStore } from "../../stores/useThemeStore";
 import { useChatStore } from "../../stores/useChatStore";
 import { createChatbotAPI } from "../../lib/api";
+import { showToast } from "../costumed/CostumedToast";
 
 const NoChatSelected = ({ hasFriends }) => {
   const { theme } = useThemeStore();
@@ -10,10 +11,41 @@ const NoChatSelected = ({ hasFriends }) => {
   const setSelectedConversation = useChatStore(
     (s) => s.setSelectedConversation
   );
+  const totalConversationQuantityAboveFilter = useChatStore(
+    (s) => s.totalConversationQuantityAboveFilter
+  );
+  const totalConversationQuantityUnderFilter = useChatStore(
+    (s) => s.totalConversationQuantityUnderFilter
+  );
   const setTotalConversationQuantityAboveFilter = useChatStore(
     (s) => s.setTotalConversationQuantityAboveFilter
   );
+  const setTotalConversationQuantityUnderFilter = useChatStore(
+    (s) => s.setTotalConversationQuantityUnderFilter
+  );
 
+  const handleCreateChatbot = async () => {
+    try {
+      const { data: newChatbotConversation } = await createChatbotAPI();
+      setConversations([newChatbotConversation, ...conversations]);
+      setSelectedConversation(newChatbotConversation);
+      setTotalConversationQuantityAboveFilter(
+        totalConversationQuantityAboveFilter + 1
+      );
+      setTotalConversationQuantityUnderFilter(
+        totalConversationQuantityUnderFilter + 1
+      );
+    } catch (err) {
+      console.log(err);
+      showToast({
+        message:
+          err?.response?.data?.message ||
+          "Failed to create chatbot conversation. Please try again.",
+        type: "error",
+      });
+      return;
+    }
+  };
   return (
     <div className="relative aspect-square max-w-sm mx-auto">
       <img
@@ -39,12 +71,7 @@ const NoChatSelected = ({ hasFriends }) => {
                 setSelectedConversation(chatbotConversation);
                 return;
               } else {
-                const { data: newChatbotConversation } =
-                  await createChatbotAPI();
-                console.log(newChatbotConversation);
-                setConversations([newChatbotConversation, ...conversations]);
-                setSelectedConversation(newChatbotConversation);
-                setTotalConversationQuantityAboveFilter(1);
+                handleCreateChatbot();
               }
             }}
           >

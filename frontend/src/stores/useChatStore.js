@@ -22,6 +22,9 @@ export const useChatStore = create((set, get) => ({
 
   conversationNameFilter: "",
   totalConversationQuantityAboveFilter: 0,
+  totalConversationQuantityUnderFilter: 0,
+
+  currentConversationPage: 1,
 
   setSelectedConversation: (conversation) =>
     set({ selectedConversation: conversation }),
@@ -32,6 +35,11 @@ export const useChatStore = create((set, get) => ({
 
   setTotalConversationQuantityAboveFilter: (quantity) =>
     set({ totalConversationQuantityAboveFilter: quantity }),
+
+  setTotalConversationQuantityUnderFilter: (quantity) =>
+    set({ totalConversationQuantityUnderFilter: quantity }),
+
+  setCurrentConversationPage: (page) => set({ currentConversationPage: page }),
 
   getTotalConversationQuantityAboveFilter: async () => {
     try {
@@ -46,19 +54,106 @@ export const useChatStore = create((set, get) => ({
     }
   },
 
+  // getConversations: async (args = {}) => {
+  //   try {
+  //     set({ isGettingConversations: true });
+  //     const { data } = await getConversationsAPI(args);
+  //     console.log("Fetched conversations:", data);
+
+  //     set({ totalConversationQuantityUnderFilter: data.pagination.total });
+  //     set({
+  //       conversations: data.conversations.sort((a, b) => {
+  //         if (!a.conversation.updatedAt) return 1;
+  //         if (!b.conversation.updatedAt) return -1;
+  //         return (
+  //           new Date(b.conversation.updatedAt) -
+  //           new Date(a.conversation.updatedAt)
+  //         );
+  //       }),
+  //     });
+  //   } catch (error) {
+  //     console.error("Failed to fetch conversations:", error);
+  //   } finally {
+  //     set({ isGettingConversations: false });
+  //   }
+  // },
+
   getConversations: async (args = {}) => {
     try {
       set({ isGettingConversations: true });
+
       const { data } = await getConversationsAPI(args);
-      set({
-        conversations: data.conversations.sort((a, b) => {
+
+      set((state) => {
+        const prevLength = state.conversations.length;
+        const requestedPage = args.page ?? 1;
+
+        let merged;
+
+        if (requestedPage > 1) {
+          const existingIds = new Set(
+            state.conversations.map((c) => c.conversation._id)
+          );
+
+          const uniqueIncoming = (data.conversations || []).filter(
+            (c) => !existingIds.has(c.conversation._id)
+          );
+
+          merged = [...state.conversations, ...uniqueIncoming];
+        } else {
+          merged = data.conversations || [];
+        }
+
+        merged.sort((a, b) => {
           if (!a.conversation.updatedAt) return 1;
           if (!b.conversation.updatedAt) return -1;
           return (
             new Date(b.conversation.updatedAt) -
             new Date(a.conversation.updatedAt)
           );
-        }),
+        });
+
+        const noNewItemAdded =
+          merged.length === prevLength && requestedPage > 1;
+
+        if (noNewItemAdded) {
+          const {
+            totalConversationQuantityUnderFilter,
+            totalConversationQuantityAboveFilter,
+            currentConversationPage,
+          } = state;
+
+          if (
+            totalConversationQuantityUnderFilter ===
+            totalConversationQuantityAboveFilter
+          ) {
+            return {
+              conversations: merged,
+              totalConversationQuantityUnderFilter:
+                data?.pagination?.total ?? 0,
+            };
+          }
+
+          if (currentConversationPage >= (data?.pagination?.totalPages ?? 1)) {
+            return {
+              conversations: merged,
+              totalConversationQuantityUnderFilter:
+                data?.pagination?.total ?? 0,
+            };
+          }
+
+          return {
+            conversations: merged,
+            totalConversationQuantityUnderFilter: data?.pagination?.total ?? 0,
+            currentConversationPage: currentConversationPage + 1,
+          };
+        }
+
+        // Trường hợp có item mới
+        return {
+          conversations: merged,
+          totalConversationQuantityUnderFilter: data?.pagination?.total ?? 0,
+        };
       });
     } catch (error) {
       console.error("Failed to fetch conversations:", error);
