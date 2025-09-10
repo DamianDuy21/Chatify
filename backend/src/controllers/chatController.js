@@ -15,7 +15,7 @@ export const getConversationsController = async (req, res) => {
     const currentUserId = req.user._id;
 
     const page = Math.max(1, Number(req.query.page) || 1);
-    const limit = Math.min(50, Math.max(1, Number(req.query.limit) || 50));
+    const limit = Math.min(3, Math.max(1, Number(req.query.limit) || 50));
     const offset = (page - 1) * limit;
 
     const { conversationName = null, conversationId = null } = req.query || {};
@@ -227,7 +227,7 @@ export const getConversationsController = async (req, res) => {
           conversationId: { $in: conversation._id },
         })
           .sort({ createdAt: -1 })
-          .limit(10)
+          .limit(20)
           .select("-__v ");
 
         const sortedMessages = [...recentMessages].reverse();

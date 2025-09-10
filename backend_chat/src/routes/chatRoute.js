@@ -34,7 +34,7 @@ chatRoute.post("/message/:id", sendMessage);
 
 // mark message as seen
 chatRoute.put("/message/mark/:id", markMessageAsSeen);
-chatRoute.post("/messages/mark-all/:id", markAllMessagesAsSeenController);
+chatRoute.post("/message/mark-all/:id", markAllMessagesAsSeenController);
 
 // group chat
 chatRoute.post("/group", createGroupController);

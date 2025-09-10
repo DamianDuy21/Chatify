@@ -19,10 +19,10 @@ const Conversation = ({ translatedTo }) => {
       if (scrollRef.current) {
         scrollRef.current.scrollIntoView({ behavior: "smooth" });
       }
-    }, 100);
+    }, 10);
 
     return () => clearTimeout(timeout);
-  }, []);
+  }, [selectedConversation.conversation._id]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {

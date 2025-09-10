@@ -9,6 +9,7 @@ import User from "../models/User.js";
 import Profile from "../models/Profile.js";
 import Message from "../models/Message.js";
 import MessageAttachment from "../models/MessageAttachment.js";
+import { getReceiverSocketIds, io } from "../lib/socket.js";
 
 const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
@@ -320,6 +321,14 @@ export const openaiSendMessageChatbot = async (req, res) => {
         },
       };
 
+      const receiverSocketIds = await getReceiverSocketIds(conversationId);
+
+      if (receiverSocketIds.length > 0) {
+        receiverSocketIds.forEach((socketId) => {
+          io.to(socketId).emit("newMessage", fullDataNewMessage);
+        });
+      }
+
       res.status(201).json({
         message: "Message sent successfully",
         data: fullDataNewMessage,
@@ -369,6 +378,14 @@ export const openaiResponseMessageChatbot = async (req, res) => {
         attachments: null,
       },
     };
+
+    const receiverSocketIds = await getReceiverSocketIds(conversationId);
+
+    if (receiverSocketIds.length > 0) {
+      receiverSocketIds.forEach((socketId) => {
+        io.to(socketId).emit("newMessage", fullDataNewMessage);
+      });
+    }
 
     res.status(201).json({
       message: "Chatbot response successfully",

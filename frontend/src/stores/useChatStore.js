@@ -111,45 +111,44 @@ export const useChatStore = create((set, get) => ({
         conversationId: selectedConversation.conversation._id,
         messageData,
       });
-      console.log("sendMessageChatbot data:", data);
-      set((state) => ({
-        conversations: state.conversations.map((conversation) => {
-          if (
-            conversation.conversation._id ===
-            selectedConversation.conversation._id
-          ) {
-            return {
-              ...conversation,
-              conversation: {
-                ...conversation.conversation,
-                lastMessage: data.message,
-                updatedAt: data.message.createdAt,
-              },
-              messages: [...(conversation.messages || []), data],
-            };
-          }
-          return conversation;
-        }),
-      }));
-      set((state) => ({
-        conversations: state.conversations.sort((a, b) => {
-          if (!a.conversation.updatedAt) return 1;
-          if (!b.conversation.updatedAt) return -1;
-          return (
-            new Date(b.conversation.updatedAt) -
-            new Date(a.conversation.updatedAt)
-          );
-        }),
-      }));
+      // set((state) => ({
+      //   conversations: state.conversations.map((conversation) => {
+      //     if (
+      //       conversation.conversation._id ===
+      //       selectedConversation.conversation._id
+      //     ) {
+      //       return {
+      //         ...conversation,
+      //         conversation: {
+      //           ...conversation.conversation,
+      //           lastMessage: data.message,
+      //           updatedAt: data.message.createdAt,
+      //         },
+      //         messages: [...(conversation.messages || []), data],
+      //       };
+      //     }
+      //     return conversation;
+      //   }),
+      // }));
+      // set((state) => ({
+      //   conversations: state.conversations.sort((a, b) => {
+      //     if (!a.conversation.updatedAt) return 1;
+      //     if (!b.conversation.updatedAt) return -1;
+      //     return (
+      //       new Date(b.conversation.updatedAt) -
+      //       new Date(a.conversation.updatedAt)
+      //     );
+      //   }),
+      // }));
 
-      set((state) => ({
-        selectedConversation: state.selectedConversation
-          ? {
-              ...state.selectedConversation,
-              messages: [...(state.selectedConversation.messages || []), data],
-            }
-          : null,
-      }));
+      // set((state) => ({
+      //   selectedConversation: state.selectedConversation
+      //     ? {
+      //         ...state.selectedConversation,
+      //         messages: [...(state.selectedConversation.messages || []), data],
+      //       }
+      //     : null,
+      // }));
     } catch (error) {
       console.error("Failed to send message:", error);
     } finally {
@@ -166,45 +165,45 @@ export const useChatStore = create((set, get) => ({
         messageData: selectedConversation.messages.slice(-1)[0],
         language,
       });
-      set((state) => ({
-        conversations: state.conversations.map((conversation) => {
-          if (
-            conversation.conversation._id ===
-            selectedConversation.conversation._id
-          ) {
-            return {
-              ...conversation,
-              conversation: {
-                ...conversation.conversation,
-                lastMessage: data.message,
-                updatedAt: data.message.createdAt,
-              },
-              messages: [...(conversation.messages || []), data],
-            };
-          }
-          return conversation;
-        }),
-      }));
-      set((state) => ({
-        conversations: state.conversations.sort((a, b) => {
-          if (!a.conversation.updatedAt) return 1;
-          if (!b.conversation.updatedAt) return -1;
-          return (
-            new Date(b.conversation.updatedAt) -
-            new Date(a.conversation.updatedAt)
-          );
-        }),
-      }));
-      set((state) => ({
-        selectedConversation: state.selectedConversation
-          ? {
-              ...state.selectedConversation,
-              messages: [...(state.selectedConversation.messages || []), data],
-            }
-          : null,
-      }));
+      // set((state) => ({
+      //   conversations: state.conversations.map((conversation) => {
+      //     if (
+      //       conversation.conversation._id ===
+      //       selectedConversation.conversation._id
+      //     ) {
+      //       return {
+      //         ...conversation,
+      //         conversation: {
+      //           ...conversation.conversation,
+      //           lastMessage: data.message,
+      //           updatedAt: data.message.createdAt,
+      //         },
+      //         messages: [...(conversation.messages || []), data],
+      //       };
+      //     }
+      //     return conversation;
+      //   }),
+      // }));
+      // set((state) => ({
+      //   conversations: state.conversations.sort((a, b) => {
+      //     if (!a.conversation.updatedAt) return 1;
+      //     if (!b.conversation.updatedAt) return -1;
+      //     return (
+      //       new Date(b.conversation.updatedAt) -
+      //       new Date(a.conversation.updatedAt)
+      //     );
+      //   }),
+      // }));
+      // set((state) => ({
+      //   selectedConversation: state.selectedConversation
+      //     ? {
+      //         ...state.selectedConversation,
+      //         messages: [...(state.selectedConversation.messages || []), data],
+      //       }
+      //     : null,
+      // }));
 
-      await markMessageAsSeenAPI(data.message._id);
+      // await markMessageAsSeenAPI(data.message._id);
     } catch (error) {
       console.error("Failed to wait for chatbot response:", error);
     } finally {
@@ -250,7 +249,11 @@ export const useChatStore = create((set, get) => ({
                 },
                 messages: [...(conversation.messages || []), newMessage],
                 unSeenMessageQuantity:
-                  (conversation.unSeenMessageQuantity || 0) + 1,
+                  newMessage.sender &&
+                  newMessage.sender?._id !==
+                    useAuthStore.getState().authUser?.user?._id
+                    ? (conversation.unSeenMessageQuantity || 0) + 1
+                    : 0,
               };
             }
             return conversation;
@@ -289,7 +292,11 @@ export const useChatStore = create((set, get) => ({
                 },
                 messages: [...(conversation.messages || []), newMessage],
                 unSeenMessageQuantity:
-                  (conversation.unSeenMessageQuantity || 0) + 1,
+                  newMessage.sender &&
+                  newMessage.sender?._id !==
+                    useAuthStore.getState().authUser?.user?._id
+                    ? (conversation.unSeenMessageQuantity || 0) + 1
+                    : 0,
               };
             }
             return conversation;
@@ -365,9 +372,6 @@ export const useChatStore = create((set, get) => ({
             newMessage.sender?._id !==
             useAuthStore.getState().authUser?.user?._id
           ) {
-            // await axiosInstanceChat.put(
-            //   `/chat/mark-as-seen/${newMessage.message._id}`
-            // );
             await markMessageAsSeenAPI(newMessage.message._id);
           }
         } catch (error) {

@@ -66,10 +66,12 @@ export const useAuthStore = create(
         const { authUser, socket } = get();
         if (!authUser || socket?.connected) return;
         const s = io(BACKEND_CHAT_URL, {
+          autoConnect: false,
           query: { userId: authUser?.user?._id },
         });
         s.connect();
         set({ socket: s });
+
         s.on("getOnlineUsers", (userIds) => set({ onlineUsers: userIds }));
       },
 
