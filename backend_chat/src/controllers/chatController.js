@@ -13,7 +13,7 @@ import Profile from "../models/Profile.js";
 import SeenBy from "../models/SeenBy.js";
 import User from "../models/User.js";
 
-export const getConversationMessages = async (req, res) => {
+export const getConversationMessagesController = async (req, res) => {
   try {
     const conversationId = req.params.id;
     // const currentUserId = req.user?._id;
@@ -264,7 +264,7 @@ export const getConversationFiles = async (req, res) => {
   }
 };
 
-export const sendMessage = async (req, res) => {
+export const sendMessageController = async (req, res) => {
   const upload = multer({
     storage: multer.memoryStorage(),
     limits: { fileSize: 25 * 1024 * 1024, files: 30 },
@@ -489,7 +489,7 @@ export const sendMessage = async (req, res) => {
   });
 };
 
-export const markMessageAsSeen = async (req, res) => {
+export const markMessageAsSeenController = async (req, res) => {
   try {
     const { id: messageId } = req.params;
     const message = await Message.findById(messageId);
@@ -511,7 +511,7 @@ export const markMessageAsSeen = async (req, res) => {
   }
 };
 
-export const getVideoCallToken = async (req, res) => {
+export const getVideoCallTokenController = async (req, res) => {
   try {
     const currentUserId = req.user._id;
     const token = generateStreamToken(currentUserId);
@@ -526,7 +526,7 @@ export const getVideoCallToken = async (req, res) => {
   }
 };
 
-export const updateConversationSettings = async (req, res) => {
+export const updateConversationSettingsController = async (req, res) => {
   const { id: conversationId } = req.params;
   const { getNotifications, isPinned, language, translatedTo } = req.body;
   const userId = req.user._id;

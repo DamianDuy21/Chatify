@@ -4,13 +4,13 @@ import {
   createGroupController,
   deleteConversationController,
   deleteMemberFromGroupController,
-  getConversationMessages,
-  getVideoCallToken,
+  getConversationMessagesController,
+  getVideoCallTokenController,
   leaveGroupController,
   markAllMessagesAsSeenController,
-  markMessageAsSeen,
-  sendMessage,
-  updateConversationSettings,
+  markMessageAsSeenController,
+  sendMessageController,
+  updateConversationSettingsController,
 } from "../controllers/chatController.js";
 import { protectedRoute } from "../middleware/auth.middleware.js";
 
@@ -18,22 +18,25 @@ const chatRoute = express.Router();
 
 chatRoute.use(protectedRoute);
 
-chatRoute.get("/conversation/messages/:id", getConversationMessages);
+chatRoute.get("/conversation/messages/:id", getConversationMessagesController);
 // chatRoute.get("/get-conversation-members/:id", getConversationMembers);
 // chatRoute.get("/get-conversation-media/:id", getConversationMedia);
 // chatRoute.get("/get-conversation-files/:id", getConversationFiles);
 
 // update conversation settings
-chatRoute.put("/conversation/settings/:id", updateConversationSettings);
+chatRoute.put(
+  "/conversation/settings/:id",
+  updateConversationSettingsController
+);
 
 // get video call token
-chatRoute.get("/video-call/token", getVideoCallToken);
+chatRoute.get("/video-call/token", getVideoCallTokenController);
 
 // send message
-chatRoute.post("/message/:id", sendMessage);
+chatRoute.post("/message/:id", sendMessageController);
 
 // mark message as seen
-chatRoute.put("/message/mark/:id", markMessageAsSeen);
+chatRoute.put("/message/mark/:id", markMessageAsSeenController);
 chatRoute.post("/message/mark-all/:id", markAllMessagesAsSeenController);
 
 // group chat
