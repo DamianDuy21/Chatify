@@ -149,7 +149,6 @@ export const useChatStore = create((set, get) => ({
           };
         }
 
-        // Trường hợp có item mới
         return {
           conversations: merged,
           totalConversationQuantityUnderFilter: data?.pagination?.total ?? 0,

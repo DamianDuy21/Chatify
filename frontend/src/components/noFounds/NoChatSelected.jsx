@@ -1,7 +1,7 @@
 import React from "react";
 import { useThemeStore } from "../../stores/useThemeStore";
 import { useChatStore } from "../../stores/useChatStore";
-import { createChatbotAPI } from "../../lib/api";
+import { createChatbotAPI, getConversationsAPI } from "../../lib/api";
 import { showToast } from "../costumed/CostumedToast";
 
 const NoChatSelected = ({ hasFriends }) => {
@@ -24,8 +24,19 @@ const NoChatSelected = ({ hasFriends }) => {
     (s) => s.setTotalConversationQuantityUnderFilter
   );
 
-  const handleCreateChatbot = async () => {
+  const handleGetChatbot = async () => {
     try {
+      const { data: isAlreadyHaveChatbot } = await getConversationsAPI({
+        conversationType: "chatbot",
+      });
+      if (isAlreadyHaveChatbot.conversations[0]) {
+        setSelectedConversation(isAlreadyHaveChatbot.conversations[0]);
+        setConversations([
+          isAlreadyHaveChatbot.conversations[0],
+          ...conversations,
+        ]);
+        return;
+      }
       const { data: newChatbotConversation } = await createChatbotAPI();
       setConversations([newChatbotConversation, ...conversations]);
       setSelectedConversation(newChatbotConversation);
@@ -71,7 +82,7 @@ const NoChatSelected = ({ hasFriends }) => {
                 setSelectedConversation(chatbotConversation);
                 return;
               } else {
-                handleCreateChatbot();
+                handleGetChatbot();
               }
             }}
           >

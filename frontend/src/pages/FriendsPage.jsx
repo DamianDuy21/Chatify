@@ -46,7 +46,7 @@ const FriendsPage = () => {
       conversations.map((conversation) => ({
         ...conversation,
         users: conversation.users.map((userObj) =>
-          userObj.user._id === otherUserId
+          userObj?.user?._id === otherUserId
             ? { ...userObj, isSendFriendRequest: false, isFriend: false }
             : userObj
         ),
@@ -61,6 +61,14 @@ const FriendsPage = () => {
             : userObj
         ),
       });
+    }
+
+    if (friendQuantity <= pageSize) {
+      setFriends((prev) =>
+        prev.filter((user) => user.user._id !== otherUserId)
+      );
+      setFriendQuantity((prev) => prev - 1);
+      return;
     }
 
     if (friendQuantity == (currentPage - 1) * pageSize + 1 && currentPage > 1) {

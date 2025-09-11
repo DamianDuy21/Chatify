@@ -168,7 +168,6 @@ const ChatWindow = () => {
   } = useMutation({
     mutationFn: addMembersToGroupAPI,
     onSuccess: (data) => {
-      console.log("Add members to group chat data:", data);
       setConversations(
         conversations.map((conversation) =>
           conversation.conversation._id == data.data.conversation._id
@@ -179,10 +178,13 @@ const ChatWindow = () => {
             : conversation
         )
       );
-      setSelectedConversation({
-        ...selectedConversation,
-        users: [...selectedConversation.users, ...data.data.users],
-      });
+      if (selectedConversation) {
+        setSelectedConversation({
+          ...selectedConversation,
+          users: [...selectedConversation.users, ...data.data.users],
+        });
+      }
+
       if (closeAddMemberRef.current) closeAddMemberRef.current();
       showToast({
         message: data?.message || "Friend request cancelled successfully!",
@@ -220,13 +222,15 @@ const ChatWindow = () => {
           return conversation;
         })
       );
-      setSelectedConversation({
-        ...selectedConversation,
-        conversation: {
-          ...selectedConversation.conversation,
-          settings: data.data.conversation.settings,
-        },
-      });
+      if (selectedConversation) {
+        setSelectedConversation({
+          ...selectedConversation,
+          conversation: {
+            ...selectedConversation.conversation,
+            settings: data.data.conversation.settings,
+          },
+        });
+      }
       showToast({
         message: data?.message || "Cập nhật cài đặt nhóm thành công!",
         type: "success",
@@ -315,7 +319,6 @@ const ChatWindow = () => {
     if (!conversationId) return;
     deleteConversationMutation(conversationId);
   };
-  console.log({ totalConversationQuantityAboveFilter });
 
   const handleLeaveGroup = async () => {
     const conversationId = selectedConversation?.conversation?._id;

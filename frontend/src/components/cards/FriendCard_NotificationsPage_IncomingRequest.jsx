@@ -1,13 +1,12 @@
+import { useMutation } from "@tanstack/react-query";
 import { Check, LoaderIcon, MapPinIcon, X } from "lucide-react";
+import { useRef } from "react";
+import { acceptFriendRequestAPI, rejectFriendRequestAPI } from "../../lib/api";
 import { capitalize, getLocaleById } from "../../lib/utils";
 import CommonRoundedButton from "../buttons/CommonRoundedButton";
-import { getFlagLanguage, getLanguageFlag } from "./FriendCard_Func";
 import CostumedModal from "../costumed/CostumedModal";
-import { useMutation } from "@tanstack/react-query";
-import { acceptFriendRequestAPI, rejectFriendRequestAPI } from "../../lib/api";
 import { showToast } from "../costumed/CostumedToast";
-import { useRef } from "react";
-import { useChatStore } from "../../stores/useChatStore";
+import { getFlagLanguage, getLanguageFlag } from "./FriendCard_Func";
 
 const FriendCard_NotificationsPage_IncomingRequest = ({
   friend,
@@ -16,17 +15,15 @@ const FriendCard_NotificationsPage_IncomingRequest = ({
   onError,
 }) => {
   const closeRef = useRef(null);
-  const getConversations = useChatStore((s) => s.getConversations);
   const { mutate: acceptFriendRequestMutation, isPending: isAccepting } =
     useMutation({
       mutationFn: acceptFriendRequestAPI,
       onSuccess: async (data) => {
-        await onSuccess({ data: null, isRejected: false });
-        await getConversations();
         showToast({
           message: data?.message || "Friend request accepted successfully!",
           type: "success",
         });
+        await onSuccess({ data: data, isRejected: false });
       },
       onError: (error) => {
         onError();

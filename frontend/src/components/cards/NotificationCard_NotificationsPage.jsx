@@ -17,7 +17,7 @@ const NotificationCard_NotificationsPage = ({
     useMutation({
       mutationFn: acceptNotificationAPI,
       onSuccess: (data) => {
-        onSuccessAccept();
+        onSuccessAccept(data);
         showToast({
           message: data?.message || "Notification accepted successfully!",
           type: "success",
@@ -37,7 +37,7 @@ const NotificationCard_NotificationsPage = ({
     useMutation({
       mutationFn: deleteNotificationAPI,
       onSuccess: (data) => {
-        onSuccessDelete();
+        onSuccessDelete(data);
         showToast({
           message: data?.message || "Notification deleted successfully!",
           type: "success",

@@ -120,13 +120,13 @@ const ChatsPage = () => {
         setConversations([data.data, ...conversations]);
         if (closeRef.current) closeRef.current();
         showToast({
-          message: data?.message || "Friend deleted successfully!",
+          message: data?.message || "Group created successfully!",
           type: "success",
         });
       },
       onError: (error) => {
         showToast({
-          message: error?.response?.data?.message || "Failed to delete friend",
+          message: error?.response?.data?.message || "Failed to create group",
           type: "error",
         });
       },
@@ -399,7 +399,7 @@ const ChatsPage = () => {
           {conversations.length > 0 ? (
             <div className="flex-1 overflow-y-auto">
               {conversations.map((conversation, index) => (
-                <div key={conversation.conversation._id}>
+                <div key={conversation?.conversation._id}>
                   <ConversationCard_ChatsPage_Sidebar
                     isFirstCard={index}
                     conversation={conversation}

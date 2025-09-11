@@ -254,7 +254,7 @@ export const getRecommendedUsersController = async (req, res) => {
           };
         })
       )
-    ).filter((item) => item !== null);
+    ).filter((item) => item != null);
 
     const users = fullDataRecommendedUsers.filter(Boolean);
 
@@ -373,7 +373,7 @@ export const getFriendsController = async (req, res) => {
           };
         })
       )
-    ).filter((item) => item !== null);
+    ).filter((item) => item != null);
     const users = fullDataFriends.filter(Boolean);
 
     const total = users.length;
@@ -507,7 +507,7 @@ export const getOutgoingFriendRequestsController = async (req, res) => {
           };
         })
       )
-    ).filter((item) => item !== null);
+    ).filter((item) => item != null);
 
     const total = fullDataOutgoingRequests.length;
     const totalPages = Math.max(1, Math.ceil(total / limit));
@@ -595,21 +595,20 @@ export const updateFriendRequestController = async (req, res) => {
           );
           return match ? match.conversationId : null;
         })
-        .filter(Boolean); // loại bỏ null
+        .filter(Boolean);
 
       let conversation;
-      if (conversationId.length > 0) {
-        conversation = await Conversation.findOne({
-          _id: { $in: conversationId },
-          type: "private",
-        });
-      }
 
-      // Nếu chưa có conversation -> tạo mới
+      const c = await Conversation.findOne({
+        _id: { $in: conversationId },
+        type: "private",
+      });
+      if (c) {
+        conversation = c;
+      }
       if (!conversation) {
         conversation = await Conversation.create({
           type: "private",
-          lastMessageId: null,
         });
 
         await ConversationMember.create({
@@ -622,7 +621,34 @@ export const updateFriendRequestController = async (req, res) => {
           conversationId: conversation._id,
         });
 
-        await ConversationSetting.create({
+        const members = [otherUserId];
+
+        const fullDataMembers = (
+          await Promise.all(
+            members.map(async (memberId) => {
+              const profile = await Profile.findOne({
+                userId: memberId,
+              }).select("-userId -_id -createdAt -updatedAt -__v");
+              if (!profile) return null;
+
+              const user = await User.findById(memberId).select(
+                "-password -createdAt -updatedAt -__v"
+              );
+              if (!user) return null;
+
+              return {
+                user: {
+                  ...user.toObject(),
+                  profile: {
+                    ...profile.toObject(),
+                  },
+                },
+              };
+            })
+          )
+        ).filter((item) => item != null);
+
+        const mySetting = await ConversationSetting.create({
           conversationId: conversation._id,
           userId: currentUserId,
           getNotifications: false,
@@ -638,13 +664,30 @@ export const updateFriendRequestController = async (req, res) => {
           isPinned: false,
           language: new mongoose.Types.ObjectId("68b26fe629f59a1a322ae67c"),
           translatedTo: new mongoose.Types.ObjectId("68b26fe629f59a1a322ae67c"),
+        });
+        return res.status(200).json({
+          success: true,
+          data: {
+            request: { ...friendRequest.toObject() },
+            conversation: {
+              conversation: {
+                ...conversation.toObject(),
+                settings: { ...mySetting.toObject() },
+              },
+              messages: [],
+              users: fullDataMembers,
+            },
+            isNewCreated: true,
+          },
+          message: "Yêu cầu kết bạn đã được chấp nhận",
         });
       }
-
       return res.status(200).json({
         success: true,
         data: {
           request: { ...friendRequest.toObject() },
+          conversation: null,
+          isNewCreated: false,
         },
         message: "Yêu cầu kết bạn đã được chấp nhận",
       });
@@ -717,7 +760,7 @@ export const getIncomingFriendRequestsController = async (req, res) => {
           };
         })
       )
-    ).filter((item) => item !== null);
+    ).filter((item) => item != null);
 
     const total = fullDataIncomingFriendRequests.length;
     const totalPages = Math.max(1, Math.ceil(total / limit));
@@ -873,7 +916,7 @@ export const getNotificationsController = async (req, res) => {
           }
         })
       )
-    ).filter((item) => item !== null);
+    ).filter((item) => item != null);
 
     const total = fullDataNotifications.length;
     const totalPages = Math.max(1, Math.ceil(total / limit));
@@ -1036,7 +1079,7 @@ export const getFriendsCouldBeAddedToGroupController = async (req, res) => {
           };
         })
       )
-    ).filter((item) => item !== null);
+    ).filter((item) => item != null);
     const users = fullDataFriends.filter(Boolean);
 
     const total = users.length;

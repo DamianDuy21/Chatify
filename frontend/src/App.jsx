@@ -62,7 +62,9 @@ const App = () => {
     if (!authUser) {
       setConversations([]);
     }
-    getTotalConversationQuantityAboveFilter();
+    if (authUser) {
+      getTotalConversationQuantityAboveFilter();
+    }
     setConversationNameFilter("");
     setSelectedConversation(null);
   }, [authUser]);

@@ -15,7 +15,7 @@ const CostumedGroupChatMemberList = ({ friends = [] }) => {
   const setConversations = useChatStore((s) => s.setConversations);
 
   const [searchValue, setSearchValue] = useState("");
-  const [displayedFriends, setDisplayedFriends] = useState(friends);
+  const [displayedFriends, setDisplayedFriends] = useState([]);
   const [isAbleEditMember, setIsAbleEditMember] = useState(false);
 
   const handleOnSuccessSendFriendRequest = (data) => {
@@ -32,14 +32,15 @@ const CostumedGroupChatMemberList = ({ friends = [] }) => {
       }))
     );
 
-    setSelectedConversation({
-      ...selectedConversation,
-      users: selectedConversation.users.map((userObj) =>
-        userObj.user._id === otherUserId
-          ? { ...userObj, isSendFriendRequest: true }
-          : userObj
-      ),
-    });
+    if (selectedConversation)
+      setSelectedConversation({
+        ...selectedConversation,
+        users: selectedConversation.users.map((userObj) =>
+          userObj.user._id === otherUserId
+            ? { ...userObj, isSendFriendRequest: true }
+            : userObj
+        ),
+      });
   };
 
   const handleOnSuccessDeleteMember = (data) => {
@@ -56,12 +57,13 @@ const CostumedGroupChatMemberList = ({ friends = [] }) => {
       )
     );
 
-    setSelectedConversation({
-      ...selectedConversation,
-      users: selectedConversation.users.filter(
-        (user) => user.user._id !== data.data.user._id
-      ),
-    });
+    if (selectedConversation)
+      setSelectedConversation({
+        ...selectedConversation,
+        users: selectedConversation.users.filter(
+          (user) => user.user._id !== data.data.user._id
+        ),
+      });
   };
 
   useEffect(() => {

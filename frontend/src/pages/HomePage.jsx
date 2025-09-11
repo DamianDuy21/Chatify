@@ -105,6 +105,15 @@ const HomePage = () => {
       });
     }
 
+    if (recommendedUserQuantity <= pageSize) {
+      setRecommendedUsers((prev) =>
+        prev.filter((user) => user.user._id !== otherUserId)
+      );
+      setRecommendedUserQuantity((prev) => prev - 1);
+      fetchOutgoingFriendRequests({ page: 1 });
+      return;
+    }
+
     if (
       recommendedUserQuantity == (currentPage - 1) * pageSize + 1 &&
       currentPage > 1
@@ -184,6 +193,20 @@ const HomePage = () => {
             : userObj
         ),
       });
+    }
+
+    if (outgoingFriendRequestsQuantity <= pageSize) {
+      setOutgoingFriendRequests((prev) =>
+        prev.filter((request) => request.user._id !== otherUserId)
+      );
+      setOutgoingFriendRequestsQuantity((prev) => prev - 1);
+      fetchRecommendedUsers({
+        fullName,
+        nativeLanguage,
+        learningLanguage,
+        page: 1,
+      });
+      return;
     }
 
     if (

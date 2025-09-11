@@ -243,17 +243,20 @@ export const markAllMessagesAsSeenAPI = async (conversationId) => {
 export const getConversationsAPI = async (args = {}) => {
   const {
     page = 1,
-    limit = 12,
+    limit = 6,
     conversationName = null,
     conversationId = null,
+    conversationType = null,
   } = args;
-  const response = await axiosInstance.get(
-    "/chat/conversations",
-
-    {
-      params: { page, limit, conversationName, conversationId },
-    }
-  );
+  const response = await axiosInstance.get("/chat/conversations", {
+    params: {
+      page,
+      limit,
+      conversationName,
+      conversationId,
+      conversationType,
+    },
+  });
   return response.data;
 };
 

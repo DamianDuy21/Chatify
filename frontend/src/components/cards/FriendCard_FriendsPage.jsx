@@ -27,6 +27,7 @@ const FriendCard_v2_FriendsPage = ({
       });
     },
     onError: (error) => {
+      console.error("Error deleting friend:", error);
       onError();
       showToast({
         message: error?.response?.data?.message || "Failed to delete friend",

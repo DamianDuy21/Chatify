@@ -32,6 +32,90 @@ export const getTotalConversationQuantityAboveFilter = async (req, res) => {
   }
 };
 
+export const findConversationsController = async (req, res) => {
+  try {
+    const currentUserId = req.user._id;
+    const { type, otherUserId } = req.query;
+    if (!type) {
+      return res.status(400).json({ message: "Thiếu tham số bắt buộc" });
+    }
+    if (!["private", "group", "chatbot"].includes(type)) {
+      return res
+        .status(400)
+        .json({ message: "Loại cuộc trò chuyện không hợp lệ" });
+    }
+    if (type === "chatbot") {
+      const myConversationIds = await ConversationMember.find({
+        userId: currentUserId,
+      }).distinct("conversationId");
+      const chatbotConversationIds = await Conversation.findOne({
+        type: "chatbot",
+        _id: { $in: myConversationIds },
+      }).distinct("_id");
+      if (!chatbotConversationIds) {
+        return res.status(200).json({
+          success: true,
+          data: {
+            total: { conversations: 0 },
+            conversation: null,
+          },
+          message: "Tìm cuộc trò chuyện riêng tư thành công",
+        });
+      }
+    }
+    if (type === "private") {
+      const conversationsMember1 = await ConversationMember.find({
+        userId: currentUserId,
+      });
+      const conversationsMember2 = await ConversationMember.find({
+        userId: otherUserId,
+      });
+
+      const conversationId = conversationsMember1
+        .map((m1) => {
+          const match = conversationsMember2.find(
+            (m2) =>
+              m2.conversationId.toString() === m1.conversationId.toString()
+          );
+          return match ? match.conversationId : null;
+        })
+        .filter(Boolean); // loại bỏ null
+
+      let conversation;
+
+      const c = await Conversation.findOne({
+        _id: { $in: conversationId },
+        type: "private",
+      });
+
+      if (c) {
+        conversation = c;
+      }
+      if (!conversation) {
+        return res.status(200).json({
+          success: true,
+          data: {
+            total: { conversations: 0 },
+            conversation: null,
+          },
+          message: "Không tìm thấy cuộc trò chuyện riêng tư",
+        });
+      }
+      return res.status(200).json({
+        success: true,
+        data: {
+          total: { conversations: 1 },
+          conversation: conversation,
+        },
+        message: "Tìm cuộc trò chuyện riêng tư thành công",
+      });
+    }
+  } catch (error) {
+    console.error("Error in findConversationsController:", error);
+    res.status(500).json({ message: "Lỗi máy chủ nội bộ" });
+  }
+};
+
 export const getConversationsController = async (req, res) => {
   try {
     const currentUserId = req.user._id;
@@ -40,113 +124,127 @@ export const getConversationsController = async (req, res) => {
     const limit = Math.min(50, Math.max(1, Number(req.query.limit) || 50));
     const offset = (page - 1) * limit;
 
-    const { conversationName = null, conversationId = null } = req.query || {};
+    const {
+      conversationName = null,
+      conversationId = null,
+      conversationType = null,
+    } = req.query || {};
 
     let conversations;
 
-    if (conversationId) {
-      conversations = await Conversation.find({
-        _id: conversationId,
-      });
-    } else {
-      const nameRegex = conversationName
-        ? new RegExp(conversationName, "i")
-        : null;
-
-      const conversationIds = await ConversationMember.find({
+    if (conversationType == "chatbot") {
+      const myConversationIds = await ConversationMember.find({
         userId: currentUserId,
       }).distinct("conversationId");
-
-      if (!nameRegex) {
-        const allConversations = await Conversation.find({
-          _id: { $in: conversationIds },
+      conversations = await Conversation.find({
+        type: "chatbot",
+        _id: { $in: myConversationIds },
+      });
+    } else {
+      if (conversationId) {
+        conversations = await Conversation.find({
+          _id: conversationId,
         });
-
-        const lastMessages = await Message.aggregate([
-          {
-            $match: {
-              conversationId: { $in: allConversations.map((c) => c._id) },
-            },
-          },
-          { $sort: { createdAt: -1 } },
-          {
-            $group: {
-              _id: "$conversationId",
-              lastMessage: { $first: "$$ROOT" },
-            },
-          },
-        ]);
-
-        const conversationIdsWithMsg = new Set(
-          lastMessages.map((m) => m._id.toString())
-        );
-        const noMsgConversations = allConversations.filter(
-          (c) => !conversationIdsWithMsg.has(c._id.toString())
-        );
-
-        const conversationsWithMsg = lastMessages.map((m) => ({
-          _id: m._id,
-          sortAt: m.lastMessage.createdAt,
-        }));
-        const conversationsNoMsg = noMsgConversations.map((c) => ({
-          _id: c._id,
-          sortAt: c.updatedAt,
-        }));
-
-        const merged = [...conversationsWithMsg, ...conversationsNoMsg].sort(
-          (a, b) => b.sortAt - a.sortAt
-        );
-
-        const limitedIds = merged.map((x) => x._id);
-
-        const unsortedConversations = await Conversation.find({
-          _id: { $in: limitedIds },
-        });
-        conversations = limitedIds.map((id) =>
-          unsortedConversations.find((c) => c._id.equals(id))
-        );
       } else {
-        const nonPrivateConversations = await Conversation.find({
-          _id: { $in: conversationIds },
-          type: { $ne: "private" },
-          name: { $regex: nameRegex },
-        });
+        const nameRegex = conversationName
+          ? new RegExp(conversationName, "i")
+          : null;
 
-        const privateConversationIds = await Conversation.distinct("_id", {
-          _id: { $in: conversationIds },
-          type: "private",
-        });
+        const conversationIds = await ConversationMember.find({
+          userId: currentUserId,
+        }).distinct("conversationId");
 
-        let privateConversations = [];
-        if (privateConversationIds.length) {
-          const matchedUserIds = await User.distinct("_id", {
-            fullName: { $regex: nameRegex },
+        if (!nameRegex) {
+          const allConversations = await Conversation.find({
+            _id: { $in: conversationIds },
           });
 
-          let matchedPrivateConversationIds = [];
-          if (matchedUserIds.length) {
-            matchedPrivateConversationIds = await ConversationMember.distinct(
-              "conversationId",
-              {
-                conversationId: { $in: privateConversationIds },
-                userId: { $in: matchedUserIds, $ne: currentUserId },
-              }
-            );
+          const lastMessages = await Message.aggregate([
+            {
+              $match: {
+                conversationId: { $in: allConversations.map((c) => c._id) },
+              },
+            },
+            { $sort: { createdAt: -1 } },
+            {
+              $group: {
+                _id: "$conversationId",
+                lastMessage: { $first: "$$ROOT" },
+              },
+            },
+          ]);
+
+          const conversationIdsWithMsg = new Set(
+            lastMessages.map((m) => m._id.toString())
+          );
+          const noMsgConversations = allConversations.filter(
+            (c) => !conversationIdsWithMsg.has(c._id.toString())
+          );
+
+          const conversationsWithMsg = lastMessages.map((m) => ({
+            _id: m._id,
+            sortAt: m.lastMessage.createdAt,
+          }));
+          const conversationsNoMsg = noMsgConversations.map((c) => ({
+            _id: c._id,
+            sortAt: c.updatedAt,
+          }));
+
+          const merged = [...conversationsWithMsg, ...conversationsNoMsg].sort(
+            (a, b) => b.sortAt - a.sortAt
+          );
+
+          const limitedIds = merged.map((x) => x._id);
+
+          const unsortedConversations = await Conversation.find({
+            _id: { $in: limitedIds },
+          });
+          conversations = limitedIds.map((id) =>
+            unsortedConversations.find((c) => c._id.equals(id))
+          );
+        } else {
+          const nonPrivateConversations = await Conversation.find({
+            _id: { $in: conversationIds },
+            type: { $ne: "private" },
+            name: { $regex: nameRegex },
+          });
+
+          const privateConversationIds = await Conversation.distinct("_id", {
+            _id: { $in: conversationIds },
+            type: "private",
+          });
+
+          let privateConversations = [];
+          if (privateConversationIds.length) {
+            const matchedUserIds = await User.distinct("_id", {
+              fullName: { $regex: nameRegex },
+            });
+
+            let matchedPrivateConversationIds = [];
+            if (matchedUserIds.length) {
+              matchedPrivateConversationIds = await ConversationMember.distinct(
+                "conversationId",
+                {
+                  conversationId: { $in: privateConversationIds },
+                  userId: { $in: matchedUserIds, $ne: currentUserId },
+                }
+              );
+            }
+
+            privateConversations = matchedPrivateConversationIds.length
+              ? await Conversation.find({
+                  _id: { $in: matchedPrivateConversationIds },
+                })
+              : [];
           }
 
-          privateConversations = matchedPrivateConversationIds.length
-            ? await Conversation.find({
-                _id: { $in: matchedPrivateConversationIds },
-              })
-            : [];
+          const merged = [
+            ...nonPrivateConversations,
+            ...privateConversations,
+          ].sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
+
+          conversations = merged;
         }
-
-        const merged = [
-          ...nonPrivateConversations,
-          ...privateConversations,
-        ].sort((a, b) => new Date(b.updatedAt) - new Date(a.updatedAt));
-
-        conversations = merged;
       }
     }
 

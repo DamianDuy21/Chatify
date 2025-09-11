@@ -18,6 +18,10 @@ const NotificationsPage = () => {
   const authUser = useAuthStore((s) => s.authUser);
   const conversations = useChatStore((s) => s.conversations);
   const setConversations = useChatStore((s) => s.setConversations);
+  const selectedConversation = useChatStore((s) => s.selectedConversation);
+  const setSelectedConversation = useChatStore(
+    (s) => s.setSelectedConversation
+  );
 
   const [isShowMoreFriendRequests, setIsShowMoreFriendRequests] =
     useState(false);
@@ -41,12 +45,11 @@ const NotificationsPage = () => {
     data = null,
     isRejected = false,
   }) => {
-    if (isRejected != false && data != null) {
-      const otherUserId =
-        authUser.user._id === data.data.request.recipientId
-          ? data.data.request.senderId
-          : data.data.request.recipientId;
-
+    const otherUserId =
+      authUser.user._id === data.data.request.recipientId
+        ? data.data.request.senderId
+        : data.data.request.recipientId;
+    if (isRejected) {
       setConversations(
         conversations.map((conversation) => ({
           ...conversation,
@@ -57,7 +60,48 @@ const NotificationsPage = () => {
           ),
         }))
       );
+      if (selectedConversation)
+        setSelectedConversation({
+          ...selectedConversation,
+          users: [...selectedConversation.users].map((userObj) =>
+            userObj.user._id === otherUserId
+              ? { ...userObj, isSendFriendRequest: false }
+              : userObj
+          ),
+        });
+    } else {
+      setConversations(
+        conversations.map((conversation) => ({
+          ...conversation,
+          users: conversation.users.map((userObj) => {
+            return userObj?.user._id === otherUserId
+              ? { ...userObj, isFriend: true, isSendFriendRequest: false }
+              : userObj;
+          }),
+        }))
+      );
+      if (selectedConversation)
+        setSelectedConversation({
+          ...selectedConversation,
+          users: [...selectedConversation.users].map((userObj) =>
+            userObj.user._id === otherUserId
+              ? { ...userObj, isFriend: true, isSendFriendRequest: false }
+              : userObj
+          ),
+        });
+      if (data.data.isNewCreated) {
+        setConversations([data.data.conversation, ...conversations]);
+      }
     }
+
+    if (incomingFriendRequestsQuantity <= pageSize) {
+      setIncomingFriendRequests((prev) =>
+        prev.filter((request) => request.user._id != otherUserId)
+      );
+      setIncomingFriendRequestsQuantity((prev) => prev - 1);
+      return;
+    }
+
     if (
       incomingFriendRequestsQuantity == (currentPage - 1) * pageSize + 1 &&
       currentPage > 1
@@ -96,6 +140,7 @@ const NotificationsPage = () => {
     // } else {
     //   fetchNotifications({ page: currentPage });
     // }
+
     setNotifications((prev) =>
       prev.map((n) => {
         if (n.notification._id === notification.notification._id) {
@@ -109,7 +154,19 @@ const NotificationsPage = () => {
     );
   };
 
-  const handleOnSuccessDeleteNotification = () => {
+  const handleOnSuccessDeleteNotification = (data) => {
+    console.log(data);
+    if (notificationsQuantity <= pageSize) {
+      setNotifications((prev) =>
+        prev.filter(
+          (notification) =>
+            notification.notification._id != data.data.notification._id
+        )
+      );
+      setNotificationsQuantity((prev) => prev - 1);
+      return;
+    }
+
     if (notificationsQuantity == (currentPage - 1) * pageSize + 1) {
       setCurrentPage(currentPage - 1);
       if (!isShowMoreNotifications) {
