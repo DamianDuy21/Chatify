@@ -13,7 +13,7 @@ import Profile from "../models/Profile.js";
 import SeenBy from "../models/SeenBy.js";
 import User from "../models/User.js";
 
-export const getConversationMessagesController = async (req, res) => {
+export const getConversationMessages = async (req, res) => {
   try {
     const conversationId = req.params.id;
     // const currentUserId = req.user?._id;
@@ -264,7 +264,7 @@ export const getConversationFiles = async (req, res) => {
   }
 };
 
-export const sendMessageController = async (req, res) => {
+export const sendMessage = async (req, res) => {
   const upload = multer({
     storage: multer.memoryStorage(),
     limits: { fileSize: 25 * 1024 * 1024, files: 30 },
@@ -489,7 +489,7 @@ export const sendMessageController = async (req, res) => {
   });
 };
 
-export const markMessageAsSeenController = async (req, res) => {
+export const markMessageAsSeen = async (req, res) => {
   try {
     const { id: messageId } = req.params;
     const message = await Message.findById(messageId);
@@ -511,7 +511,7 @@ export const markMessageAsSeenController = async (req, res) => {
   }
 };
 
-export const getVideoCallTokenController = async (req, res) => {
+export const getVideoCallToken = async (req, res) => {
   try {
     const currentUserId = req.user._id;
     const token = generateStreamToken(currentUserId);
@@ -526,7 +526,7 @@ export const getVideoCallTokenController = async (req, res) => {
   }
 };
 
-export const updateConversationSettingsController = async (req, res) => {
+export const updateConversationSettings = async (req, res) => {
   const { id: conversationId } = req.params;
   const { getNotifications, isPinned, language, translatedTo } = req.body;
   const userId = req.user._id;
@@ -558,7 +558,7 @@ export const updateConversationSettingsController = async (req, res) => {
   }
 };
 
-export const markAllMessagesAsSeenController = async (req, res) => {
+export const markAllMessagesAsSeen = async (req, res) => {
   try {
     const conversationId = req.params.id;
     const currentUserId = req.user?._id;
@@ -611,7 +611,7 @@ export const markAllMessagesAsSeenController = async (req, res) => {
   }
 };
 
-export const createGroupController = async (req, res) => {
+export const createGroup = async (req, res) => {
   try {
     const currentUserId = req.user._id;
     const { name, memberIds } = req.body;
@@ -704,7 +704,7 @@ export const createGroupController = async (req, res) => {
   }
 };
 
-export const addMembersToGroupController = async (req, res) => {
+export const addMembersToGroup = async (req, res) => {
   const conversationId = req.params.id;
   const { memberIds } = req.body;
   try {
@@ -787,7 +787,7 @@ export const addMembersToGroupController = async (req, res) => {
   }
 };
 
-export const deleteMemberFromGroupController = async (req, res) => {
+export const deleteMemberFromGroup = async (req, res) => {
   const conversationId = req.params.id;
   const { memberId } = req.query;
   try {
@@ -830,7 +830,7 @@ export const deleteMemberFromGroupController = async (req, res) => {
   }
 };
 
-export const deleteConversationController = async (req, res) => {
+export const deleteConversation = async (req, res) => {
   const session = await mongoose.startSession();
   session.startTransaction();
 
@@ -954,7 +954,7 @@ export const deleteConversationController = async (req, res) => {
   }
 };
 
-export const leaveGroupController = async (req, res) => {
+export const leaveGroup = async (req, res) => {
   const conversationId = req.params.id;
   const currentUserId = req.user?._id;
 

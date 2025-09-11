@@ -11,7 +11,7 @@ import JWT from "../models/JWT.js";
 import Language from "../models/Language.js";
 import { upsertStreamUser } from "../lib/stream.js";
 
-export const signUpController = async (req, res) => {
+export const signup = async (req, res) => {
   const { email, password, fullName } = req.body;
 
   try {
@@ -116,7 +116,7 @@ export const signUpController = async (req, res) => {
   }
 };
 
-export const verifySignUpOtpController = async (req, res) => {
+export const verifySignUpOtp = async (req, res) => {
   try {
     const { email, fullName, password, code } = req.body;
     if (!email || !fullName || !password || !code) {
@@ -205,7 +205,7 @@ export const verifySignUpOtpController = async (req, res) => {
   }
 };
 
-export const loginController = async (req, res) => {
+export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
@@ -258,7 +258,7 @@ export const loginController = async (req, res) => {
   }
 };
 
-export const logoutController = async (req, res) => {
+export const logout = async (req, res) => {
   try {
     const token = req.token;
     await JWT.updateOne({ token }, { $set: { expire_at: new Date() } });
@@ -273,7 +273,7 @@ export const logoutController = async (req, res) => {
   }
 };
 
-export const resetPasswordController = async (req, res) => {
+export const resetPassword = async (req, res) => {
   try {
     const { email } = req.body;
 
@@ -343,7 +343,7 @@ export const resetPasswordController = async (req, res) => {
   }
 };
 
-export const verifyResetPasswordOtpController = async (req, res) => {
+export const verifyResetPasswordOtp = async (req, res) => {
   try {
     const { email, newPassword, code } = req.body;
 
@@ -409,7 +409,7 @@ export const verifyResetPasswordOtpController = async (req, res) => {
   }
 };
 
-export const onboardController = async (req, res) => {
+export const onboard = async (req, res) => {
   try {
     const userId = req.user._id;
     const { bio, nativeLanguage, learningLanguage, location, profilePic } =
@@ -502,7 +502,7 @@ export const onboardController = async (req, res) => {
   }
 };
 
-export const getMeController = async (req, res) => {
+export const me = async (req, res) => {
   try {
     const userId = req.user._id;
 

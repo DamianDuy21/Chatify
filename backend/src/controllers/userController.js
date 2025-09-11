@@ -14,7 +14,7 @@ import Conversation from "../models/Conversation.js";
 import ConversationMember from "../models/ConversationMember.js";
 import ConversationSetting from "../models/ConversationSetting.js";
 
-export const getLanguagesController = async (req, res) => {
+export const getLanguages = async (req, res) => {
   try {
     const languages = await Language.find().select(
       "-__v -createdAt -updatedAt"
@@ -32,7 +32,7 @@ export const getLanguagesController = async (req, res) => {
   }
 };
 
-export const changePasswordController = async (req, res) => {
+export const changePassword = async (req, res) => {
   try {
     const { currentPassword, newPassword } = req.body;
     const userId = req.user.id;
@@ -127,7 +127,7 @@ export const changePasswordController = async (req, res) => {
   }
 };
 
-export const verifyChangePasswordOtpController = async (req, res) => {
+export const verifyChangePasswordOtp = async (req, res) => {
   const { code } = req.body;
   const userId = req.user.id;
 
@@ -182,7 +182,7 @@ export const verifyChangePasswordOtpController = async (req, res) => {
   }
 };
 
-export const getRecommendedUsersController = async (req, res) => {
+export const getRecommendedUsers = async (req, res) => {
   try {
     const currentUserId = req.user.id;
 
@@ -281,7 +281,7 @@ export const getRecommendedUsersController = async (req, res) => {
   }
 };
 
-export const getFriendsController = async (req, res) => {
+export const getFriends = async (req, res) => {
   try {
     const currentUserId = req.user.id;
 
@@ -399,7 +399,7 @@ export const getFriendsController = async (req, res) => {
   }
 };
 
-export const sendFriendRequestController = async (req, res) => {
+export const sendFriendRequest = async (req, res) => {
   try {
     const currentUserId = req.user.id;
     const { id: recipientId } = req.params;
@@ -471,7 +471,7 @@ export const sendFriendRequestController = async (req, res) => {
   }
 };
 
-export const getOutgoingFriendRequestsController = async (req, res) => {
+export const getOutgoingFriendRequests = async (req, res) => {
   try {
     const currentUserId = req.user.id;
 
@@ -532,7 +532,7 @@ export const getOutgoingFriendRequestsController = async (req, res) => {
   }
 };
 
-export const updateFriendRequestController = async (req, res) => {
+export const updateFriendRequest = async (req, res) => {
   try {
     const currentUserId = req.user.id;
     const { id: requestId } = req.params;
@@ -725,7 +725,7 @@ export const updateFriendRequestController = async (req, res) => {
   }
 };
 
-export const getIncomingFriendRequestsController = async (req, res) => {
+export const getIncomingFriendRequests = async (req, res) => {
   try {
     const currentUserId = req.user.id;
 
@@ -788,7 +788,7 @@ export const getIncomingFriendRequestsController = async (req, res) => {
   }
 };
 
-export const deleteFriendController = async (req, res) => {
+export const deleteFriend = async (req, res) => {
   try {
     const currentUserId = req.user.id;
     const { id: friendId } = req.params;
@@ -825,7 +825,7 @@ export const deleteFriendController = async (req, res) => {
   }
 };
 
-export const updateProfileController = async (req, res) => {
+export const updateProfile = async (req, res) => {
   try {
     const userId = req.user._id;
     const { bio, nativeLanguage, learningLanguage, location, profilePic } =
@@ -867,7 +867,7 @@ export const updateProfileController = async (req, res) => {
   }
 };
 
-export const getNotificationsController = async (req, res) => {
+export const getNotifications = async (req, res) => {
   try {
     const userId = req.user.id;
 
@@ -941,7 +941,7 @@ export const getNotificationsController = async (req, res) => {
   }
 };
 
-export const updateNotificationController = async (req, res) => {
+export const updateNotification = async (req, res) => {
   try {
     const currentUserId = req.user.id;
     const { id: requestId } = req.params;
@@ -976,7 +976,7 @@ export const updateNotificationController = async (req, res) => {
   }
 };
 
-export const getFriendsCouldBeAddedToGroupController = async (req, res) => {
+export const getFriendsCouldBeAddedToGroup = async (req, res) => {
   try {
     const currentUserId = req.user.id;
     const { id: conversationId } = req.params;

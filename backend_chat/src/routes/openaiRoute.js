@@ -1,11 +1,12 @@
 import express from "express";
+
+import { protectedRoute } from "../middleware/auth.middleware.js";
 import {
   openaiCreateChatBot,
   openaiResponseMessageChatbot,
   openaiSendMessageChatbot,
   openaiTranslateMessage,
-} from "../controllers/openaicontroller.js";
-import { protectedRoute } from "../middleware/auth.middleware.js";
+} from "../controllers/openaiController.js";
 
 const openaiRoute = express.Router();
 
