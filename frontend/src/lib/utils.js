@@ -134,3 +134,35 @@ export const getLocaleById = (id) => {
   const lang = LANGUAGES_DATA.find((item) => item._id === id);
   return lang ? lang.locale : null;
 };
+
+export const isConversationFitFilter = ({
+  conversation,
+  conversationNameFilter,
+  authUser,
+}) => {
+  let isFitFilter = false;
+  if (conversation.conversation.type === "chatbot") {
+    if ("chatbot".includes(conversationNameFilter.trim().toLowerCase())) {
+      isFitFilter = true;
+    }
+  } else if (conversation.conversation.type === "group") {
+    if (
+      conversation.conversation.name
+        .toLowerCase()
+        .includes(conversationNameFilter.trim().toLowerCase())
+    ) {
+      isFitFilter = true;
+    }
+  } else {
+    const otherParticipant = conversation.users.find(
+      (p) => p.user._id !== authUser?.user?._id
+    );
+    if (otherParticipant) {
+      const fullName = `${otherParticipant.user.fullName}`.toLowerCase();
+      if (fullName.includes(conversationNameFilter.trim().toLowerCase())) {
+        isFitFilter = true;
+      }
+    }
+  }
+  return isFitFilter;
+};

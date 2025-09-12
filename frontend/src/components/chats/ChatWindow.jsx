@@ -22,6 +22,7 @@ import {
   getFriendsCouldBeAddedToGroupAPI,
   getVideoCallTokenAPI,
   leaveGroupAPI,
+  markAllMessagesAsSeenAPI,
   updateConversationSettingsAPI,
 } from "../../lib/api.js";
 import { useChatStore } from "../../stores/useChatStore";
@@ -39,6 +40,7 @@ import TextEditor from "./TextEditor";
 import { StreamChat } from "stream-chat";
 import { useAuthStore } from "../../stores/useAuthStore.js";
 import CostumedGroupChatUpdateMemberRoleList from "../costumed/CostumedGroupChatUpdateMemberRoleList.jsx";
+import { isConversationFitFilter } from "../../lib/utils.js";
 
 const STREAM_API_KEY = import.meta.env.VITE_STREAM_API_KEY;
 
@@ -58,10 +60,12 @@ const ChatWindow = () => {
 
   // const getMessages = useChatStore((s) => s.getMessages);
   // const isGettingMessages = useChatStore((s) => s.isGettingMessages);
+  // const videoCallToken = useChatStore((s) => s.videoCallToken);
   const selectedConversation = useChatStore((s) => s.selectedConversation);
   const setSelectedConversation = useChatStore(
     (s) => s.setSelectedConversation
   );
+  const conversationNameFilter = useChatStore((s) => s.conversationNameFilter);
   const setTotalConversationQuantityAboveFilter = useChatStore(
     (s) => s.setTotalConversationQuantityAboveFilter
   );
@@ -78,7 +82,6 @@ const ChatWindow = () => {
 
   const conversations = useChatStore((s) => s.conversations);
   const setConversations = useChatStore((s) => s.setConversations);
-
   const languages = useLanguageStore((s) => s.languages);
 
   // const closeDeleteHistoryRef = useRef();
@@ -153,7 +156,7 @@ const ChatWindow = () => {
   // add member to group chat
   const [selectedFriendIds, setSelectedFriendIds] = useState([]);
 
-  const { data: videoCallTokenData } = useQuery({
+  const { data: videoCallToken } = useQuery({
     queryKey: ["streamToken"],
     queryFn: getVideoCallTokenAPI,
     enabled:
@@ -207,7 +210,6 @@ const ChatWindow = () => {
   } = useMutation({
     mutationFn: updateConversationSettingsAPI,
     onSuccess: (data) => {
-      console.log("Update chat settings data:", data);
       setConversations(
         conversations.map((conversation) => {
           if (conversation.conversation._id == data.data.conversation._id) {
@@ -250,7 +252,6 @@ const ChatWindow = () => {
     {
       mutationFn: leaveGroupAPI,
       onSuccess: (data) => {
-        console.log("Leave group data:", data);
         setConversations(
           conversations.filter(
             (conversation) =>
@@ -261,9 +262,16 @@ const ChatWindow = () => {
         setTotalConversationQuantityAboveFilter(
           totalConversationQuantityAboveFilter - 1
         );
-        setTotalConversationQuantityUnderFilter(
-          totalConversationQuantityUnderFilter - 1
-        );
+        const isFitFilter = isConversationFitFilter({
+          conversation: data.data,
+          conversationNameFilter,
+          authUser,
+        });
+        if (isFitFilter) {
+          setTotalConversationQuantityUnderFilter(
+            totalConversationQuantityUnderFilter - 1
+          );
+        }
         if (closeLeaveGroupRef.current) closeLeaveGroupRef.current();
         showToast({
           message: data?.message || "Left group successfully!",
@@ -286,6 +294,7 @@ const ChatWindow = () => {
   } = useMutation({
     mutationFn: deleteConversationAPI,
     onSuccess: (data) => {
+      console.log(data);
       setConversations(
         conversations.filter(
           (conversation) =>
@@ -296,9 +305,17 @@ const ChatWindow = () => {
       setTotalConversationQuantityAboveFilter(
         totalConversationQuantityAboveFilter - 1
       );
-      setTotalConversationQuantityUnderFilter(
-        totalConversationQuantityUnderFilter - 1
-      );
+      const isFitFilter = isConversationFitFilter({
+        conversation: data.data,
+        conversationNameFilter,
+        authUser,
+      });
+      if (isFitFilter) {
+        setTotalConversationQuantityUnderFilter(
+          totalConversationQuantityUnderFilter - 1
+        );
+      }
+
       showToast({
         message: data?.message || "Delete conversation successfully!",
         type: "success",
@@ -440,6 +457,15 @@ const ChatWindow = () => {
 
   useEffect(() => {
     if (selectedConversation) {
+      const currentLastMessage = selectedConversation?.messages?.slice(-1)[0];
+      const isSeenByMe =
+        currentLastMessage?.seenBy?.some(
+          (user) => user?.user._id === authUser?.user?._id
+        ) || currentLastMessage?.sender?._id === authUser?.user?._id;
+      if (currentLastMessage && !isSeenByMe) {
+        const id = selectedConversation?.conversation?._id;
+        markAllMessagesAsSeenAPI(id);
+      }
       setIsOpenUtils(false);
       setUseUtils({
         isOpenSettings: false,
@@ -463,7 +489,7 @@ const ChatWindow = () => {
         selectedConversation?.conversation?.settings?.getNotifications,
       isPinned: selectedConversation?.conversation?.settings?.isPinned,
     }));
-  }, [selectedConversation]);
+  }, [selectedConversation?.conversation?.settings]);
 
   useEffect(() => {
     if (!isOpenModalAddMember) return;
@@ -492,7 +518,7 @@ const ChatWindow = () => {
   }, [filterData]);
 
   const initChat = async () => {
-    if (!videoCallTokenData?.data.token || !authUser) {
+    if (!videoCallToken?.data.token || !authUser) {
       return;
     }
 
@@ -506,7 +532,7 @@ const ChatWindow = () => {
           name: authUser?.user.fullName,
           image: authUser?.user?.profile?.profilePic,
         },
-        videoCallTokenData.data.token
+        videoCallToken.data.token
       );
 
       //
@@ -533,7 +559,7 @@ const ChatWindow = () => {
 
   useEffect(() => {
     if (selectedConversation.conversation.type !== "chatbot") initChat();
-  }, [selectedConversation.conversation._id, authUser, videoCallTokenData]);
+  }, [authUser.user._id]);
 
   return (
     <>

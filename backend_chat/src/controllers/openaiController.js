@@ -40,7 +40,6 @@ export const openaiCreateChatBot = async (req, res) => {
     } else {
       conversation = await Conversation.create({
         type: "chatbot",
-        lastMessageId: null,
         name: "Chatbot",
       });
       await ConversationMember.create({
@@ -64,6 +63,7 @@ export const openaiCreateChatBot = async (req, res) => {
           settings: { ...mySettings.toObject() },
         },
         users: [],
+        messages: [],
         unSeenMessageQuantity: 0,
       },
       message: "Kết nối tới Chatbot thành công",

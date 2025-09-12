@@ -237,16 +237,23 @@ export const getConversations = async (req, res) => {
           })
         );
 
+        const limitMessage = 16;
+        const totalMessageCount = await Message.countDocuments({
+          conversationId: { $in: conversation._id },
+        });
+        const totalMessagePages = Math.max(
+          1,
+          Math.ceil(totalMessageCount / limitMessage)
+        );
+
         const recentMessages = await Message.find({
           conversationId: { $in: conversation._id },
         })
           .sort({ createdAt: -1 })
-          .limit(16)
+          .limit(limitMessage)
           .select("-__v ");
 
         const sortedMessages = [...recentMessages].reverse();
-
-        // const viewerId = new mongoose.Types.ObjectId(req.user._id);
 
         const fullDataMessages = await Promise.all(
           sortedMessages.map(async (message) => {
@@ -342,6 +349,8 @@ export const getConversations = async (req, res) => {
           messages: fullDataMessages,
           users,
           unSeenMessageQuantity,
+          currentMessagePage: 1,
+          totalMessagePageQuantity: totalMessagePages,
         };
       })
     );

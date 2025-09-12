@@ -25,7 +25,15 @@ import CommonRoundedButton from "../buttons/CommonRoundedButton";
 import CostumedModal from "../costumed/CostumedModal";
 import { translateMessageAPI } from "../../lib/api";
 
-const Message = ({ ref, side, isOpen, onToggle, message, translatedTo }) => {
+const Message = ({
+  ref,
+  side,
+  isOpen,
+  onToggle,
+  message,
+  translatedTo,
+  isShowAvatar = false,
+}) => {
   const [images, setImages] = useState([]);
   const [videos, setVideos] = useState([]);
   const [otherFiles, setOtherFiles] = useState([]);
@@ -113,11 +121,16 @@ const Message = ({ ref, side, isOpen, onToggle, message, translatedTo }) => {
       {/* avatar */}
       <div className={`avatar ${side === "left" ? "" : "order-2"}`}>
         {message.sender?.profile?.profilePic ? (
-          <div className="w-10 rounded-full">
-            <img src={message.sender?.profile?.profilePic} alt="" />
+          <div
+            className="w-10 h-10 rounded-full"
+            // title={message.sender?.fullName}
+          >
+            {isShowAvatar && (
+              <img src={message.sender?.profile?.profilePic} alt="" />
+            )}
           </div>
         ) : (
-          <div className="w-10 rounded-full bg-primary"></div>
+          <div className="w-10 h-10 rounded-full bg-primary"></div>
         )}
       </div>
 

@@ -58,7 +58,6 @@ const FriendCard_GroupChatMemberList = ({
   } = useMutation({
     mutationFn: deleteMemberFromGroupAPI,
     onSuccess: (data) => {
-      console.log("Delete member from group chat data:", data);
       onSuccessDeleteMember(data);
       showToast({
         message: data?.message || "Friend request cancelled successfully!",

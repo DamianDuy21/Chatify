@@ -22,10 +22,10 @@ import NoDataCommon from "../components/noFounds/NoDataCommon.jsx";
 import { createGroupAPI, getFriendsAPI } from "../lib/api.js";
 import { useAuthStore } from "../stores/useAuthStore.js";
 import { useChatStore } from "../stores/useChatStore.js";
+import { isConversationFitFilter } from "../lib/utils.js";
 
 const ChatsPage = () => {
   const authUser = useAuthStore((s) => s.authUser);
-  const socket = useAuthStore((s) => s.socket);
 
   const conversations = useChatStore((s) => s.conversations);
   const setConversations = useChatStore((s) => s.setConversations);
@@ -39,9 +39,18 @@ const ChatsPage = () => {
   const totalConversationQuantityAboveFilter = useChatStore(
     (s) => s.totalConversationQuantityAboveFilter
   );
+  const setTotalConversationQuantityAboveFilter = useChatStore(
+    (s) => s.setTotalConversationQuantityAboveFilter
+  );
   const totalConversationQuantityUnderFilter = useChatStore(
     (s) => s.totalConversationQuantityUnderFilter
   );
+  const setTotalConversationQuantityUnderFilter = useChatStore(
+    (s) => s.setTotalConversationQuantityUnderFilter
+  );
+
+  console.log(totalConversationQuantityAboveFilter);
+  console.log(totalConversationQuantityUnderFilter);
 
   const currentConversationPage = useChatStore(
     (s) => s.currentConversationPage
@@ -51,11 +60,6 @@ const ChatsPage = () => {
   );
   const [isLoadingByMoreConversations, setIsLoadingByMoreConversations] =
     useState(false);
-
-  const subscribeToMessages = useChatStore((s) => s.subscribeToMessages);
-  const unsubscribeFromMessages = useChatStore(
-    (s) => s.unsubscribeFromMessages
-  );
 
   const closeRef = useRef(null);
   const didMountRef = useRef(false);
@@ -117,7 +121,20 @@ const ChatsPage = () => {
     useMutation({
       mutationFn: createGroupAPI,
       onSuccess: (data) => {
-        setConversations([data.data, ...conversations]);
+        setTotalConversationQuantityAboveFilter(
+          totalConversationQuantityAboveFilter + 1
+        );
+        const isFitFilter = isConversationFitFilter({
+          conversation: data.data,
+          conversationNameFilter,
+          authUser,
+        });
+        if (isFitFilter) {
+          setConversations([data.data, ...conversations]);
+          setTotalConversationQuantityUnderFilter(
+            totalConversationQuantityUnderFilter + 1
+          );
+        }
         if (closeRef.current) closeRef.current();
         showToast({
           message: data?.message || "Group created successfully!",
@@ -232,14 +249,6 @@ const ChatsPage = () => {
       setIsLoadingByMoreConversations(false);
     }
   }, [isGettingConversations]);
-
-  // useEffect(() => {
-  //   if (!socket) return;
-  //   subscribeToMessages();
-  //   return () => {
-  //     unsubscribeFromMessages();
-  //   };
-  // }, [socket]);
 
   if (isGettingConversations && !didMountRef.current) {
     return <CommonPageLoader className={"!min-h-[calc(100vh-64px)]"} />;

@@ -1,97 +1,140 @@
-import { useEffect, useRef, useState } from "react";
-import Message from "./Message";
-import { useChatStore } from "../../stores/useChatStore";
+import { ChevronsUp, LoaderIcon } from "lucide-react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Virtuoso } from "react-virtuoso";
 import { useAuthStore } from "../../stores/useAuthStore";
-import { LoaderIcon } from "lucide-react";
-import { markAllMessagesAsSeenAPI } from "../../lib/api";
+import { useChatStore } from "../../stores/useChatStore";
+import Message from "./Message";
+import CommonRoundedButton from "../buttons/CommonRoundedButton";
+
+const getSenderId = (m) => m?.sender?._id ?? m?.message?.senderId ?? null;
+
+// nếu muốn giữ phần react và dịch thì phải thêm thông tin đó vào đúng message đó trong global state
+// vì mình dùng virtuoso nên nó không lưu lại trên dom. nhưng tạm thời thôi
 
 const Conversation = ({ translatedTo }) => {
   const authUser = useAuthStore((s) => s.authUser);
   const selectedConversation = useChatStore((s) => s.selectedConversation);
   const isChatbotResponding = useChatStore((s) => s.isChatbotResponding);
+  const getMessages = useChatStore((s) => s.getMessages);
+  const isGettingMessages = useChatStore((s) => s.isGettingMessages);
 
-  const [openedMessages, setOpenedMessages] = useState(-1);
+  const [openedIndex, setOpenedIndex] = useState(-1);
+  const [isFirstVisible, setIsFirstVisible] = useState(false);
+  const [isCalm, setIsCalm] = useState(false);
+  const virtuosoRef = useRef(null);
+
   const messages = selectedConversation?.messages || [];
-  const messagesRefs = useRef([]);
-  const scrollRef = useRef();
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      if (scrollRef.current) {
-        scrollRef.current.scrollIntoView({ behavior: "smooth" });
-      }
-    }, 10);
 
-    return () => clearTimeout(timeout);
-  }, [selectedConversation.conversation._id]);
+  const data = useMemo(() => {
+    return isChatbotResponding
+      ? [...messages, { __typing: true, _id: "__typing" }]
+      : messages;
+  }, [messages, isChatbotResponding]);
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      const clickedInsideAnyMessage = messagesRefs.current.some(
-        (ref) => ref && ref.contains(event.target)
-      );
-
-      if (!clickedInsideAnyMessage) {
-        setOpenedMessages(-1);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  useEffect(() => {
-    markAllMessagesAsSeenAPI(selectedConversation?.conversation?._id);
+    setIsCalm(false);
+    const id = setTimeout(() => {
+      setIsCalm(true);
+    }, 500);
+    return () => clearTimeout(id);
   }, [selectedConversation?.conversation?._id]);
 
-  return (
-    <>
-      <div className="flex flex-col gap-2">
-        {messages.map((msg, index) => (
-          <div
-            key={index}
-            className={`flex items-start justify-${
-              msg?.sender?._id === authUser?.user?._id ? "end" : "start"
-            } h-full gap-2`}
-          >
-            <Message
-              ref={(el) => (messagesRefs.current[index] = el)}
-              side={msg?.sender?._id === authUser?.user?._id ? "right" : "left"}
-              message={msg}
-              isOpen={openedMessages === index}
-              onToggle={() =>
-                setOpenedMessages((prev) => (prev === index ? -1 : index))
-              }
-              translatedTo={translatedTo}
-            />
-          </div>
-        ))}
+  const isMine = (m) => m?.sender?._id === authUser?.user?._id;
 
-        {isChatbotResponding && (
-          <div
-            key={"chatbot-response"}
-            className={`flex items-start justify-start h-full gap-2`}
-          >
-            <div className={`avatar`}>
-              <div className="w-10 rounded-full bg-primary"></div>
-            </div>
-            <div
-              className={`flex flex-col gap-2 max-w-[max-content] ${"items-start"}`}
-            >
-              <div className="flex flex-col">
-                <div className={`flex items-center gap-2 ${"ml-auto"}`}>
-                  <div className={`flex flex-col gap-1`}>
-                    <div className="!w-[fit-content] bg-base-300 px-4 py-3 rounded-btn flex flex-col gap-2 cursor-pointer relative group">
-                      <LoaderIcon className="size-4 animate-spin" />
-                    </div>
-                  </div>
+  return (
+    <div
+      className="w-full h-full relative"
+      onMouseDown={() => setOpenedIndex(-1)}
+    >
+      <div
+        className={`${
+          selectedConversation.currentMessagePage <
+            selectedConversation.totalMessagePageQuantity &&
+          isFirstVisible &&
+          isCalm
+            ? "absolute"
+            : "hidden"
+        } top-0 left-1/2 -translate-x-1/2 z-10 `}
+      >
+        <CommonRoundedButton
+          onClick={() => {
+            getMessages({
+              conversationId: selectedConversation.conversation._id,
+              lastMessageId: data[0].message._id,
+            });
+          }}
+          className={`${
+            isGettingMessages ? "pointer-events-none" : ""
+          } rounded-full`}
+          type="secondary"
+        >
+          {isGettingMessages ? (
+            <LoaderIcon className="size-4 animate-spin" />
+          ) : (
+            <ChevronsUp className="size-4" />
+          )}
+        </CommonRoundedButton>
+      </div>
+      <Virtuoso
+        ref={virtuosoRef}
+        data={data}
+        initialTopMostItemIndex={Math.max(data.length - 1, 0)}
+        followOutput="smooth"
+        computeItemKey={(index, item) => item?._id ?? `idx-${index}`}
+        atTopStateChange={(atTop) => setIsFirstVisible(atTop)}
+        itemContent={(index, item) => {
+          const isFirst = index === 0;
+          const isLast = index === data.length - 1;
+          const padClass = isFirst ? "pb-1" : isLast ? "pt-1" : "py-1";
+
+          if (item?.__typing) {
+            return (
+              <div className={`${padClass} flex items-start gap-2`}>
+                <div className="avatar">
+                  <div className="w-10 rounded-full bg-primary" />
+                </div>
+                <div className="!w-[fit-content] bg-base-300 px-4 py-3 rounded-btn">
+                  <LoaderIcon className="size-4 animate-spin" />
                 </div>
               </div>
+            );
+          }
+
+          const prev = index > 0 ? data[index - 1] : undefined;
+          const currSender = getSenderId(item);
+          const prevSender = prev && !prev.__typing ? getSenderId(prev) : null;
+
+          const isGroupBoundary =
+            isFirst || prev?.__typing || prevSender !== currSender;
+
+          const isShowAvatar = isGroupBoundary;
+
+          const mine = isMine(item);
+
+          return (
+            <div className={`${padClass}`}>
+              <div
+                onMouseDown={(e) => e.stopPropagation()}
+                className={` flex items-start ${
+                  mine ? "justify-end" : "justify-start"
+                } gap-2`}
+              >
+                <Message
+                  side={mine ? "right" : "left"}
+                  message={item}
+                  isOpen={openedIndex === index}
+                  onToggle={() =>
+                    setOpenedIndex((prev) => (prev === index ? -1 : index))
+                  }
+                  translatedTo={translatedTo}
+                  isShowAvatar={isShowAvatar}
+                />
+              </div>
             </div>
-          </div>
-        )}
-      </div>
-      <div ref={scrollRef} className=""></div>
-    </>
+          );
+        }}
+      />
+    </div>
   );
 };
 

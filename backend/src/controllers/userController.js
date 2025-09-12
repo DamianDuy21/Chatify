@@ -676,6 +676,7 @@ export const updateFriendRequest = async (req, res) => {
               },
               messages: [],
               users: fullDataMembers,
+              unSeenMessageQuantity: 0,
             },
             isNewCreated: true,
           },

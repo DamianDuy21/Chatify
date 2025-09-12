@@ -1,16 +1,24 @@
-import React from "react";
-import { useThemeStore } from "../../stores/useThemeStore";
-import { useChatStore } from "../../stores/useChatStore";
+import { useState } from "react";
 import { createChatbotAPI, getConversationsAPI } from "../../lib/api";
+import { useChatStore } from "../../stores/useChatStore";
+import { useThemeStore } from "../../stores/useThemeStore";
 import { showToast } from "../costumed/CostumedToast";
+import { LoaderIcon } from "lucide-react";
+import { isConversationFitFilter } from "../../lib/utils";
+import { useAuthStore } from "../../stores/useAuthStore";
 
 const NoChatSelected = ({ hasFriends }) => {
   const { theme } = useThemeStore();
+  const authUser = useAuthStore((s) => s.authUser);
+
+  const [isGettingChatbot, setIsGettingChatbot] = useState(false);
+
   const conversations = useChatStore((s) => s.conversations);
   const setConversations = useChatStore((s) => s.setConversations);
   const setSelectedConversation = useChatStore(
     (s) => s.setSelectedConversation
   );
+  const conversationNameFilter = useChatStore((s) => s.conversationNameFilter);
   const totalConversationQuantityAboveFilter = useChatStore(
     (s) => s.totalConversationQuantityAboveFilter
   );
@@ -26,26 +34,31 @@ const NoChatSelected = ({ hasFriends }) => {
 
   const handleGetChatbot = async () => {
     try {
+      setIsGettingChatbot(true);
       const { data: isAlreadyHaveChatbot } = await getConversationsAPI({
         conversationType: "chatbot",
       });
       if (isAlreadyHaveChatbot.conversations[0]) {
         setSelectedConversation(isAlreadyHaveChatbot.conversations[0]);
-        setConversations([
-          isAlreadyHaveChatbot.conversations[0],
-          ...conversations,
-        ]);
         return;
       }
       const { data: newChatbotConversation } = await createChatbotAPI();
-      setConversations([newChatbotConversation, ...conversations]);
+
       setSelectedConversation(newChatbotConversation);
       setTotalConversationQuantityAboveFilter(
         totalConversationQuantityAboveFilter + 1
       );
-      setTotalConversationQuantityUnderFilter(
-        totalConversationQuantityUnderFilter + 1
-      );
+      const isFitFilter = isConversationFitFilter({
+        conversation: newChatbotConversation,
+        conversationNameFilter,
+        authUser,
+      });
+      if (isFitFilter) {
+        setConversations([newChatbotConversation, ...conversations]);
+        setTotalConversationQuantityUnderFilter(
+          totalConversationQuantityUnderFilter + 1
+        );
+      }
     } catch (err) {
       console.log(err);
       showToast({
@@ -55,6 +68,8 @@ const NoChatSelected = ({ hasFriends }) => {
         type: "error",
       });
       return;
+    } finally {
+      setIsGettingChatbot(false);
     }
   };
   return (
@@ -72,22 +87,26 @@ const NoChatSelected = ({ hasFriends }) => {
         </h3>
         <p className="text-base-content text-sm">
           Hoặc bạn có thể thử trò chuyện với{" "}
-          <span
-            className="text-primary hover:underline cursor-pointer"
-            onClick={async () => {
-              const chatbotConversation = conversations.find(
-                (c) => c.conversation.type === "chatbot"
-              );
-              if (chatbotConversation) {
-                setSelectedConversation(chatbotConversation);
-                return;
-              } else {
-                handleGetChatbot();
-              }
-            }}
-          >
-            Chatbot
-          </span>
+          {isGettingChatbot ? (
+            <LoaderIcon className="size-4 animate-spin text-primary inline-block relative -top-[1.5px] -right-[2px]"></LoaderIcon>
+          ) : (
+            <span
+              className="text-primary hover:underline cursor-pointer"
+              onClick={async () => {
+                const chatbotConversation = conversations.find(
+                  (c) => c.conversation.type === "chatbot"
+                );
+                if (chatbotConversation) {
+                  setSelectedConversation(chatbotConversation);
+                  return;
+                } else {
+                  handleGetChatbot();
+                }
+              }}
+            >
+              Chatbot
+            </span>
+          )}
         </p>
       </div>
     </div>

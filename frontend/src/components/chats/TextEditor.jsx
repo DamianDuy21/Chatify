@@ -9,7 +9,6 @@ import { useChatStore } from "../../stores/useChatStore";
 import CommonRoundedButton from "../buttons/CommonRoundedButton";
 import CostumedEmojiPicker from "../costumed/CostumedEmojiPicker";
 import CostumedModal from "../costumed/CostumedModal";
-import { waitForResponseChatbotAPI } from "../../lib/api";
 
 const TextEditor = ({
   text,
@@ -26,7 +25,7 @@ const TextEditor = ({
   const lastFileInputRef = useRef(null);
   const fileInputRef = useRef(null);
 
-  const [isChatbotResponding, setIsChatbotResponding] = useState(false);
+  const isChatbotResponding = useChatStore((s) => s.isChatbotResponding);
 
   const handleFileSelect = (event) => {
     const files = Array.from(event.target.files);
@@ -136,11 +135,11 @@ const TextEditor = ({
       // Scroll
       window.scrollTo({ top: 0, behavior: "smooth" });
 
-      await waitForResponseChatbot({
-        language: getLocaleById(
-          selectedConversation?.conversation?.settings?.language
-        ),
-      });
+      // await waitForResponseChatbot({
+      //   language: getLocaleById(
+      //     selectedConversation?.conversation?.settings?.language
+      //   ),
+      // });
     } catch (error) {
       console.error("Failed to send message:", error);
     }
@@ -302,7 +301,7 @@ const TextEditor = ({
           />
         </div>
         {/* Send button */}
-        {isChatbotResponding || isSendingMessage ? (
+        {isSendingMessage ? (
           <div
             className={`btn btn-primary size-10 p-0 min-w-0 min-h-0 rounded-full pointer-events-none  text-sm flex items-center justify-center hover:btn-secondary `}
           >

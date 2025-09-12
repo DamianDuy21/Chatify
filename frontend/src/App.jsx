@@ -1,8 +1,9 @@
+import { useEffect } from "react";
 import { Toaster } from "react-hot-toast";
 import { Navigate, Route, Routes } from "react-router";
-import { use, useEffect } from "react";
-import MainLayout from "./layouts/MainLayout.jsx";
 import CommonPageLoader from "./components/loaders/CommonPageLoader.jsx";
+import MainLayout from "./layouts/MainLayout.jsx";
+import CallPage from "./pages/CallPage.jsx";
 import ChangePasswordPage from "./pages/ChangePasswordPage.jsx";
 import ChatsPage from "./pages/ChatsPage.jsx";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage.jsx";
@@ -15,15 +16,13 @@ import ProfilePage from "./pages/ProfilePage.jsx";
 import SignUpPage from "./pages/SignUpPage";
 import { useAuthStore } from "./stores/useAuthStore.js";
 import { useChatStore } from "./stores/useChatStore.js";
-import { useThemeStore } from "./stores/useThemeStore.js";
 import { useLanguageStore } from "./stores/useLanguageStore.js";
-import CallPage from "./pages/CallPage.jsx";
+import { useThemeStore } from "./stores/useThemeStore.js";
 
 const App = () => {
   const authUser = useAuthStore((s) => s.authUser);
   const checkAuthAuthStore = useAuthStore((s) => s.checkAuthAuthStore);
   const isGettingAuthUser = useAuthStore((s) => s.isGettingAuthUser);
-
   const getConversations = useChatStore((s) => s.getConversations);
   const setConversations = useChatStore((s) => s.setConversations);
   const subscribeToMessages = useChatStore((s) => s.subscribeToMessages);
@@ -67,7 +66,7 @@ const App = () => {
     }
     setConversationNameFilter("");
     setSelectedConversation(null);
-  }, [authUser]);
+  }, [authUser.user._id]);
 
   useEffect(() => {
     getLanguages();

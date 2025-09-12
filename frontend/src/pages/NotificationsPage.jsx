@@ -13,6 +13,7 @@ import CommonPagination from "../components/costumed/CostumedPagination.jsx";
 import NotificationCard_NotificationsPage from "../components/cards/NotificationCard_NotificationsPage.jsx";
 import { useAuthStore } from "../stores/useAuthStore.js";
 import { useChatStore } from "../stores/useChatStore.js";
+import { isConversationFitFilter } from "../lib/utils.js";
 
 const NotificationsPage = () => {
   const authUser = useAuthStore((s) => s.authUser);
@@ -22,6 +23,19 @@ const NotificationsPage = () => {
   const setSelectedConversation = useChatStore(
     (s) => s.setSelectedConversation
   );
+  const totalConversationQuantityAboveFilter = useChatStore(
+    (s) => s.totalConversationQuantityAboveFilter
+  );
+  const setTotalConversationQuantityAboveFilter = useChatStore(
+    (s) => s.setTotalConversationQuantityAboveFilter
+  );
+  const totalConversationQuantityUnderFilter = useChatStore(
+    (s) => s.totalConversationQuantityUnderFilter
+  );
+  const setTotalConversationQuantityUnderFilter = useChatStore(
+    (s) => s.setTotalConversationQuantityUnderFilter
+  );
+  const conversationNameFilter = useChatStore((s) => s.conversationNameFilter);
 
   const [isShowMoreFriendRequests, setIsShowMoreFriendRequests] =
     useState(false);
@@ -90,7 +104,20 @@ const NotificationsPage = () => {
           ),
         });
       if (data.data.isNewCreated) {
-        setConversations([data.data.conversation, ...conversations]);
+        setTotalConversationQuantityAboveFilter(
+          totalConversationQuantityAboveFilter + 1
+        );
+        const isFitFilter = isConversationFitFilter({
+          conversation: data.data.conversation,
+          conversationNameFilter,
+          authUser,
+        });
+        if (isFitFilter) {
+          setConversations([data.data.conversation, ...conversations]);
+          setTotalConversationQuantityUnderFilter(
+            totalConversationQuantityUnderFilter + 1
+          );
+        }
       }
     }
 
@@ -155,7 +182,6 @@ const NotificationsPage = () => {
   };
 
   const handleOnSuccessDeleteNotification = (data) => {
-    console.log(data);
     if (notificationsQuantity <= pageSize) {
       setNotifications((prev) =>
         prev.filter(

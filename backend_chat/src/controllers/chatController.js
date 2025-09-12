@@ -16,45 +16,41 @@ import User from "../models/User.js";
 export const getConversationMessages = async (req, res) => {
   try {
     const conversationId = req.params.id;
-    // const currentUserId = req.user?._id;
 
     const page = Math.max(1, Number(req.query.page) || 1);
-    const limit = Math.min(50, Math.max(1, Number(req.query.limit) || 10));
-    const offset = (page - 1) * limit;
+    const limit = Math.min(50, Math.max(1, Number(req.query.limit) || 16));
+
+    const { lastMessageId } = req.query;
 
     const conversation = await Conversation.findById(conversationId);
     if (!conversation) {
       return res.status(404).json({ message: "Conversation not found" });
     }
 
-    // const conversationSettings = await ConversationSetting.findOne({
-    //   conversationId,
-    // });
+    let messages;
+    let anchor = null;
 
-    const messages = await Message.find({ conversationId })
-      .sort({ createdAt: -1 })
-      .skip(offset)
-      .limit(limit);
+    if (lastMessageId) {
+      anchor = await Message.findOne({ _id: lastMessageId, conversationId });
+      if (!anchor) {
+        return res.status(400).json({ message: "Invalid lastMessageId" });
+      }
+
+      messages = await Message.find({
+        conversationId,
+        createdAt: { $lt: anchor.createdAt },
+      })
+        .sort({ createdAt: -1 })
+        .limit(limit);
+    } else {
+      const offset = (page - 1) * limit;
+      messages = await Message.find({ conversationId })
+        .sort({ createdAt: -1 })
+        .skip(offset)
+        .limit(limit);
+    }
 
     const sortedMessages = [...messages].reverse();
-
-    // const viewerId = new mongoose.Types.ObjectId(req.user._id);
-
-    // const toMark = messages.filter(
-    //   (m) => String(m.senderId) !== String(currentUserId)
-    // );
-
-    // if (toMark.length > 0) {
-    //   const ops = toMark.map((m) => ({
-    //     updateOne: {
-    //       filter: { messageId: m._id, userId: currentUserId },
-    //       update: { $setOnInsert: { messageId: m._id, userId: currentUserId } },
-    //       upsert: true,
-    //     },
-    //   }));
-
-    //   await SeenBy.bulkWrite(ops, { ordered: false });
-    // }
 
     const fullDataMessages = await Promise.all(
       sortedMessages.map(async (message) => {
@@ -65,18 +61,6 @@ export const getConversationMessages = async (req, res) => {
           userId: message.senderId,
         }).select("-userId -_id -createdAt -updatedAt -__v");
 
-        const attachments = await MessageAttachment.find({
-          messageId: message._id,
-        });
-        const imageAttachments = attachments.filter(
-          (attachment) => attachment.type === "image"
-        );
-        const videoAttachments = attachments.filter(
-          (attachment) => attachment.type === "video"
-        );
-        const fileAttachments = attachments.filter(
-          (attachment) => attachment.type === "file"
-        );
         const seenBy = await SeenBy.find({ messageId: message._id });
         const fullDataSeenBy = await Promise.all(
           seenBy.map(async (seen) => {
@@ -87,7 +71,6 @@ export const getConversationMessages = async (req, res) => {
               userId: seen.userId,
             }).select("-userId -_id -createdAt -updatedAt -__v");
             return {
-              // ...seen.toObject(),
               user: {
                 ...user.toObject(),
                 profile: {
@@ -103,9 +86,9 @@ export const getConversationMessages = async (req, res) => {
             message: {
               ...message.toObject(),
               attachments: {
-                images: imageAttachments,
-                videos: videoAttachments,
-                files: fileAttachments,
+                images: [],
+                videos: [],
+                files: [],
               },
             },
             seenBy: fullDataSeenBy,
@@ -121,9 +104,9 @@ export const getConversationMessages = async (req, res) => {
           message: {
             ...message.toObject(),
             attachments: {
-              images: imageAttachments,
-              videos: videoAttachments,
-              files: fileAttachments,
+              images: [],
+              videos: [],
+              files: [],
             },
           },
           seenBy: fullDataSeenBy,
@@ -136,11 +119,6 @@ export const getConversationMessages = async (req, res) => {
       data: {
         conversation: {
           messages: fullDataMessages,
-          // settings: conversationSettings,
-        },
-        pagination: {
-          page,
-          limit,
         },
       },
     });
@@ -693,6 +671,7 @@ export const createGroup = async (req, res) => {
           lastMessage: null,
           settings: mySetting,
         },
+        messages: [],
         users: fullDataMembers,
         unSeenMessageQuantity: 0,
       },
@@ -846,6 +825,12 @@ export const deleteConversation = async (req, res) => {
     const conversation = await Conversation.findById(conversationId).session(
       session
     );
+    const otherMemberIds = await ConversationMember.find({
+      conversationId,
+      userId: { $ne: currentUserId },
+    })
+      .distinct("userId")
+      .session(session);
     if (!conversation) {
       await session.abortTransaction();
       session.endSession();
@@ -878,8 +863,17 @@ export const deleteConversation = async (req, res) => {
       return {
         data: {
           conversation: {
-            _id: conversationId,
+            ...conversation.toObject(),
+            lastMessage: null,
+            settings: null,
           },
+          users: [
+            {
+              user: {
+                _id: otherMemberIds[0],
+              },
+            },
+          ],
           total: {
             members: delMembers?.deletedCount || 0,
             settings: delSettings?.deletedCount || 0,

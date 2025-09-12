@@ -9,6 +9,7 @@ import {
   waitForResponseChatbotAPI,
 } from "../lib/api.js";
 import { useAuthStore } from "./useAuthStore.js";
+import { getLocaleById, isConversationFitFilter } from "../lib/utils.js";
 
 export const useChatStore = create((set, get) => ({
   conversations: [],
@@ -28,14 +29,11 @@ export const useChatStore = create((set, get) => ({
 
   setSelectedConversation: (conversation) =>
     set({ selectedConversation: conversation }),
-
   setConversations: (conversations) => set({ conversations }),
-
   setConversationNameFilter: (name) => set({ conversationNameFilter: name }),
 
   setTotalConversationQuantityAboveFilter: (quantity) =>
     set({ totalConversationQuantityAboveFilter: quantity }),
-
   setTotalConversationQuantityUnderFilter: (quantity) =>
     set({ totalConversationQuantityUnderFilter: quantity }),
 
@@ -53,30 +51,6 @@ export const useChatStore = create((set, get) => ({
       );
     }
   },
-
-  // getConversations: async (args = {}) => {
-  //   try {
-  //     set({ isGettingConversations: true });
-  //     const { data } = await getConversationsAPI(args);
-  //     console.log("Fetched conversations:", data);
-
-  //     set({ totalConversationQuantityUnderFilter: data.pagination.total });
-  //     set({
-  //       conversations: data.conversations.sort((a, b) => {
-  //         if (!a.conversation.updatedAt) return 1;
-  //         if (!b.conversation.updatedAt) return -1;
-  //         return (
-  //           new Date(b.conversation.updatedAt) -
-  //           new Date(a.conversation.updatedAt)
-  //         );
-  //       }),
-  //     });
-  //   } catch (error) {
-  //     console.error("Failed to fetch conversations:", error);
-  //   } finally {
-  //     set({ isGettingConversations: false });
-  //   }
-  // },
 
   getConversations: async (args = {}) => {
     try {
@@ -161,19 +135,28 @@ export const useChatStore = create((set, get) => ({
     }
   },
 
-  getMessages: async ({ conversationId, page = 1, limit = 10 }) => {
+  getMessages: async ({
+    conversationId = null,
+    lastMessageId = null,
+    page = 1,
+    limit = 16,
+  }) => {
     try {
       set({ isGettingMessages: true });
 
-      const { data } = await getMessagesAPI(conversationId, { page, limit });
+      const { data } = await getMessagesAPI(conversationId, lastMessageId, {
+        page,
+        limit,
+      });
       set((state) => ({
         conversations: state.conversations.map((conversation) => {
           if (conversation.conversation._id === conversationId) {
             return {
               ...conversation,
+              currentMessagePage: conversation.currentMessagePage + 1,
               messages: [
-                ...(conversation.messages || []),
                 ...data.conversation.messages,
+                ...(conversation.messages || []),
               ],
             };
           }
@@ -185,9 +168,11 @@ export const useChatStore = create((set, get) => ({
           state.selectedConversation?.conversation._id === conversationId
             ? {
                 ...state.selectedConversation,
+                currentMessagePage:
+                  state.selectedConversation.currentMessagePage + 1,
                 messages: [
-                  ...(state.selectedConversation.messages || []),
                   ...data.conversation.messages,
+                  ...(state.selectedConversation.messages || []),
                 ],
               }
             : null,
@@ -327,9 +312,10 @@ export const useChatStore = create((set, get) => ({
     const socket = useAuthStore.getState().socket;
     if (!socket) return;
     socket.on("newMessage", async (newMessage) => {
-      const { selectedConversation } = get();
+      const { selectedConversation, conversations, conversationNameFilter } =
+        get();
       const newMessageConversationId = newMessage.message.conversationId;
-      const isNewMessageConversationInList = get().conversations.some(
+      const isNewMessageConversationInList = conversations.some(
         (c) => c.conversation._id === newMessageConversationId
       );
 
@@ -337,10 +323,61 @@ export const useChatStore = create((set, get) => ({
         const { data } = await getConversationsAPI({
           conversationId: newMessageConversationId,
         });
+        let isFitFilter = isConversationFitFilter({
+          conversation: data.conversations[0],
+          conversationNameFilter,
+          authUser: useAuthStore.getState().authUser,
+        });
 
-        set((state) => ({
-          conversations: [data.conversations[0], ...state.conversations],
-        }));
+        if (isFitFilter) {
+          set((state) => ({
+            conversations: [data.conversations[0], ...state.conversations],
+          }));
+        }
+
+        if (
+          selectedConversation &&
+          selectedConversation.conversation?._id === newMessageConversationId
+        ) {
+          set((state) => ({
+            selectedConversation: state.selectedConversation
+              ? {
+                  ...state.selectedConversation,
+                  conversation: {
+                    ...state.selectedConversation.conversation,
+                    lastMessage: newMessage.message,
+                    updatedAt: newMessage.message.createdAt,
+                  },
+                  messages: [
+                    ...(state.selectedConversation.messages || []),
+                    newMessage,
+                  ],
+                }
+              : null,
+          }));
+          if (
+            newMessage.sender?._id ===
+              useAuthStore.getState().authUser?.user?._id &&
+            selectedConversation?.conversation?.type === "chatbot"
+          ) {
+            await get().waitForResponseChatbot({
+              language: getLocaleById(
+                selectedConversation?.conversation?.settings?.language
+              ),
+            });
+          }
+
+          try {
+            if (
+              newMessage.sender?._id !==
+              useAuthStore.getState().authUser?.user?._id
+            ) {
+              await markMessageAsSeenAPI(newMessage.message._id);
+            }
+          } catch (error) {
+            console.error("Failed to mark message as seen", error);
+          }
+        }
 
         return;
       }
@@ -478,6 +515,18 @@ export const useChatStore = create((set, get) => ({
             );
           }),
         }));
+
+        if (
+          newMessage.sender?._id ===
+            useAuthStore.getState().authUser?.user?._id &&
+          selectedConversation?.conversation?.type === "chatbot"
+        ) {
+          await get().waitForResponseChatbot({
+            language: getLocaleById(
+              selectedConversation?.conversation?.settings?.language
+            ),
+          });
+        }
 
         try {
           if (
