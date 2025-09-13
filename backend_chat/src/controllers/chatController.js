@@ -170,7 +170,7 @@ export const getConversationMedia = async (req, res) => {
     const conversationId = req.params.id;
 
     const page = Math.max(1, Number(req.query.page) || 1);
-    const limit = Math.min(50, Math.max(1, Number(req.query.limit) || 10));
+    const limit = Math.min(50, Math.max(1, Number(req.query.limit) || 12));
     const offset = (page - 1) * limit;
 
     const media = await Message.find({
@@ -209,7 +209,7 @@ export const getConversationFiles = async (req, res) => {
     const conversationId = req.params.id;
 
     const page = Math.max(1, Number(req.query.page) || 1);
-    const limit = Math.min(50, Math.max(1, Number(req.query.limit) || 10));
+    const limit = Math.min(50, Math.max(1, Number(req.query.limit) || 12));
     const offset = (page - 1) * limit;
 
     const files = await Message.find({
@@ -247,9 +247,9 @@ export const sendMessage = async (req, res) => {
     storage: multer.memoryStorage(),
     limits: { fileSize: 25 * 1024 * 1024, files: 30 },
   }).fields([
-    { name: "images", maxCount: 10 },
-    { name: "videos", maxCount: 5 },
-    { name: "files", maxCount: 10 },
+    { name: "images", maxCount: 12 },
+    { name: "videos", maxCount: 6 },
+    { name: "files", maxCount: 12 },
   ]);
 
   const uploadBufferToCloudinary = (buffer, filename, mimetype, folder) =>

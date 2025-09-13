@@ -94,11 +94,19 @@ const ConversationCard_ChatsPage_Sidebar = ({
       </div>
 
       <div className="absolute right-2 top-2">
-        {conversation?.unSeenMessageQuantity > 0 && (
-          <div className="text-xs btn btn-secondary btn-xs rounded-full">
-            {conversation?.unSeenMessageQuantity}
-          </div>
-        )}
+        {conversation?.unSeenMessageQuantity > 0 &&
+          (conversation?.unSeenMessageQuantity < 10 ? (
+            <div className="text-xs btn btn-secondary btn-xs rounded-full size-6">
+              {conversation?.unSeenMessageQuantity}
+            </div>
+          ) : (
+            <div className="text-xs btn btn-secondary btn-xs rounded-full size-6 relative top-[1px]">
+              <span className="absolute left-[5px] top-[2.5px] text-xs">9</span>
+              <span className="absolute left-[11px] top-[1.5px] text-xs">
+                +
+              </span>
+            </div>
+          ))}
       </div>
     </div>
   );

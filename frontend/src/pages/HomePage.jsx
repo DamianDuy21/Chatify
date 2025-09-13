@@ -52,7 +52,7 @@ const HomePage = () => {
 
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 10;
+  const pageSize = 12;
 
   const [isOpenFilter, setIsOpenFilter] = useState(false);
   const [filterData, setFilterData] = useState({

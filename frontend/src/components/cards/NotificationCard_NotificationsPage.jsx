@@ -71,11 +71,10 @@ const NotificationCard_NotificationsPage = ({
                   : ""}
               </p>
             )}
-            <p className="text-xs flex items-center opacity-70">
-              <ClockIcon className="h-3 w-3 mr-1" />
-              <span className="relative -top-[0.5px]">
-                {formatRelativeTime(notification.createdAt)}
-              </span>
+
+            <p className="text-xs opacity-70 flex items-center gap-1">
+              <ClockIcon className="h-3 w-3" />
+              <span>{formatRelativeTime(notification.createdAt)}</span>
             </p>
           </div>
 

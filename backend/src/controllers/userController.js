@@ -187,7 +187,7 @@ export const getRecommendedUsers = async (req, res) => {
     const currentUserId = req.user.id;
 
     const page = Math.max(1, Number(req.query.page) || 1);
-    const limit = Math.min(50, Math.max(1, Number(req.query.limit) || 10));
+    const limit = Math.min(50, Math.max(1, Number(req.query.limit) || 12));
     const offset = (page - 1) * limit;
 
     const {
@@ -286,7 +286,7 @@ export const getFriends = async (req, res) => {
     const currentUserId = req.user.id;
 
     const page = Math.max(1, Number(req.query.page) || 1);
-    const limit = Math.min(50, Math.max(1, Number(req.query.limit) || 10));
+    const limit = Math.min(50, Math.max(1, Number(req.query.limit) || 12));
     const offset = (page - 1) * limit;
 
     const friends = await Friend.find({
@@ -476,7 +476,7 @@ export const getOutgoingFriendRequests = async (req, res) => {
     const currentUserId = req.user.id;
 
     const page = Math.max(1, Number(req.query.page) || 1);
-    const limit = Math.min(50, Math.max(1, Number(req.query.limit) || 10));
+    const limit = Math.min(50, Math.max(1, Number(req.query.limit) || 12));
     const offset = (page - 1) * limit;
 
     const outgoingRequests = await FriendRequest.find({
@@ -731,7 +731,7 @@ export const getIncomingFriendRequests = async (req, res) => {
     const currentUserId = req.user.id;
 
     const page = Math.max(1, Number(req.query.page) || 1);
-    const limit = Math.min(50, Math.max(1, Number(req.query.limit) || 10));
+    const limit = Math.min(50, Math.max(1, Number(req.query.limit) || 12));
     const offset = (page - 1) * limit;
 
     const incomingFriendRequests = await FriendRequest.find({
@@ -873,7 +873,7 @@ export const getNotifications = async (req, res) => {
     const userId = req.user.id;
 
     const page = Math.max(1, Number(req.query.page) || 1);
-    const limit = Math.min(50, Math.max(1, Number(req.query.limit) || 10));
+    const limit = Math.min(50, Math.max(1, Number(req.query.limit) || 12));
     const offset = (page - 1) * limit;
 
     const notifications = await Notification.find({
@@ -983,7 +983,7 @@ export const getFriendsCouldBeAddedToGroup = async (req, res) => {
     const { id: conversationId } = req.params;
 
     const page = Math.max(1, Number(req.query.page) || 1);
-    const limit = Math.min(50, Math.max(1, Number(req.query.limit) || 10));
+    const limit = Math.min(50, Math.max(1, Number(req.query.limit) || 12));
     const offset = (page - 1) * limit;
 
     const conversationMembers = await ConversationMember.find({

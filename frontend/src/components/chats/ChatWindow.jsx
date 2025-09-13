@@ -464,7 +464,7 @@ const ChatWindow = () => {
       const currentLastMessage = selectedConversation?.messages?.slice(-1)[0];
       const isSeenByMe =
         currentLastMessage?.seenBy?.some(
-          (user) => user?.user._id === authUser?.user?._id
+          (user) => user?.user?._id === authUser?.user?._id
         ) || currentLastMessage?.sender?._id === authUser?.user?._id;
       if (currentLastMessage && !isSeenByMe) {
         const id = selectedConversation?.conversation?._id;
@@ -624,7 +624,7 @@ const ChatWindow = () => {
                           ) && (
                             <p className="text-xs opacity-70 flex items-center gap-1">
                               <ClockIcon className="h-3 w-3" />
-                              <span className="relative">
+                              <span>
                                 {formatRelativeTime(
                                   userPresenceList.find(
                                     (u) =>

@@ -120,9 +120,9 @@ export const openaiSendMessageChatbot = async (req, res) => {
     storage: multer.memoryStorage(),
     limits: { fileSize: 25 * 1024 * 1024, files: 30 },
   }).fields([
-    { name: "images", maxCount: 10 },
-    { name: "videos", maxCount: 5 },
-    { name: "files", maxCount: 10 },
+    { name: "images", maxCount: 12 },
+    { name: "videos", maxCount: 6 },
+    { name: "files", maxCount: 12 },
   ]);
 
   const uploadBufferToCloudinary = (buffer, filename, mimetype, folder) =>

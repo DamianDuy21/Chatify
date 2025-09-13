@@ -1,5 +1,5 @@
 import { File, Forward, LoaderIcon, Smile, X } from "lucide-react";
-import { useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import {
   formatFileSize,
   getFileExtension,
@@ -20,10 +20,12 @@ const TextEditor = ({
   const selectedConversation = useChatStore((s) => s.selectedConversation);
   const sendMessage = useChatStore((s) => s.sendMessage);
   const sendMessageChatbot = useChatStore((s) => s.sendMessageChatbot);
-  const waitForResponseChatbot = useChatStore((s) => s.waitForResponseChatbot);
   const isSendingMessage = useChatStore((s) => s.isSendingMessage);
   const lastFileInputRef = useRef(null);
   const fileInputRef = useRef(null);
+
+  const inputRef = useRef(null);
+  const sendBtnRef = useRef(null);
 
   const isChatbotResponding = useChatStore((s) => s.isChatbotResponding);
 
@@ -60,8 +62,7 @@ const TextEditor = ({
     lastFileInputRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const handleSendMessage = async (e) => {
-    e.preventDefault();
+  const handleSendMessage = async () => {
     if (text.trim() === "" && pendingFile.length === 0) return;
 
     const images = pendingFile.filter((i) => i.file.type.startsWith("image/"));
@@ -99,8 +100,7 @@ const TextEditor = ({
     }
   };
 
-  const handleSendMessageChatbot = async (e) => {
-    e.preventDefault();
+  const handleSendMessageChatbot = async () => {
     if (text.trim() === "" && pendingFile.length === 0) return;
 
     const images = pendingFile.filter((i) => i.file.type.startsWith("image/"));
@@ -134,17 +134,41 @@ const TextEditor = ({
 
       // Scroll
       window.scrollTo({ top: 0, behavior: "smooth" });
-
-      // await waitForResponseChatbot({
-      //   language: getLocaleById(
-      //     selectedConversation?.conversation?.settings?.language
-      //   ),
-      // });
     } catch (error) {
       console.error("Failed to send message:", error);
     }
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      sendByRef();
+    }
+  };
+
+  const sendByRef = useCallback(() => {
+    if (isSendingMessage || !text.trim()) return;
+    const fn =
+      selectedConversation?.conversation?.type === "chatbot"
+        ? handleSendMessageChatbot
+        : handleSendMessage;
+    fn();
+
+    setText("");
+    // focus lại ô nhập
+    inputRef.current?.focus();
+  }, [
+    isSendingMessage,
+    text,
+    selectedConversation,
+    handleSendMessage,
+    handleSendMessageChatbot,
+    inputRef,
+  ]);
+
+  useEffect(() => {
+    inputRef.current?.focus();
+  }, []);
   return (
     <div
       className={`border-t border-base-300 flex flex-col gap-4 px-4 py-4 ${
@@ -293,8 +317,10 @@ const TextEditor = ({
         {/* Input field */}
         <div className="w-full">
           <input
+            ref={inputRef}
             value={text}
             onChange={(e) => setText(e.target.value)}
+            onKeyDown={handleKeyDown}
             type="text"
             placeholder="Type a message..."
             className="input input-bordered w-full text-sm"
@@ -309,12 +335,18 @@ const TextEditor = ({
           </div>
         ) : (
           <div
+            ref={sendBtnRef}
             className={`btn btn-primary size-10 p-0 min-w-0 min-h-0 rounded-full cursor-pointer text-sm flex items-center justify-center hover:btn-secondary `}
-            onClick={
-              selectedConversation?.conversation?.type === "chatbot"
-                ? handleSendMessageChatbot
-                : handleSendMessage
-            }
+            onClick={sendByRef}
+            aria-label="Send"
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                sendByRef();
+              }
+            }}
           >
             <Forward className="size-6" />
           </div>

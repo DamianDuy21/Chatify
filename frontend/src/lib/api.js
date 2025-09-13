@@ -75,7 +75,7 @@ export const getRecommendedUsersAPI = async (args = {}) => {
     nativeLanguage = "",
     learningLanguage = "",
     page = 1,
-    limit = 10,
+    limit = 12,
   } = args;
 
   const response = await axiosInstance.get("/user/recommend-users", {
@@ -85,7 +85,7 @@ export const getRecommendedUsersAPI = async (args = {}) => {
 };
 
 export const getOutgoingFriendRequestsAPI = async (args = {}) => {
-  const { page = 1, limit = 10 } = args;
+  const { page = 1, limit = 12 } = args;
 
   const response = await axiosInstance.get(
     "/user/friends/outgoing-friend-requests",
@@ -113,7 +113,7 @@ export const cancelFriendRequestAPI = async (requestId) => {
 
 // NOTIFICATIONS PAGE
 export const getIncomingFriendRequestsAPI = async (args = {}) => {
-  const { page = 1, limit = 10 } = args;
+  const { page = 1, limit = 12 } = args;
   const response = await axiosInstance.get(
     "/user/friends/incoming-friend-requests",
     {
@@ -124,7 +124,7 @@ export const getIncomingFriendRequestsAPI = async (args = {}) => {
 };
 
 export const getNotificationsAPI = async (args = {}) => {
-  const { page = 1, limit = 10 } = args;
+  const { page = 1, limit = 12 } = args;
   const response = await axiosInstance.get("/user/notifications", {
     params: { page, limit },
   });
@@ -178,7 +178,7 @@ export const getFriendsAPI = async (args = {}) => {
     nativeLanguage = "",
     learningLanguage = "",
     page = 1,
-    limit = 10,
+    limit = 12,
   } = args;
   const response = await axiosInstance.get(
     "/user/friends",
@@ -349,7 +349,7 @@ export const getFriendsCouldBeAddedToGroupAPI = async (
     nativeLanguage = "",
     learningLanguage = "",
     page = 1,
-    limit = 10,
+    limit = 12,
   } = args;
   const response = await axiosInstance.get(
     `/user/friends/could-be-added-to-group/${conversationId}`,
