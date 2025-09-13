@@ -2,8 +2,8 @@ import {
   ChevronLeft,
   ChevronRight,
   ChevronsDown,
-  ChevronUp,
   LoaderIcon,
+  MessageCircleOff,
   Plus,
 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -20,9 +20,9 @@ import CommonPageLoader from "../components/loaders/CommonPageLoader.jsx";
 import NoChatSelected from "../components/noFounds/NoChatSelected.jsx";
 import NoDataCommon from "../components/noFounds/NoDataCommon.jsx";
 import { createGroupAPI, getFriendsAPI } from "../lib/api.js";
+import { isConversationFitFilter } from "../lib/utils.js";
 import { useAuthStore } from "../stores/useAuthStore.js";
 import { useChatStore } from "../stores/useChatStore.js";
-import { isConversationFitFilter } from "../lib/utils.js";
 
 const ChatsPage = () => {
   const authUser = useAuthStore((s) => s.authUser);
@@ -60,7 +60,6 @@ const ChatsPage = () => {
 
   const closeRef = useRef(null);
   const didMountRef = useRef(false);
-  const cleanedOnceRef = useRef(false);
 
   const [
     isOpenSearchFriendsInSmallScreen,
@@ -71,11 +70,7 @@ const ChatsPage = () => {
 
   const [friends, setFriends] = useState([]);
   const [isLoadingGetFriends, setIsLoadingGetFriends] = useState(false);
-  const [friendQuantity, setFriendQuantity] = useState(0);
-
-  const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 10;
 
   // filter friends
   const [filterData, setFilterData] = useState({
@@ -103,8 +98,6 @@ const ChatsPage = () => {
       setIsLoadingGetFriends(true);
       const { data } = await getFriendsAPI(args);
       setFriends(data.users);
-      setFriendQuantity(data.pagination.total);
-      setTotalPages(data.pagination.totalPages);
     } catch (error) {
       showToast({
         message: error?.message || "Failed to fetch friends",
@@ -199,6 +192,10 @@ const ChatsPage = () => {
       setCurrentPage(1);
     }
   }, [filterData]);
+
+  useEffect(() => {
+    didMountRef.current = false;
+  }, []);
 
   useEffect(() => {
     if (!didMountRef.current) {
@@ -437,13 +434,19 @@ const ChatsPage = () => {
               )}
             </div>
           ) : (
-            <div className="flex items-center justify-center">
-              <NoDataCommon
-                title={"Không có kết quả phù hợp"}
-                content={"Thử tìm kiếm với từ khóa khác"}
-                classNameTitle={"text-sm"}
-                classNameContent={"text-xs"}
-              />
+            <div className="flex flex-col items-center justify-center">
+              {!isOpenSearchFriendsInSmallScreen ? (
+                <div className="h-16 flex items-center justify-center">
+                  <MessageCircleOff className="" />
+                </div>
+              ) : (
+                <NoDataCommon
+                  title={"Không có kết quả phù hợp"}
+                  content={"Thử tìm kiếm với từ khóa khác"}
+                  classNameTitle={"text-sm"}
+                  classNameContent={"text-xs"}
+                />
+              )}
             </div>
           )}
         </div>

@@ -1,10 +1,11 @@
 import { ChevronsUp, LoaderIcon } from "lucide-react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { Virtuoso } from "react-virtuoso";
+import useCalm from "../../hooks/useCalm";
 import { useAuthStore } from "../../stores/useAuthStore";
 import { useChatStore } from "../../stores/useChatStore";
-import Message from "./Message";
 import CommonRoundedButton from "../buttons/CommonRoundedButton";
+import Message from "./Message";
 
 const getSenderId = (m) => m?.sender?._id ?? m?.message?.senderId ?? null;
 
@@ -20,7 +21,6 @@ const Conversation = ({ translatedTo }) => {
 
   const [openedIndex, setOpenedIndex] = useState(-1);
   const [isFirstVisible, setIsFirstVisible] = useState(false);
-  const [isCalm, setIsCalm] = useState(false);
   const virtuosoRef = useRef(null);
 
   const messages = selectedConversation?.messages || [];
@@ -31,15 +31,11 @@ const Conversation = ({ translatedTo }) => {
       : messages;
   }, [messages, isChatbotResponding]);
 
-  useEffect(() => {
-    setIsCalm(false);
-    const id = setTimeout(() => {
-      setIsCalm(true);
-    }, 500);
-    return () => clearTimeout(id);
-  }, [selectedConversation?.conversation?._id]);
+  const isCalm = useCalm([selectedConversation?.conversation?._id], 1000);
 
   const isMine = (m) => m?.sender?._id === authUser?.user?._id;
+
+  console.log(data);
 
   return (
     <div
@@ -101,13 +97,16 @@ const Conversation = ({ translatedTo }) => {
           }
 
           const prev = index > 0 ? data[index - 1] : undefined;
+          const next = index < data.length - 1 ? data[index + 1] : undefined;
+
           const currSender = getSenderId(item);
           const prevSender = prev && !prev.__typing ? getSenderId(prev) : null;
+          const nextSender = next && !next?.__typing ? getSenderId(next) : null;
 
-          const isGroupBoundary =
+          const isGroupHead =
             isFirst || prev?.__typing || prevSender !== currSender;
-
-          const isShowAvatar = isGroupBoundary;
+          const isGroupTail =
+            isLast || next?.__typing || nextSender !== currSender;
 
           const mine = isMine(item);
 
@@ -115,7 +114,7 @@ const Conversation = ({ translatedTo }) => {
             <div className={`${padClass}`}>
               <div
                 onMouseDown={(e) => e.stopPropagation()}
-                className={` flex items-start ${
+                className={` flex ${
                   mine ? "justify-end" : "justify-start"
                 } gap-2`}
               >
@@ -127,7 +126,8 @@ const Conversation = ({ translatedTo }) => {
                     setOpenedIndex((prev) => (prev === index ? -1 : index))
                   }
                   translatedTo={translatedTo}
-                  isShowAvatar={isShowAvatar}
+                  isShowAvatar={isGroupHead}
+                  isShowTime={isGroupTail}
                 />
               </div>
             </div>

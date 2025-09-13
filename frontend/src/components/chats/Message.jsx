@@ -1,10 +1,8 @@
 import {
-  ArrowDownToLine,
   CheckCheckIcon,
   ChevronDown,
   ChevronUp,
   Copy,
-  File,
   Heart,
   Languages,
   LoaderIcon,
@@ -13,17 +11,9 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { axiosInstanceChat } from "../../lib/axiosInstanceChat";
-import {
-  copyToClipboard,
-  formatFileSize,
-  getFileExtension,
-  getLocaleById,
-  toDownloadUrl,
-} from "../../lib/utils";
-import CommonRoundedButton from "../buttons/CommonRoundedButton";
-import CostumedModal from "../costumed/CostumedModal";
 import { translateMessageAPI } from "../../lib/api";
+import { copyToClipboard, formatISOToTZ, getLocaleById } from "../../lib/utils";
+import CommonRoundedButton from "../buttons/CommonRoundedButton";
 
 const Message = ({
   ref,
@@ -33,6 +23,7 @@ const Message = ({
   message,
   translatedTo,
   isShowAvatar = false,
+  isShowTime = false,
 }) => {
   const [images, setImages] = useState([]);
   const [videos, setVideos] = useState([]);
@@ -119,7 +110,7 @@ const Message = ({
   return (
     <>
       {/* avatar */}
-      <div className={`avatar ${side === "left" ? "" : "order-2"}`}>
+      <div className={`avatar ${side === "left" ? "order-1" : "order-3"}`}>
         {message.sender?.profile?.profilePic ? (
           <div
             className="w-10 h-10 rounded-full"
@@ -137,7 +128,7 @@ const Message = ({
       {/* content */}
       <div
         className={`flex flex-col gap-2 max-w-[50vw] ${
-          side == "right" ? "items-end" : "items-start"
+          side === "left" ? "order-2" : "order-2"
         }`}
         ref={ref}
       >
@@ -562,7 +553,25 @@ const Message = ({
           // </div>
           <></>
         )}
+        {isShowTime && (
+          <div
+            className={`flex items-end text-xs opacity-70 ${
+              side === "left" ? "order-3 justify-start" : "order-1 justify-end"
+            }`}
+          >
+            {formatISOToTZ(message.message?.createdAt)}
+          </div>
+        )}
       </div>
+      {/* {isShowTime && (
+        <div
+          className={`flex items-end text-xs opacity-70 ${
+            side === "left" ? "order-3" : "order-1"
+          }`}
+        >
+          {formatISOToTZ(message.message?.createdAt)}
+        </div>
+      )} */}
     </>
   );
 };
