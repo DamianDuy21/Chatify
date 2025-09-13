@@ -6,6 +6,9 @@ import { io } from "socket.io-client";
 
 const BACKEND_CHAT_URL = import.meta.env.VITE_BACKEND_CHAT_URL;
 
+let __hbTimer = null;
+const HEARTBEAT_TIMEOUT_MS = 60000;
+
 export const useAuthStore = create(
   persist(
     (set, get) => ({
@@ -68,16 +71,38 @@ export const useAuthStore = create(
         const s = io(BACKEND_CHAT_URL, {
           autoConnect: false,
           query: { userId: authUser?.user?._id },
+          transports: ["websocket"],
+          reconnection: true,
         });
-        s.connect();
-        set({ socket: s });
+
+        s.on("connect", () => {
+          s.emit("heartbeat");
+          if (__hbTimer) clearInterval(__hbTimer);
+          __hbTimer = setInterval(() => {
+            if (s.connected) s.emit("heartbeat");
+          }, HEARTBEAT_TIMEOUT_MS);
+        });
+
+        s.on("disconnect", () => {
+          if (__hbTimer) {
+            clearInterval(__hbTimer);
+            __hbTimer = null;
+          }
+        });
 
         s.on("getOnlineUsers", (userIds) => set({ onlineUsers: userIds }));
+
+        s.connect();
+        set({ socket: s });
       },
 
       disconnectSocket: () => {
         if (get().socket?.connected) {
           get().socket.disconnect();
+          if (__hbTimer) {
+            clearInterval(__hbTimer);
+            __hbTimer = null;
+          }
           set({ socket: null });
         }
       },

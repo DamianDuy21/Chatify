@@ -11,38 +11,75 @@ const io = new Server(server, {
   },
 });
 
-export const getReceiverSocketIds = async (conversationId) => {
-  const memberIds = await ConversationMember.find({ conversationId }).select(
-    "userId"
-  );
+const HEARTBEAT_TIMEOUT_MS = 180000;
 
-  const socketIds = memberIds.flatMap(
-    (member) => userSocketMap[member.userId] || []
-  );
+// for send messages
+const userSocketMap = {};
 
-  return socketIds;
+// for get online users: userId -> { last: number, timeout: NodeJS.Timeout, online: boolean }
+const userPresence = new Map();
+
+const getOnlineUsers = () =>
+  [...userPresence.entries()]
+    .filter(([, v]) => v.online === true)
+    .map(([userId]) => String(userId));
+
+const markOnline = (userId) => {
+  const now = Date.now();
+  const prev = userPresence.get(userId) || {};
+
+  // hủy timer cũ
+  if (prev.timeout) clearTimeout(prev.timeout);
+
+  // nếu không có heartbeat mới trong 3m -> offline
+  const timeout = setTimeout(() => {
+    const p = userPresence.get(userId);
+    if (!p) return;
+    p.online = false;
+    userPresence.set(userId, p);
+    io.emit("getOnlineUsers", getOnlineUsers());
+  }, HEARTBEAT_TIMEOUT_MS);
+
+  userPresence.set(userId, { last: now, timeout, online: true });
+
+  // chỉ emit khi mới online hoặc trước đó offline
+  if (!prev.online) {
+    io.emit("getOnlineUsers", getOnlineUsers());
+  }
 };
 
-const userSocketMap = {};
+const maybeMarkOfflineImmediately = (userId) => {
+  const set = userSocketMap[userId];
+  if (!set || set.size === 0) {
+    const p = userPresence.get(userId);
+    if (p?.timeout) clearTimeout(p.timeout);
+    userPresence.set(userId, { last: Date.now(), online: false });
+    io.emit("getOnlineUsers", getOnlineUsers());
+  }
+};
 
 io.on("connection", (socket) => {
   console.log("User connected:", socket.id);
-  const userId = socket.handshake.query.userId; // Assuming userId is sent as a query parameter
+  const userId = socket.handshake.query.userId;
 
   console.log("User ID:", userId);
-  // if (userId) {
-  //   userSocketMap[userId] = socket.id;
-  // }
   if (userId) {
     if (!userSocketMap[userId]) {
       userSocketMap[userId] = [];
+      markOnline(userId);
     }
     if (!userSocketMap[userId].includes(socket.id)) {
       userSocketMap[userId].push(socket.id);
     }
   }
 
-  io.emit("getOnlineUsers", Object.keys(userSocketMap));
+  socket.on("heartbeat", () => {
+    if (!userId) return;
+    console.log("Heartbeat received from user:", userId);
+    markOnline(userId);
+  });
+
+  io.emit("getOnlineUsers", getOnlineUsers());
 
   socket.on("disconnect", () => {
     console.log("User disconnected:", socket.id);
@@ -55,10 +92,20 @@ io.on("connection", (socket) => {
       if (userSocketMap[userId].length === 0) {
         delete userSocketMap[userId];
       }
-    }
 
-    io.emit("getOnlineUsers", Object.keys(userSocketMap));
+      // maybeMarkOfflineImmediately(userId);
+    }
   });
 });
+
+export const getReceiverSocketIds = async (conversationId) => {
+  const memberIds = await ConversationMember.find({ conversationId }).select(
+    "userId"
+  );
+  const socketIds = memberIds.flatMap(
+    (member) => userSocketMap[member.userId] || []
+  );
+  return socketIds;
+};
 
 export { io, app, server, userSocketMap };

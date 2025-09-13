@@ -49,9 +49,6 @@ const ChatsPage = () => {
     (s) => s.setTotalConversationQuantityUnderFilter
   );
 
-  console.log(totalConversationQuantityAboveFilter);
-  console.log(totalConversationQuantityUnderFilter);
-
   const currentConversationPage = useChatStore(
     (s) => s.currentConversationPage
   );

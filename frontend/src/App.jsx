@@ -66,7 +66,7 @@ const App = () => {
     }
     setConversationNameFilter("");
     setSelectedConversation(null);
-  }, [authUser.user._id]);
+  }, [authUser]);
 
   useEffect(() => {
     getLanguages();
