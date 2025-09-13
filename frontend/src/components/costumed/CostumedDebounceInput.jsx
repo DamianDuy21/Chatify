@@ -9,7 +9,7 @@ const CostumedDebounceInput = ({
   className,
   iconClassName = "",
   placeholder,
-  maxLength = 255,
+  maxLength = 50,
   searchIcon = true,
   isSearching = false,
 }) => {

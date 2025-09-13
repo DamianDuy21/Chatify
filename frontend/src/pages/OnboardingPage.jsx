@@ -205,6 +205,7 @@ const OnboardingPage = () => {
                   onChange={() => {}}
                   className="input input-bordered w-full pointer-events-none text-sm"
                   placeholder={t("form.fullName.placeholder")}
+                  maxLength={50}
                 />
               </div>
 
@@ -273,6 +274,7 @@ const OnboardingPage = () => {
                     }
                     className="input input-bordered w-full pl-10 text-sm"
                     placeholder={t("form.location.placeholder")}
+                    maxLength={50}
                   />
                 </div>
               </div>

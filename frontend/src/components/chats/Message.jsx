@@ -12,7 +12,11 @@ import {
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { translateMessageAPI } from "../../lib/api";
-import { copyToClipboard, formatISOToTZ, getLocaleById } from "../../lib/utils";
+import {
+  copyToClipboard,
+  formatISOToParts,
+  getLocaleById,
+} from "../../lib/utils";
 import CommonRoundedButton from "../buttons/CommonRoundedButton";
 
 const Message = ({
@@ -193,7 +197,7 @@ const Message = ({
 
                     <div
                       className={`hidden group-hover:flex absolute top-[9px] 
-                  right-2  gap-1 items-center`}
+                  right-2 gap-1 items-center`}
                     >
                       {isCopiedTranslation ? (
                         <div className="border border-base-300 bg-base-100 px-2 py-1.5 rounded-card">
@@ -244,27 +248,7 @@ const Message = ({
                     </div>
                   </div>
                 )}
-
-                {/* timestamp */}
-                {/* <div className="flex gap-2 ml-auto">
-            <div className="text-xs opacity-70">
-            {new Date(timestamp).toLocaleTimeString()}
-          </div>
-            {sender.isRead && (
-              <div className="text-xs opacity-70 flex items-center gap-1">
-                <CheckCheck className="size-3 relative top-[1px] text-primary" />
-                <span>Seen</span>
               </div>
-            )}
-          </div> */}
-              </div>
-              {/* <div
-                className={`${
-                  sender.isRead ? "relative -top-3" : "relative -top-1"
-                } text-xs bg-base-300 !w-6 !h-6 cursor-pointer rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center`}
-              >
-                <span className="relative -top-1">...</span>
-              </div> */}
             </div>
             <div
               className={`flex gap-1 items-center justify-${
@@ -559,19 +543,10 @@ const Message = ({
               side === "left" ? "order-3 justify-start" : "order-1 justify-end"
             }`}
           >
-            {formatISOToTZ(message.message?.createdAt)}
+            {formatISOToParts(message.message?.createdAt).time}
           </div>
         )}
       </div>
-      {/* {isShowTime && (
-        <div
-          className={`flex items-end text-xs opacity-70 ${
-            side === "left" ? "order-3" : "order-1"
-          }`}
-        >
-          {formatISOToTZ(message.message?.createdAt)}
-        </div>
-      )} */}
     </>
   );
 };

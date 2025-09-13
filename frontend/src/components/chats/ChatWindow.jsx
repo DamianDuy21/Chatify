@@ -1038,7 +1038,7 @@ const ChatWindow = () => {
             <div className="flex-1">
               {/* Chat Messages */}
               <div
-                className={`overflow-y-auto p-4 ${
+                className={`overflow-y-auto p-4 pt-0 ${
                   pendingFile.length === 0
                     ? "!h-[calc(100vh-64px-64px-80px-1px)]"
                     : "!h-[calc(100vh-64px-64px-80px-112px)]"
@@ -1062,7 +1062,7 @@ const ChatWindow = () => {
         {/* Utils Panel */}
         {isOpenUtils && (
           <div
-            className={`absolute top-0 right-0 lg:relative lg:flex lg:flex-col w-64 z-9 bg-base-100`}
+            className={`absolute top-0 right-0 lg:relative lg:flex lg:flex-col w-64 z-50 bg-base-100`}
           >
             <div className="border-l border-base-300">
               <div className="h-16 px-4 py-4 border-b border-base-300">

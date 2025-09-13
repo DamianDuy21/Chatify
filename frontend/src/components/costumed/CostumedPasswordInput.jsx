@@ -31,6 +31,7 @@ function CostumedPasswordInput({
         className="input input-bordered w-full text-sm pr-10"
         value={passwordValue}
         onChange={handleChange}
+        maxLength={50}
       />
       <div
         className="absolute top-1/2 right-4 -translate-y-1/2 text-sm cursor-pointer"

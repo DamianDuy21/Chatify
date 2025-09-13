@@ -231,6 +231,7 @@ const ChangePasswordPage = () => {
                         className="input input-bordered w-full text-sm"
                         value={verificationCode}
                         onChange={(e) => setVerificationCode(e.target.value)}
+                        maxLength={6}
                       />
                       <p
                         className="text-sm text-primary hover:underline mt-2 text-end cursor-pointer"

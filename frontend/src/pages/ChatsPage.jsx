@@ -272,7 +272,7 @@ const ChatsPage = () => {
                 defaultValue={conversationNameFilter}
                 placeholder={"Tìm kiếm..."}
                 className={`input-sm ${
-                  isOpenSearchFriendsInSmallScreen ? "!pr-4" : "!pr-9"
+                  isOpenSearchFriendsInSmallScreen ? "!pr-9" : "!pr-9"
                 }`}
                 iconClassName={`!right-3`}
                 onChange={(value) => {

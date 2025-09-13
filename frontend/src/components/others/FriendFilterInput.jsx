@@ -41,6 +41,7 @@ const FriendFilterInput = ({ data, onChange, onSubmit }) => {
                 }}
                 className="input input-bordered w-full text-sm"
                 placeholder={"Nhập họ và tên bạn muốn tìm kiếm"}
+                maxLength={50}
               />
             </div>
             <div className="form-control">

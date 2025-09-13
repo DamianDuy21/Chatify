@@ -1,16 +1,26 @@
 import { ChevronsUp, LoaderIcon } from "lucide-react";
 import { useMemo, useRef, useState } from "react";
-import { Virtuoso } from "react-virtuoso";
+import { GroupedVirtuoso, Virtuoso } from "react-virtuoso";
 import useCalm from "../../hooks/useCalm";
 import { useAuthStore } from "../../stores/useAuthStore";
 import { useChatStore } from "../../stores/useChatStore";
 import CommonRoundedButton from "../buttons/CommonRoundedButton";
 import Message from "./Message";
+import { formatISOToParts } from "../../lib/utils";
 
 const getSenderId = (m) => m?.sender?._id ?? m?.message?.senderId ?? null;
 
 // nếu muốn giữ phần react và dịch thì phải thêm thông tin đó vào đúng message đó trong global state
 // vì mình dùng virtuoso nên nó không lưu lại trên dom. nhưng tạm thời thôi
+
+// yyyy-mm-dd
+const toDateKeyTZ = (iso, timeZone = "Asia/Bangkok") =>
+  new Intl.DateTimeFormat("en-CA", {
+    timeZone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(new Date(iso));
 
 const Conversation = ({ translatedTo }) => {
   const authUser = useAuthStore((s) => s.authUser);
@@ -31,11 +41,40 @@ const Conversation = ({ translatedTo }) => {
       : messages;
   }, [messages, isChatbotResponding]);
 
+  const { groupsSorted, groupCounts, flat } = useMemo(() => {
+    if (!data.length) return { groupsSorted: [], groupCounts: [], flat: [] };
+
+    const todayKey = toDateKeyTZ(new Date().toISOString());
+    const lastReal = [...data].reverse().find((m) => !m.__typing);
+    const lastKey = lastReal
+      ? toDateKeyTZ(lastReal?.message?.createdAt)
+      : todayKey;
+
+    const getKey = (m) => {
+      if (m.__typing) return lastKey || todayKey;
+      return toDateKeyTZ(m?.message?.createdAt);
+    };
+
+    const map = new Map();
+    data.forEach((m) => {
+      const k = getKey(m);
+      if (!map.has(k)) map.set(k, []);
+      map.get(k).push(m);
+    });
+
+    const groups = [...map.entries()]
+      .map(([key, items]) => ({ key, items }))
+      .sort((a, b) => a.key.localeCompare(b.key));
+
+    const counts = groups.map((g) => g.items.length);
+    const flatArr = groups.flatMap((g) => g.items);
+
+    return { groupsSorted: groups, groupCounts: counts, flat: flatArr };
+  }, [data]);
+
   const isCalm = useCalm([selectedConversation?.conversation?._id], 1000);
 
   const isMine = (m) => m?.sender?._id === authUser?.user?._id;
-
-  console.log(data);
 
   return (
     <div
@@ -50,7 +89,7 @@ const Conversation = ({ translatedTo }) => {
           isCalm
             ? "absolute"
             : "hidden"
-        } top-0 left-1/2 -translate-x-1/2 z-10 `}
+        } top-8 left-1/2 -translate-x-1/2 z-10 `}
       >
         <CommonRoundedButton
           onClick={() => {
@@ -71,16 +110,29 @@ const Conversation = ({ translatedTo }) => {
           )}
         </CommonRoundedButton>
       </div>
-      <Virtuoso
+
+      <GroupedVirtuoso
         ref={virtuosoRef}
-        data={data}
-        initialTopMostItemIndex={Math.max(data.length - 1, 0)}
+        initialTopMostItemIndex={Math.max(flat.length - 1, 0)}
         followOutput="smooth"
-        computeItemKey={(index, item) => item?._id ?? `idx-${index}`}
-        atTopStateChange={(atTop) => setIsFirstVisible(atTop)}
-        itemContent={(index, item) => {
+        computeItemKey={(i) => flat[i]?._id ?? `idx-${i}`}
+        atTopStateChange={(atTop) => setIsFirstVisible(atTop)} // for the load more message button
+        groupCounts={groupCounts}
+        groupContent={(groupIndex) => {
+          const key = groupsSorted[groupIndex]?.key;
+          const label = formatISOToParts(key).date;
+          return (
+            <div className="sticky top-0 z-10 flex items-center gap-4 py-2 bg-base-100 backdrop-blur">
+              <div className="flex-1 h-px border-t border-base-300" />
+              <span className="mx-4 text-xs opacity-70">{label}</span>
+              <div className="flex-1 h-px border-t border-base-300" />
+            </div>
+          );
+        }}
+        itemContent={(index) => {
+          const item = flat[index];
           const isFirst = index === 0;
-          const isLast = index === data.length - 1;
+          const isLast = index === flat.length - 1;
           const padClass = isFirst ? "pb-1" : isLast ? "pt-1" : "py-1";
 
           if (item?.__typing) {
@@ -96,15 +148,25 @@ const Conversation = ({ translatedTo }) => {
             );
           }
 
-          const prev = index > 0 ? data[index - 1] : undefined;
-          const next = index < data.length - 1 ? data[index + 1] : undefined;
+          const prev = index > 0 ? flat[index - 1] : undefined;
+          const next = index < flat.length - 1 ? flat[index + 1] : undefined;
 
           const currSender = getSenderId(item);
           const prevSender = prev && !prev.__typing ? getSenderId(prev) : null;
           const nextSender = next && !next?.__typing ? getSenderId(next) : null;
 
+          const currDate = formatISOToParts(item?.message?.createdAt).date;
+          const prevDate = prev
+            ? formatISOToParts(prev?.message?.createdAt).date
+            : null;
+          const nextDate =
+            next && !next.__typing
+              ? formatISOToParts(next?.message?.createdAt).date
+              : null;
+
           const isGroupHead =
             isFirst || prev?.__typing || prevSender !== currSender;
+
           const isGroupTail =
             isLast || next?.__typing || nextSender !== currSender;
 
@@ -114,7 +176,7 @@ const Conversation = ({ translatedTo }) => {
             <div className={`${padClass}`}>
               <div
                 onMouseDown={(e) => e.stopPropagation()}
-                className={` flex ${
+                className={`flex ${
                   mine ? "justify-end" : "justify-start"
                 } gap-2`}
               >
@@ -127,7 +189,7 @@ const Conversation = ({ translatedTo }) => {
                   }
                   translatedTo={translatedTo}
                   isShowAvatar={isGroupHead}
-                  isShowTime={isGroupTail}
+                  isShowTime={isGroupTail || currDate !== nextDate}
                 />
               </div>
             </div>

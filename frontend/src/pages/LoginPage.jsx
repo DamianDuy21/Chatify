@@ -173,7 +173,7 @@ const LoginPage = () => {
 
                   <div className="flex items-center gap-4">
                     <div className="flex-1 h-px bg-gray-600"></div>
-                    <span className="text-gray-500 text-sm">
+                    <span className="text-gray-600 text-sm">
                       {t("leftSide.prompt.or")}
                     </span>
                     <div className="flex-1 h-px bg-gray-600"></div>
