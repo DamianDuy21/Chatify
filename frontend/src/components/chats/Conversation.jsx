@@ -1,5 +1,5 @@
 import { ChevronsUp, LoaderIcon } from "lucide-react";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { GroupedVirtuoso, Virtuoso } from "react-virtuoso";
 import useCalm from "../../hooks/useCalm";
 import { useAuthStore } from "../../stores/useAuthStore";
@@ -32,6 +32,7 @@ const Conversation = ({ translatedTo }) => {
   const [openedIndex, setOpenedIndex] = useState(-1);
   const [isFirstVisible, setIsFirstVisible] = useState(false);
   const virtuosoRef = useRef(null);
+  const didMountRef = useRef(false);
 
   const messages = selectedConversation?.messages || [];
 
@@ -71,6 +72,20 @@ const Conversation = ({ translatedTo }) => {
 
     return { groupsSorted: groups, groupCounts: counts, flat: flatArr };
   }, [data]);
+
+  useEffect(() => {
+    if (!virtuosoRef.current) return;
+
+    if (!didMountRef.current) {
+      didMountRef.current = true;
+    }
+
+    virtuosoRef.current.scrollToIndex({
+      index: Math.max(flat.length - 1, 0),
+      align: "end",
+      behavior: "smooth", // 'auto' or 'smooth'
+    });
+  }, [selectedConversation?.conversation?._id]);
 
   const isCalm = useCalm([selectedConversation?.conversation?._id], 1000);
 
@@ -113,7 +128,7 @@ const Conversation = ({ translatedTo }) => {
 
       <GroupedVirtuoso
         ref={virtuosoRef}
-        initialTopMostItemIndex={Math.max(flat.length - 1, 0)}
+        // initialTopMostItemIndex={Math.max(flat.length - 1, 0)}
         followOutput="smooth"
         computeItemKey={(i) => flat[i]?._id ?? `idx-${i}`}
         atTopStateChange={(atTop) => setIsFirstVisible(atTop)} // for the load more message button
