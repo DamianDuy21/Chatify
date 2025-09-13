@@ -6,6 +6,7 @@ import {
   ChevronsDown,
   ChevronsUp,
   ChevronUp,
+  ClockIcon,
   LoaderIcon,
   Pin,
   UserRoundPlus,
@@ -40,13 +41,16 @@ import TextEditor from "./TextEditor";
 import { StreamChat } from "stream-chat";
 import { useAuthStore } from "../../stores/useAuthStore.js";
 import CostumedGroupChatUpdateMemberRoleList from "../costumed/CostumedGroupChatUpdateMemberRoleList.jsx";
-import { isConversationFitFilter } from "../../lib/utils.js";
+import {
+  formatRelativeTime,
+  isConversationFitFilter,
+} from "../../lib/utils.js";
 
 const STREAM_API_KEY = import.meta.env.VITE_STREAM_API_KEY;
 
 const ChatWindow = () => {
   const authUser = useAuthStore((s) => s.authUser);
-  const onlineUsers = useAuthStore((s) => s.onlineUsers);
+  const userPresenceList = useAuthStore((s) => s.userPresenceList);
   const [chatClient, setChatClient] = useState(null);
   const [channel, setChannel] = useState(null);
   const [isLoadingChannel, setIsLoadingChannel] = useState(false);
@@ -599,12 +603,42 @@ const ChatWindow = () => {
                     {selectedConversation?.users?.some(
                       (user) =>
                         user?.user?._id !== authUser?.user._id &&
-                        onlineUsers.includes(user?.user?._id)
-                    ) && (
+                        userPresenceList.find(
+                          (u) => u.userId === user?.user?._id && u.online
+                        )
+                    ) ? (
                       <p className="text-xs text-success flex items-center gap-1">
                         <span className="size-2 rounded-full bg-success inline-block" />
                         Online
                       </p>
+                    ) : (
+                      <>
+                        {selectedConversation?.conversation?.type ==
+                          "private" &&
+                          userPresenceList.find(
+                            (u) =>
+                              u.userId ===
+                              selectedConversation?.users?.find(
+                                (user) => user?.user?._id !== authUser?.user._id
+                              )?.user?._id
+                          ) && (
+                            <p className="text-xs opacity-70 flex items-center gap-1">
+                              <ClockIcon className="h-3 w-3" />
+                              <span className="relative">
+                                {formatRelativeTime(
+                                  userPresenceList.find(
+                                    (u) =>
+                                      u.userId ===
+                                      selectedConversation?.users?.find(
+                                        (user) =>
+                                          user?.user?._id !== authUser?.user._id
+                                      )?.user?._id
+                                  )?.last
+                                )}
+                              </span>
+                            </p>
+                          )}
+                      </>
                     )}
                   </>
                 ) : (
@@ -616,9 +650,25 @@ const ChatWindow = () => {
                   </>
                 )}
               </div>
-              <div className="absolute -right-0 -bottom-0 sm:hidden">
-                <span className="size-2 rounded-full bg-success inline-block" />
-              </div>
+              {selectedConversation?.conversation?.type !== "chatbot" ? (
+                <>
+                  {selectedConversation?.users?.some(
+                    (user) =>
+                      user?.user?._id !== authUser?.user._id &&
+                      userPresenceList.find(
+                        (u) => u.userId === user?.user?._id && u.online
+                      )
+                  ) && (
+                    <div className="absolute -right-0 -bottom-0 sm:hidden">
+                      <span className="size-2 rounded-full bg-success inline-block" />
+                    </div>
+                  )}
+                </>
+              ) : (
+                <div className="absolute -right-0 -bottom-0 sm:hidden">
+                  <span className="size-2 rounded-full bg-success inline-block" />
+                </div>
+              )}
             </div>
 
             <div className={`flex ${isOpenUtils ? "pr-64 lg:pr-0" : ""}`}>

@@ -14,7 +14,7 @@ const ConversationCard_ChatsPage_Sidebar = ({
   );
   const setConversations = useChatStore((s) => s.setConversations);
   const conversations = useChatStore((s) => s.conversations);
-  const onlineUsers = useAuthStore((s) => s.onlineUsers);
+  const userPresenceList = useAuthStore((s) => s.userPresenceList);
   const authUser = useAuthStore((s) => s.authUser);
 
   return (
@@ -61,7 +61,9 @@ const ConversationCard_ChatsPage_Sidebar = ({
           conversation?.users?.some(
             (user) =>
               user?.user?._id !== authUser?.user._id &&
-              onlineUsers.includes(user?.user?._id)
+              userPresenceList.find(
+                (u) => u.userId === user?.user?._id && u.online
+              )
           )) && (
           <>
             <div className="absolute left-8 -bottom-0">

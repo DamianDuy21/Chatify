@@ -11,7 +11,7 @@ const io = new Server(server, {
   },
 });
 
-const HEARTBEAT_TIMEOUT_MS = 180000;
+const HEARTBEAT_TIMEOUT_MS = 300000;
 
 // for send messages
 const userSocketMap = {};
@@ -19,10 +19,12 @@ const userSocketMap = {};
 // for get online users: userId -> { last: number, timeout: NodeJS.Timeout, online: boolean }
 const userPresence = new Map();
 
-const getOnlineUsers = () =>
-  [...userPresence.entries()]
-    .filter(([, v]) => v.online === true)
-    .map(([userId]) => String(userId));
+const getUserPresenceList = () =>
+  [...userPresence.entries()].map(([userId, v]) => ({
+    userId: String(userId),
+    online: Boolean(v.online),
+    last: Number(v.last || 0),
+  }));
 
 const markOnline = (userId) => {
   const now = Date.now();
@@ -31,20 +33,20 @@ const markOnline = (userId) => {
   // hủy timer cũ
   if (prev.timeout) clearTimeout(prev.timeout);
 
-  // nếu không có heartbeat mới trong 3m -> offline
+  // nếu không có heartbeat mới trong 5m -> offline
   const timeout = setTimeout(() => {
     const p = userPresence.get(userId);
     if (!p) return;
     p.online = false;
     userPresence.set(userId, p);
-    io.emit("getOnlineUsers", getOnlineUsers());
+    io.emit("getUserPresenceList", getUserPresenceList());
   }, HEARTBEAT_TIMEOUT_MS);
 
   userPresence.set(userId, { last: now, timeout, online: true });
 
   // chỉ emit khi mới online hoặc trước đó offline
   if (!prev.online) {
-    io.emit("getOnlineUsers", getOnlineUsers());
+    io.emit("getUserPresenceList", getUserPresenceList());
   }
 };
 
@@ -54,7 +56,7 @@ const maybeMarkOfflineImmediately = (userId) => {
     const p = userPresence.get(userId);
     if (p?.timeout) clearTimeout(p.timeout);
     userPresence.set(userId, { last: Date.now(), online: false });
-    io.emit("getOnlineUsers", getOnlineUsers());
+    io.emit("getUserPresenceList", getUserPresenceList());
   }
 };
 
@@ -79,7 +81,7 @@ io.on("connection", (socket) => {
     markOnline(userId);
   });
 
-  io.emit("getOnlineUsers", getOnlineUsers());
+  io.emit("getUserPresenceList", getUserPresenceList());
 
   socket.on("disconnect", () => {
     console.log("User disconnected:", socket.id);

@@ -20,6 +20,8 @@ import { useLanguageStore } from "./stores/useLanguageStore.js";
 import { useThemeStore } from "./stores/useThemeStore.js";
 
 const App = () => {
+  const userPresenceList = useAuthStore((s) => s.userPresenceList);
+  console.log("User Presence List:", userPresenceList);
   const authUser = useAuthStore((s) => s.authUser);
   const checkAuthAuthStore = useAuthStore((s) => s.checkAuthAuthStore);
   const isGettingAuthUser = useAuthStore((s) => s.isGettingAuthUser);

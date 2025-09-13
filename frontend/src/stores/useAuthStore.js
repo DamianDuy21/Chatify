@@ -14,7 +14,8 @@ export const useAuthStore = create(
     (set, get) => ({
       // ---------- STATE ----------
       authUser: null,
-      onlineUsers: [],
+      userPresenceList: [],
+
       socket: null,
 
       isGettingAuthUser: false,
@@ -90,7 +91,7 @@ export const useAuthStore = create(
           }
         });
 
-        s.on("getOnlineUsers", (userIds) => set({ onlineUsers: userIds }));
+        s.on("getUserPresenceList", (list) => set({ userPresenceList: list }));
 
         s.connect();
         set({ socket: s });
