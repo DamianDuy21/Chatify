@@ -21,6 +21,8 @@ const FriendCard_GroupChatMemberList = ({
   onSuccessDeleteMember = () => {},
 }) => {
   const authUser = useAuthStore((s) => s.authUser);
+  const userPresenceList = useAuthStore((s) => s.userPresenceList);
+
   const selectedConversation = useChatStore((s) => s.selectedConversation);
 
   const isKeyMember = friend?.isKeyMember;
@@ -91,9 +93,13 @@ const FriendCard_GroupChatMemberList = ({
             </div>
           </div>
 
-          <div className="absolute left-8 -bottom-0">
-            <span className="size-2 rounded-full bg-success inline-block" />
-          </div>
+          {userPresenceList.find(
+            (u) => u.userId === friend?.user?._id && u.online
+          ) && (
+            <div className="absolute left-8 -bottom-0">
+              <span className="size-2 rounded-full bg-success inline-block" />
+            </div>
+          )}
 
           <div className={`flex items-center gap-2`}>
             {isKeyMember && <Crown className="size-4 text-primary" />}

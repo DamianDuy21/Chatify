@@ -298,7 +298,6 @@ const ChatWindow = () => {
   } = useMutation({
     mutationFn: deleteConversationAPI,
     onSuccess: (data) => {
-      console.log(data);
       setConversations(
         conversations.filter(
           (conversation) =>

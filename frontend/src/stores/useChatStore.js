@@ -345,7 +345,7 @@ export const useChatStore = create((set, get) => ({
                   ...state.selectedConversation,
                   conversation: {
                     ...state.selectedConversation.conversation,
-                    lastMessage: newMessage.message,
+                    lastMessage: newMessage,
                     updatedAt: newMessage.message.createdAt,
                   },
                   messages: [
@@ -393,7 +393,7 @@ export const useChatStore = create((set, get) => ({
                 ...conversation,
                 conversation: {
                   ...conversation.conversation,
-                  lastMessage: newMessage.message,
+                  lastMessage: newMessage,
                   updatedAt: newMessage.message.createdAt,
                 },
                 messages: [...(conversation.messages || []), newMessage],
@@ -436,7 +436,7 @@ export const useChatStore = create((set, get) => ({
                 ...conversation,
                 conversation: {
                   ...conversation.conversation,
-                  lastMessage: newMessage.message,
+                  lastMessage: newMessage,
                   updatedAt: newMessage.message.createdAt,
                 },
                 messages: [...(conversation.messages || []), newMessage],
@@ -478,7 +478,7 @@ export const useChatStore = create((set, get) => ({
                 ...conversation,
                 conversation: {
                   ...conversation.conversation,
-                  lastMessage: newMessage.message,
+                  lastMessage: newMessage,
                   updatedAt: newMessage.message.createdAt,
                 },
                 messages: [...(conversation.messages || []), newMessage],
@@ -494,7 +494,7 @@ export const useChatStore = create((set, get) => ({
                 ...state.selectedConversation,
                 conversation: {
                   ...state.selectedConversation.conversation,
-                  lastMessage: newMessage.message,
+                  lastMessage: newMessage,
                   updatedAt: newMessage.message.createdAt,
                 },
                 messages: [

@@ -86,8 +86,20 @@ const ConversationCard_ChatsPage_Sidebar = ({
               ? conversation?.users[0]?.user?.fullName
               : conversation?.conversation?.name}
           </p>
+
           <p className="text-xs opacity-70 line-clamp-1">
-            {conversation?.conversation?.lastMessage?.content ||
+            <span>
+              {conversation?.conversation?.lastMessage?.message?.content
+                ? conversation?.conversation?.lastMessage?.sender?.fullName
+                  ? conversation?.conversation?.lastMessage?.sender?._id ===
+                    authUser?.user?._id
+                    ? "Bạn: "
+                    : `${conversation.conversation.lastMessage.sender.fullName}: `
+                  : "Chatbot: "
+                : null}
+            </span>
+
+            {conversation?.conversation?.lastMessage?.message?.content ||
               "Bắt đầu trò chuyện ngay"}
           </p>
         </div>

@@ -60,7 +60,7 @@ const NoChatSelected = ({ hasFriends }) => {
         );
       }
     } catch (err) {
-      console.log(err);
+      console.log("Error:", err);
       showToast({
         message:
           err?.response?.data?.message ||

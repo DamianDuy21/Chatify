@@ -330,7 +330,7 @@ export const getConversations = async (req, res) => {
           })
         );
 
-        const lastMessage = sortedMessages[sortedMessages.length - 1];
+        const lastMessage = fullDataMessages[fullDataMessages.length - 1];
 
         const settings = await ConversationSetting.findOne({
           conversationId: conversation._id,
@@ -343,7 +343,7 @@ export const getConversations = async (req, res) => {
             lastMessage: lastMessage || null,
             settings,
             updatedAt: lastMessage
-              ? lastMessage.createdAt
+              ? lastMessage.message.createdAt
               : conversation.updatedAt,
           },
           messages: fullDataMessages,
