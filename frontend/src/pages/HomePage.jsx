@@ -50,7 +50,12 @@ const HomePage = () => {
   const [isLoadingOutgoingFriendRequests, setIsLoadingOutgoingFriendRequests] =
     useState(false);
 
-  const [totalPages, setTotalPages] = useState(1);
+  const [totalRecommendedUsersPages, setTotalRecommendedUsersPages] =
+    useState(1);
+  const [
+    totalOutgoingFriendRequestsPages,
+    setTotalOutgoingFriendRequestsPages,
+  ] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 12;
 
@@ -105,28 +110,29 @@ const HomePage = () => {
       });
     }
 
-    if (recommendedUserQuantity <= pageSize) {
-      setRecommendedUsers((prev) =>
-        prev.filter((user) => user.user._id !== otherUserId)
-      );
-      setRecommendedUserQuantity((prev) => prev - 1);
-      fetchOutgoingFriendRequests({ page: 1 });
-      return;
-    }
-
-    if (
-      recommendedUserQuantity == (currentPage - 1) * pageSize + 1 &&
-      currentPage > 1
-    ) {
-      setCurrentPage(currentPage - 1);
-      fetchOutgoingFriendRequests({ page: 1 });
-      if (!isShowMoreRecommendedUsers) {
-        fetchRecommendedUsers({
-          fullName,
-          nativeLanguage,
-          learningLanguage,
-          page: currentPage - 1,
-        });
+    // done: nếu ở trang cuối thì xóa sẽ đúng hơn là chỉ ở trang 1
+    // xóa thì xét trang cuối cùng, thêm vào thì xét trang đầu tiên
+    if (currentPage == totalRecommendedUsersPages) {
+      if (
+        recommendedUserQuantity == (currentPage - 1) * pageSize + 1 &&
+        currentPage > 1
+      ) {
+        setCurrentPage(currentPage - 1);
+        if (!isShowMoreRecommendedUsers) {
+          fetchRecommendedUsers({
+            fullName,
+            nativeLanguage,
+            learningLanguage,
+            page: currentPage - 1,
+          });
+        }
+        // fetchOutgoingFriendRequests({ page: 1 });
+      } else {
+        setRecommendedUsers((prev) =>
+          prev.filter((user) => user.user._id !== otherUserId)
+        );
+        setRecommendedUserQuantity((prev) => prev - 1);
+        // fetchOutgoingFriendRequests({ page: 1 });
       }
     } else {
       fetchRecommendedUsers({
@@ -135,7 +141,17 @@ const HomePage = () => {
         learningLanguage,
         page: currentPage,
       });
-      fetchOutgoingFriendRequests({ page: 1 });
+    }
+
+    if (
+      !isShowMoreFriendRequests ||
+      (isShowMoreFriendRequests && currentPage == 1)
+    ) {
+      setOutgoingFriendRequests((prev) => [data.data, ...prev]);
+      setOutgoingFriendRequestsQuantity((prev) => prev + 1);
+      setTotalOutgoingFriendRequestsPages(
+        Math.ceil((outgoingFriendRequestsQuantity + 1) / pageSize)
+      );
     }
   };
 
@@ -195,41 +211,34 @@ const HomePage = () => {
       });
     }
 
-    if (outgoingFriendRequestsQuantity <= pageSize) {
-      setOutgoingFriendRequests((prev) =>
-        prev.filter((request) => request.user._id !== otherUserId)
-      );
-      setOutgoingFriendRequestsQuantity((prev) => prev - 1);
-      fetchRecommendedUsers({
-        fullName,
-        nativeLanguage,
-        learningLanguage,
-        page: 1,
-      });
-      return;
-    }
-
-    if (
-      outgoingFriendRequestsQuantity == (currentPage - 1) * pageSize + 1 &&
-      currentPage > 1
-    ) {
-      setCurrentPage(currentPage - 1);
-      if (!isShowMoreFriendRequests) {
-        fetchOutgoingFriendRequests({ page: currentPage - 1 });
+    if (currentPage == totalOutgoingFriendRequestsPages) {
+      if (
+        outgoingFriendRequestsQuantity == (currentPage - 1) * pageSize + 1 &&
+        currentPage > 1
+      ) {
+        setCurrentPage(currentPage - 1);
+        if (!isShowMoreFriendRequests) {
+          fetchOutgoingFriendRequests({ page: currentPage - 1 });
+        }
+        // fetchRecommendedUsers({
+        //   fullName,
+        //   nativeLanguage,
+        //   learningLanguage,
+        //   page: 1,
+        // });
+      } else {
+        setOutgoingFriendRequests((prev) =>
+          prev.filter((request) => request.user._id !== otherUserId)
+        );
+        setOutgoingFriendRequestsQuantity((prev) => prev - 1);
+        //  fetchRecommendedUsers({
+        //   fullName,
+        //   nativeLanguage,
+        //   learningLanguage,
+        //   page: 1,
+        // });
       }
-      fetchRecommendedUsers({
-        fullName,
-        nativeLanguage,
-        learningLanguage,
-        page: 1,
-      });
     } else {
-      fetchRecommendedUsers({
-        fullName,
-        nativeLanguage,
-        learningLanguage,
-        page: 1,
-      });
       fetchOutgoingFriendRequests({ page: currentPage });
     }
   };
@@ -244,7 +253,6 @@ const HomePage = () => {
       if (!isShowMoreFriendRequests) {
         fetchOutgoingFriendRequests({ page: currentPage - 1 });
       }
-
       fetchRecommendedUsers({
         fullName,
         nativeLanguage,
@@ -268,6 +276,7 @@ const HomePage = () => {
       const { data } = await getRecommendedUsersAPI(args);
       setRecommendedUsers(data?.users || []);
       setRecommendedUserQuantity(data?.pagination?.total || 0);
+      setTotalRecommendedUsersPages(data?.pagination?.totalPages || 1);
     } catch (error) {
       console.log("Error fetching recommended users:", error);
       showToast({
@@ -286,6 +295,7 @@ const HomePage = () => {
       const { data } = await getOutgoingFriendRequestsAPI(args);
       setOutgoingFriendRequests(data?.requests || []);
       setOutgoingFriendRequestsQuantity(data?.pagination?.total || 0);
+      setTotalOutgoingFriendRequestsPages(data?.pagination?.totalPages || 1);
     } catch (error) {
       console.log("Error fetching outgoing friend requests:", error);
       showToast({
@@ -354,7 +364,6 @@ const HomePage = () => {
   const handleClickSeeMoreRecommendedUsersButton = () => {
     setIsShowMoreRecommendedUsers(true);
     setCurrentPage(1);
-    setTotalPages(Math.ceil(recommendedUserQuantity / pageSize));
     window.scrollTo({
       top: 0,
       behavior: "smooth",
@@ -389,7 +398,6 @@ const HomePage = () => {
     setIsOpenFilter(false);
     setIsShowMoreFriendRequests(true);
     setCurrentPage(1);
-    setTotalPages(Math.ceil(outgoingFriendRequestsQuantity / pageSize));
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -623,7 +631,11 @@ const HomePage = () => {
           (isShowMoreFriendRequests &&
             outgoingFriendRequestsQuantity > pageSize)) && (
           <CommonPagination
-            totalPages={totalPages}
+            totalPages={
+              isShowMoreRecommendedUsers
+                ? totalRecommendedUsersPages
+                : totalOutgoingFriendRequestsPages
+            }
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}
           />

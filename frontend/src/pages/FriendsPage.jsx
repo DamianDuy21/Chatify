@@ -63,16 +63,18 @@ const FriendsPage = () => {
       });
     }
 
-    if (friendQuantity <= pageSize) {
-      setFriends((prev) =>
-        prev.filter((user) => user.user._id !== otherUserId)
-      );
-      setFriendQuantity((prev) => prev - 1);
-      return;
-    }
-
-    if (friendQuantity == (currentPage - 1) * pageSize + 1 && currentPage > 1) {
-      setCurrentPage(currentPage - 1);
+    if (currentPage == totalPages) {
+      if (
+        friendQuantity == (currentPage - 1) * pageSize + 1 &&
+        currentPage > 1
+      ) {
+        setCurrentPage(currentPage - 1);
+      } else {
+        setFriends((prev) =>
+          prev.filter((user) => user.user._id !== otherUserId)
+        );
+        setFriendQuantity((prev) => prev - 1);
+      }
     } else {
       fetchFriends({
         fullName,

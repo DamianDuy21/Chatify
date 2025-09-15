@@ -1,7 +1,5 @@
-import React from "react";
-
 const CountBadge = ({ count, hoverAble }) => {
-  const displayCount = count > 99 ? "9+" : count;
+  const displayCount = count > 99 ? "99+" : count;
 
   return (
     <div

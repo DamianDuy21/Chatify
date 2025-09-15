@@ -52,7 +52,11 @@ const NotificationsPage = () => {
     useState(false);
 
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalPages, setTotalPages] = useState(1);
+  const [
+    totalIncomingFriendRequestsPages,
+    setTotalIncomingFriendRequestsPages,
+  ] = useState(1);
+  const [totalNotificationsPages, setTotalNotificationsPages] = useState(1);
   const pageSize = 12;
 
   const handleOnSuccessFriendRequest = ({
@@ -121,21 +125,20 @@ const NotificationsPage = () => {
       }
     }
 
-    if (incomingFriendRequestsQuantity <= pageSize) {
-      setIncomingFriendRequests((prev) =>
-        prev.filter((request) => request.user._id != otherUserId)
-      );
-      setIncomingFriendRequestsQuantity((prev) => prev - 1);
-      return;
-    }
-
-    if (
-      incomingFriendRequestsQuantity == (currentPage - 1) * pageSize + 1 &&
-      currentPage > 1
-    ) {
-      setCurrentPage(currentPage - 1);
-      if (!isShowMoreFriendRequests) {
-        fetchIncomingFriendRequests({ page: currentPage - 1 });
+    if (currentPage == totalIncomingFriendRequestsPages) {
+      if (
+        incomingFriendRequestsQuantity == (currentPage - 1) * pageSize + 1 &&
+        currentPage > 1
+      ) {
+        setCurrentPage(currentPage - 1);
+        if (!isShowMoreFriendRequests) {
+          fetchIncomingFriendRequests({ page: currentPage - 1 });
+        }
+      } else {
+        setIncomingFriendRequests((prev) =>
+          prev.filter((request) => request.user._id != otherUserId)
+        );
+        setIncomingFriendRequestsQuantity((prev) => prev - 1);
       }
     } else {
       fetchIncomingFriendRequests({ page: currentPage });
@@ -159,15 +162,6 @@ const NotificationsPage = () => {
   };
 
   const handleOnSuccessAcceptNotification = (notification) => {
-    // if (notificationsQuantity == (currentPage - 1) * pageSize + 1) {
-    //   setCurrentPage(currentPage - 1);
-    //   if (!isShowMoreNotifications) {
-    //     fetchNotifications({ page: currentPage - 1 });
-    //   }
-    // } else {
-    //   fetchNotifications({ page: currentPage });
-    // }
-
     setNotifications((prev) =>
       prev.map((n) => {
         if (n.notification._id === notification.notification._id) {
@@ -182,21 +176,23 @@ const NotificationsPage = () => {
   };
 
   const handleOnSuccessDeleteNotification = (data) => {
-    if (notificationsQuantity <= pageSize) {
-      setNotifications((prev) =>
-        prev.filter(
-          (notification) =>
-            notification.notification._id != data.data.notification._id
-        )
-      );
-      setNotificationsQuantity((prev) => prev - 1);
-      return;
-    }
-
-    if (notificationsQuantity == (currentPage - 1) * pageSize + 1) {
-      setCurrentPage(currentPage - 1);
-      if (!isShowMoreNotifications) {
-        fetchNotifications({ page: currentPage - 1 });
+    if (currentPage == totalNotificationsPages) {
+      if (
+        notificationsQuantity == (currentPage - 1) * pageSize + 1 &&
+        currentPage > 1
+      ) {
+        setCurrentPage(currentPage - 1);
+        if (!isShowMoreNotifications) {
+          fetchNotifications({ page: currentPage - 1 });
+        }
+      } else {
+        setNotifications((prev) =>
+          prev.filter(
+            (notification) =>
+              notification.notification._id != data.data.notification._id
+          )
+        );
+        setNotificationsQuantity((prev) => prev - 1);
       }
     } else {
       fetchNotifications({ page: currentPage });
@@ -220,7 +216,6 @@ const NotificationsPage = () => {
   const handleClickShowMoreIncomingFriendRequests = () => {
     setIsShowMoreFriendRequests(true);
     setCurrentPage(1);
-    setTotalPages(Math.ceil(incomingFriendRequestsQuantity / pageSize));
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -238,7 +233,6 @@ const NotificationsPage = () => {
   const handleClickShowMoreNotifications = () => {
     setIsShowMoreNotifications(true);
     setCurrentPage(1);
-    setTotalPages(Math.ceil(notificationsQuantity / pageSize));
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
@@ -259,6 +253,7 @@ const NotificationsPage = () => {
       const { data } = await getIncomingFriendRequestsAPI(args);
       setIncomingFriendRequests(data.requests);
       setIncomingFriendRequestsQuantity(data.pagination.total);
+      setTotalIncomingFriendRequestsPages(data.pagination.totalPages);
     } catch (error) {
       showToast({
         message: error?.message,
@@ -275,6 +270,7 @@ const NotificationsPage = () => {
       const { data } = await getNotificationsAPI(args);
       setNotifications(data.notifications);
       setNotificationsQuantity(data.pagination.total);
+      setTotalNotificationsPages(data.pagination.totalPages);
     } catch (error) {
       showToast({
         message: error?.message,
@@ -299,7 +295,7 @@ const NotificationsPage = () => {
     }
     if (isShowMoreNotifications) {
       fetchNotifications({
-        currentPage: currentPage,
+        page: currentPage,
       });
       return;
     }
@@ -471,7 +467,11 @@ const NotificationsPage = () => {
           incomingFriendRequestsQuantity > pageSize) ||
           (isShowMoreNotifications && notificationsQuantity > pageSize)) && (
           <CommonPagination
-            totalPages={totalPages}
+            totalPages={
+              isShowMoreFriendRequests
+                ? totalIncomingFriendRequestsPages
+                : totalNotificationsPages
+            }
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}
           />
