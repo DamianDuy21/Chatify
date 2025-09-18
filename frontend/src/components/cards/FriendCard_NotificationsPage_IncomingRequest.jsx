@@ -48,6 +48,7 @@ const FriendCard_NotificationsPage_IncomingRequest = ({
         });
       },
       onError: (error) => {
+        console.log("Error rejecting friend request:", error);
         onError();
         showToast({
           message:

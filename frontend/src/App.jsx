@@ -18,9 +18,9 @@ import { useAuthStore } from "./stores/useAuthStore.js";
 import { useChatStore } from "./stores/useChatStore.js";
 import { useLanguageStore } from "./stores/useLanguageStore.js";
 import { useThemeStore } from "./stores/useThemeStore.js";
+import { useNotificationStore } from "./stores/useNotificationStore.js";
 
 const App = () => {
-  const userPresenceList = useAuthStore((s) => s.userPresenceList);
   const authUser = useAuthStore((s) => s.authUser);
   const checkAuthAuthStore = useAuthStore((s) => s.checkAuthAuthStore);
   const isGettingAuthUser = useAuthStore((s) => s.isGettingAuthUser);
@@ -30,6 +30,12 @@ const App = () => {
   const subscribeToMessages = useChatStore((s) => s.subscribeToMessages);
   const unsubscribeFromMessages = useChatStore(
     (s) => s.unsubscribeFromMessages
+  );
+  const subscribeToNotifications = useNotificationStore(
+    (s) => s.subscribeToNotifications
+  );
+  const unsubscribeFromNotifications = useNotificationStore(
+    (s) => s.unsubscribeFromNotifications
   );
   const getTotalConversationQuantityAboveFilter = useChatStore(
     (s) => s.getTotalConversationQuantityAboveFilter
@@ -41,7 +47,8 @@ const App = () => {
     (s) => s.setSelectedConversation
   );
 
-  const socket = useAuthStore((s) => s.socket);
+  const socketChat = useAuthStore((s) => s.socketChat);
+  const socketNotification = useAuthStore((s) => s.socketNotification);
 
   const getLanguages = useLanguageStore((s) => s.getLanguages);
 
@@ -75,12 +82,20 @@ const App = () => {
   }, [getLanguages]);
 
   useEffect(() => {
-    if (!socket) return;
+    if (!socketChat) return;
     subscribeToMessages();
     return () => {
       unsubscribeFromMessages();
     };
-  }, [socket]);
+  }, [socketChat]);
+
+  useEffect(() => {
+    if (!socketNotification) return;
+    subscribeToNotifications();
+    return () => {
+      unsubscribeFromNotifications();
+    };
+  }, [socketNotification]);
 
   if (isGettingAuthUser) {
     return <CommonPageLoader />;

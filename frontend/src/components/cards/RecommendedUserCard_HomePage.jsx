@@ -22,7 +22,7 @@ const RecommendedUserCard_HomePage = ({ user, onSuccess, onError }) => {
     },
     onError: (error) => {
       onError();
-      console.log("Send friend request error:", error);
+      console.log("Error sending friend request:", error);
       showToast({
         message:
           error?.response?.data?.message || "Failed to send friend request",

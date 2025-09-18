@@ -309,9 +309,9 @@ export const useChatStore = create((set, get) => ({
   },
 
   subscribeToMessages: () => {
-    const socket = useAuthStore.getState().socket;
-    if (!socket) return;
-    socket.on("newMessage", async (newMessage) => {
+    const socketChat = useAuthStore.getState().socketChat;
+    if (!socketChat) return;
+    socketChat.on("newMessage", async (newMessage) => {
       const { selectedConversation, conversations, conversationNameFilter } =
         get();
       const newMessageConversationId = newMessage.message.conversationId;
@@ -543,8 +543,8 @@ export const useChatStore = create((set, get) => ({
   },
 
   unsubscribeFromMessages: () => {
-    const socket = useAuthStore.getState().socket;
-    if (!socket) return;
-    socket.off("newMessage");
+    const socketChat = useAuthStore.getState().socketChat;
+    if (!socketChat) return;
+    socketChat.off("newMessage");
   },
 }));

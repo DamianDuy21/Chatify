@@ -11,11 +11,21 @@ import FriendFilterInput from "../components/others/FriendFilterInput.jsx";
 import { getFriendsAPI } from "../lib/api.js";
 import { useChatStore } from "../stores/useChatStore.js";
 import { useAuthStore } from "../stores/useAuthStore.js";
+import { useNotificationStore } from "../stores/useNotificationStore.js";
 
 const FriendsPage = () => {
   const { t } = useTranslation("friendsPage");
 
+  const pendingFriends = useNotificationStore((s) => s.pendingFriends);
+  const setPendingFriends = useNotificationStore((s) => s.setPendingFriends);
+
+  const deleteFriend_NotificationStore = useNotificationStore(
+    (s) => s.deleteFriend_NotificationStore
+  );
+
   const authUser = useAuthStore((s) => s.authUser);
+  const userPresenceList = useAuthStore((s) => s.userPresenceList);
+
   const conversations = useChatStore((s) => s.conversations);
   const setConversations = useChatStore((s) => s.setConversations);
   const selectedConversation = useChatStore((s) => s.selectedConversation);
@@ -83,6 +93,12 @@ const FriendsPage = () => {
         page: currentPage,
       });
     }
+
+    deleteFriend_NotificationStore({
+      userIds: [otherUserId],
+      request: null,
+      user: authUser.user,
+    });
   };
 
   const handleOnErrorDeleteFriend = () => {
@@ -176,7 +192,35 @@ const FriendsPage = () => {
       learningLanguage,
       page: currentPage,
     });
+    setPendingFriends([]);
   }, [currentPage]);
+
+  useEffect(() => {
+    if (pendingFriends.length === 0) return;
+    // thêm vào friends nếu đang ở trang 1
+    if (currentPage == 1) {
+      pendingFriends.forEach((request) => {
+        const exists = friends.find((r) => r.user._id === request.user._id);
+
+        if (exists) {
+          setFriends((prev) =>
+            prev.filter((r) => r.user._id !== exists.user._id)
+          );
+          setFriends((prev) => [request, ...prev]);
+        } else if (!exists) {
+          setFriends((prev) => {
+            if (prev.length >= pageSize) {
+              return [request, ...prev.slice(0, -1)];
+            }
+            return [request, ...prev];
+          });
+          setFriendQuantity((prev) => prev + 1);
+          setTotalPages(Math.ceil((friendQuantity + 1) / pageSize));
+        }
+      });
+      return;
+    }
+  }, [pendingFriends]);
 
   return (
     <>
@@ -238,9 +282,8 @@ const FriendsPage = () => {
                       <div key={friend.user._id || idx}>
                         <FriendCard_v2_FriendsPage
                           friend={friend.user}
-                          conversation={conversations.find(
-                            (c) =>
-                              c.conversation._id === friend.conversation._id
+                          isOnline={userPresenceList.find(
+                            (u) => u.userId === friend.user._id && u.online
                           )}
                           onSuccess={handleOnSuccessDeleteFriend}
                           onError={handleOnErrorDeleteFriend}

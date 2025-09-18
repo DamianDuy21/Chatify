@@ -14,8 +14,28 @@ import NotificationCard_NotificationsPage from "../components/cards/Notification
 import { useAuthStore } from "../stores/useAuthStore.js";
 import { useChatStore } from "../stores/useChatStore.js";
 import { isConversationFitFilter } from "../lib/utils.js";
+import { useNotificationStore } from "../stores/useNotificationStore.js";
 
 const NotificationsPage = () => {
+  const pendingNotifications = useNotificationStore(
+    (s) => s.pendingNotifications
+  );
+  const setPendingNotifications = useNotificationStore(
+    (s) => s.setPendingNotifications
+  );
+  const pendingIncomingRequests = useNotificationStore(
+    (s) => s.pendingIncomingRequests
+  );
+  const setPendingIncomingRequests = useNotificationStore(
+    (s) => s.setPendingIncomingRequests
+  );
+  const rejectFriendRequest_NotificationStore = useNotificationStore(
+    (s) => s.rejectFriendRequest_NotificationStore
+  );
+  const acceptFriendRequest_NotificationStore = useNotificationStore(
+    (s) => s.acceptFriendRequest_NotificationStore
+  );
+
   const authUser = useAuthStore((s) => s.authUser);
   const conversations = useChatStore((s) => s.conversations);
   const setConversations = useChatStore((s) => s.setConversations);
@@ -72,7 +92,7 @@ const NotificationsPage = () => {
         conversations.map((conversation) => ({
           ...conversation,
           users: conversation.users.map((userObj) =>
-            userObj.user._id === otherUserId
+            userObj?.user._id === otherUserId
               ? { ...userObj, isSendFriendRequest: false }
               : userObj
           ),
@@ -87,6 +107,12 @@ const NotificationsPage = () => {
               : userObj
           ),
         });
+
+      rejectFriendRequest_NotificationStore({
+        userIds: [otherUserId],
+        request: data.data.request,
+        user: authUser.user,
+      });
     } else {
       setConversations(
         conversations.map((conversation) => ({
@@ -107,6 +133,18 @@ const NotificationsPage = () => {
               : userObj
           ),
         });
+
+      acceptFriendRequest_NotificationStore({
+        userIds: [otherUserId],
+        request: data.data.request,
+        conversation: data.data.conversation.conversation,
+        conversationIsNewCreated: data.data.isNewCreated
+          ? data.data.conversation
+          : null,
+        user: authUser.user,
+        notification: data.data.notification,
+      });
+
       if (data.data.isNewCreated) {
         setTotalConversationQuantityAboveFilter(
           totalConversationQuantityAboveFilter + 1
@@ -125,6 +163,7 @@ const NotificationsPage = () => {
       }
     }
 
+    // done: nếu ở trang cuối thì xóa
     if (currentPage == totalIncomingFriendRequestsPages) {
       if (
         incomingFriendRequestsQuantity == (currentPage - 1) * pageSize + 1 &&
@@ -291,15 +330,81 @@ const NotificationsPage = () => {
       fetchIncomingFriendRequests({
         page: currentPage,
       });
+      setPendingIncomingRequests([]);
       return;
     }
     if (isShowMoreNotifications) {
       fetchNotifications({
         page: currentPage,
       });
+      setPendingNotifications([]);
       return;
     }
   }, [currentPage]);
+
+  useEffect(() => {
+    if (pendingIncomingRequests.length === 0) return;
+    // thêm vào incomingFriendRequests nếu đang ở trang 1
+    if (currentPage == 1) {
+      pendingIncomingRequests.forEach((request) => {
+        const exists = incomingFriendRequests.find(
+          (r) => r.user._id === request.user._id
+        );
+
+        if (exists) {
+          setIncomingFriendRequests((prev) =>
+            prev.filter((r) => r.user._id !== exists.user._id)
+          );
+          setIncomingFriendRequests((prev) => [request, ...prev]);
+        }
+
+        if (!exists) {
+          setIncomingFriendRequests((prev) => {
+            if (prev.length >= pageSize) {
+              return [request, ...prev.slice(0, -1)];
+            }
+            return [request, ...prev];
+          });
+          setIncomingFriendRequestsQuantity((prev) => prev + 1);
+          setTotalIncomingFriendRequestsPages(
+            Math.ceil((incomingFriendRequestsQuantity + 1) / pageSize)
+          );
+        }
+      });
+      return;
+    }
+  }, [pendingIncomingRequests]);
+
+  useEffect(() => {
+    if (pendingNotifications.length === 0) return;
+    // thêm vào friends nếu đang ở trang 1
+    if (currentPage == 1) {
+      [...pendingNotifications].reverse().forEach((request) => {
+        const exists = notifications.find(
+          (n) => n.notification._id === request.notification._id
+        );
+
+        if (exists) {
+          setNotifications((prev) =>
+            prev.filter((n) => n.notification._id !== exists.notification._id)
+          );
+          setNotifications((prev) => [request, ...prev]);
+        } else if (!exists) {
+          setNotifications((prev) => {
+            if (prev.length >= pageSize) {
+              return [request, ...prev.slice(0, -1)];
+            }
+            return [request, ...prev];
+          });
+          setNotificationsQuantity((prev) => prev + 1);
+          setTotalNotificationsPages(
+            Math.ceil((notificationsQuantity + 1) / pageSize)
+          );
+        }
+      });
+      return;
+    }
+  }, [pendingNotifications]);
 
   return (
     <>

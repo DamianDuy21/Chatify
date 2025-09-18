@@ -10,6 +10,140 @@ import Profile from "../models/Profile.js";
 import SeenBy from "../models/SeenBy.js";
 import User from "../models/User.js";
 
+export const createPrivateConversation = async (req, res) => {
+  try {
+    const currentUserId = req.user._id;
+    const { userId: otherUserId } = req.body;
+    if (!otherUserId) {
+      return res
+        .status(400)
+        .json({ message: "userId của người dùng khác là bắt buộc" });
+    }
+    if (otherUserId === currentUserId.toString()) {
+      return res
+        .status(400)
+        .json({ message: "Không thể tạo cuộc trò chuyện với chính mình" });
+    }
+    // Kiểm tra xem đã có private conversation giữa 2 user chưa
+    const conversationsMember1 = await ConversationMember.find({
+      userId: currentUserId,
+    });
+    const conversationsMember2 = await ConversationMember.find({
+      userId: otherUserId,
+    });
+
+    const conversationId = conversationsMember1
+      .map((m1) => {
+        const match = conversationsMember2.find(
+          (m2) => m2.conversationId.toString() === m1.conversationId.toString()
+        );
+        return match ? match.conversationId : null;
+      })
+      .filter(Boolean);
+
+    let conversation;
+
+    const c = await Conversation.findOne({
+      _id: { $in: conversationId },
+      type: "private",
+    });
+    if (c) {
+      conversation = c;
+      return res.status(200).json({
+        success: true,
+        data: {
+          conversation: {
+            conversation: {
+              ...conversation.toObject(),
+            },
+          },
+          isNewCreated: false,
+        },
+        message: "Yêu cầu kết bạn đã được chấp nhận",
+      });
+    }
+    if (!conversation) {
+      conversation = await Conversation.create({
+        type: "private",
+      });
+
+      await ConversationMember.create({
+        userId: currentUserId,
+        conversationId: conversation._id,
+      });
+
+      await ConversationMember.create({
+        userId: otherUserId,
+        conversationId: conversation._id,
+      });
+
+      const members = [otherUserId, currentUserId];
+
+      const fullDataMembers = (
+        await Promise.all(
+          members.map(async (memberId) => {
+            const profile = await Profile.findOne({
+              userId: memberId,
+            }).select("-userId -_id -createdAt -updatedAt -__v");
+            if (!profile) return null;
+
+            const user = await User.findById(memberId).select(
+              "-password -createdAt -updatedAt -__v"
+            );
+            if (!user) return null;
+
+            return {
+              user: {
+                ...user.toObject(),
+                profile: {
+                  ...profile.toObject(),
+                },
+              },
+            };
+          })
+        )
+      ).filter((item) => item != null);
+
+      const mySetting = await ConversationSetting.create({
+        conversationId: conversation._id,
+        userId: currentUserId,
+        getNotifications: false,
+        isPinned: false,
+        language: new mongoose.Types.ObjectId("68b26fe629f59a1a322ae67c"),
+        translatedTo: new mongoose.Types.ObjectId("68b26fe629f59a1a322ae67c"),
+      });
+
+      await ConversationSetting.create({
+        conversationId: conversation._id,
+        userId: otherUserId,
+        getNotifications: false,
+        isPinned: false,
+        language: new mongoose.Types.ObjectId("68b26fe629f59a1a322ae67c"),
+        translatedTo: new mongoose.Types.ObjectId("68b26fe629f59a1a322ae67c"),
+      });
+      return res.status(200).json({
+        success: true,
+        data: {
+          conversation: {
+            conversation: {
+              ...conversation.toObject(),
+              settings: { ...mySetting.toObject() },
+            },
+            messages: [],
+            users: fullDataMembers,
+            unSeenMessageQuantity: 0,
+          },
+          isNewCreated: true,
+        },
+        message: "Yêu cầu kết bạn đã được chấp nhận",
+      });
+    }
+  } catch (error) {
+    console.error("Error creating private conversation:", error);
+    res.status(500).json({ message: "Lỗi máy chủ nội bộ" });
+  }
+};
+
 export const getConversations = async (req, res) => {
   try {
     const currentUserId = req.user._id;
@@ -22,6 +156,7 @@ export const getConversations = async (req, res) => {
       conversationName = null,
       conversationId = null,
       conversationType = null,
+      userId = null,
     } = req.query || {};
 
     let conversations;
@@ -39,6 +174,30 @@ export const getConversations = async (req, res) => {
         conversations = await Conversation.find({
           _id: conversationId,
         });
+      } else if (userId) {
+        const conversationsMember1 = await ConversationMember.find({
+          userId: currentUserId,
+        });
+        const conversationsMember2 = await ConversationMember.find({
+          userId: userId,
+        });
+
+        const conversationId = conversationsMember1
+          .map((m1) => {
+            const match = conversationsMember2.find(
+              (m2) =>
+                m2.conversationId.toString() === m1.conversationId.toString()
+            );
+            return match ? match.conversationId : null;
+          })
+          .filter(Boolean); // loại bỏ null
+
+        if (conversationId.length > 0) {
+          conversations = await Conversation.find({
+            _id: { $in: conversationId },
+            type: "private",
+          });
+        }
       } else {
         const nameRegex = conversationName
           ? new RegExp(conversationName, "i")

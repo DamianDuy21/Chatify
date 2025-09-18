@@ -5,6 +5,7 @@ import { getAuthUserAPI, loginAPI, logoutAPI } from "../lib/api.js";
 import { io } from "socket.io-client";
 
 const BACKEND_CHAT_URL = import.meta.env.VITE_BACKEND_CHAT_URL;
+const BACKEND_NOTIFICATION_URL = import.meta.env.VITE_BACKEND_NOTIFICATION_URL;
 
 let __hbTimer = null;
 const HEARTBEAT_TIMEOUT_MS = 60000;
@@ -16,7 +17,8 @@ export const useAuthStore = create(
       authUser: null,
       userPresenceList: [],
 
-      socket: null,
+      socketChat: null,
+      socketNotification: null,
 
       isGettingAuthUser: false,
 
@@ -59,6 +61,7 @@ export const useAuthStore = create(
           get().connectSocket();
         } catch (error) {
           set({ authUser: null });
+          get().disconnectSocket();
           Cookies.remove("jwt");
           console.error("Error checking authentication:", error);
         } finally {
@@ -67,44 +70,54 @@ export const useAuthStore = create(
       },
 
       connectSocket: () => {
-        const { authUser, socket } = get();
-        if (!authUser || socket?.connected) return;
-        const s = io(BACKEND_CHAT_URL, {
+        const { authUser, socketChat } = get();
+        if (!authUser || socketChat?.connected) return;
+        const s_chat = io(BACKEND_CHAT_URL, {
           autoConnect: false,
           query: { userId: authUser?.user?._id },
           transports: ["websocket"],
           reconnection: true,
         });
 
-        s.on("connect", () => {
-          s.emit("heartbeat");
+        const s_notification = io(BACKEND_NOTIFICATION_URL, {
+          autoConnect: false,
+          query: { userId: authUser?.user?._id },
+          transports: ["websocket"],
+          reconnection: true,
+        });
+
+        s_chat.on("connect", () => {
+          s_chat.emit("heartbeat");
           if (__hbTimer) clearInterval(__hbTimer);
           __hbTimer = setInterval(() => {
-            if (s.connected) s.emit("heartbeat");
+            if (s_chat.connected) s_chat.emit("heartbeat");
           }, HEARTBEAT_TIMEOUT_MS);
         });
 
-        s.on("disconnect", () => {
+        s_chat.on("disconnect", () => {
           if (__hbTimer) {
             clearInterval(__hbTimer);
             __hbTimer = null;
           }
         });
 
-        s.on("getUserPresenceList", (list) => set({ userPresenceList: list }));
+        s_chat.on("getUserPresenceList", (list) =>
+          set({ userPresenceList: list })
+        );
 
-        s.connect();
-        set({ socket: s });
+        s_chat.connect();
+        s_notification.connect();
+        set({ socketChat: s_chat, socketNotification: s_notification });
       },
 
       disconnectSocket: () => {
-        if (get().socket?.connected) {
-          get().socket.disconnect();
+        if (get().socketChat?.connected) {
+          get().socketChat.disconnect();
           if (__hbTimer) {
             clearInterval(__hbTimer);
             __hbTimer = null;
           }
-          set({ socket: null });
+          set({ socketChat: null });
         }
       },
     }),

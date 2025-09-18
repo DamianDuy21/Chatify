@@ -172,6 +172,13 @@ export const deleteNotificationAPI = async (notificationId) => {
 };
 
 // FRIENDS PAGE
+export const createPrivateConversationAPI = async (userId) => {
+  const response = await axiosInstance.post("/chat/conversation/private", {
+    userId,
+  });
+  return response.data;
+};
+
 export const getFriendsAPI = async (args = {}) => {
   const {
     fullName = "",
@@ -247,6 +254,7 @@ export const getConversationsAPI = async (args = {}) => {
     conversationName = null,
     conversationId = null,
     conversationType = null,
+    userId = null,
   } = args;
   const response = await axiosInstance.get("/chat/conversations", {
     params: {
@@ -255,6 +263,7 @@ export const getConversationsAPI = async (args = {}) => {
       conversationName,
       conversationId,
       conversationType,
+      userId,
     },
   });
   return response.data;

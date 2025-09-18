@@ -6,9 +6,9 @@ import { generateStreamToken } from "../lib/stream.js";
 import Conversation from "../models/Conversation.js";
 import ConversationMember from "../models/ConversationMember.js";
 import ConversationSetting from "../models/ConversationSetting.js";
-import Friend from "../models/Friend.js";
 import Message from "../models/Message.js";
 import MessageAttachment from "../models/MessageAttachment.js";
+import Notification from "../models/Notification.js";
 import Profile from "../models/Profile.js";
 import SeenBy from "../models/SeenBy.js";
 import User from "../models/User.js";
@@ -598,6 +598,20 @@ export const createGroup = async (req, res) => {
       return res.status(400).json({ message: "Invalid group data" });
     }
 
+    const notificationMembers = memberIds.filter((id) => id != currentUserId);
+
+    const notifications = notificationMembers.map((memberId) => ({
+      userIdRef: currentUserId,
+      userId: memberId,
+      content: `add_to_group-${name}`,
+      status: "pending",
+    }));
+
+    // Tạo thông báo
+    const createGroupNotifications = await Notification.insertMany(
+      notifications
+    );
+
     const newGroup = await Conversation.create({
       name,
       type: "group",
@@ -667,13 +681,17 @@ export const createGroup = async (req, res) => {
       success: true,
       data: {
         conversation: {
-          ...newGroup.toObject(),
-          lastMessage: null,
-          settings: mySetting,
+          conversation: {
+            ...newGroup.toObject(),
+            lastMessage: null,
+            settings: mySetting,
+          },
+          messages: [],
+          users: fullDataMembers,
+          unSeenMessageQuantity: 0,
         },
-        messages: [],
-        users: fullDataMembers,
-        unSeenMessageQuantity: 0,
+
+        notifications: createGroupNotifications,
       },
       message: "Group created successfully",
     });
@@ -684,6 +702,7 @@ export const createGroup = async (req, res) => {
 };
 
 export const addMembersToGroup = async (req, res) => {
+  const currentUserId = req.user._id;
   const conversationId = req.params.id;
   const { memberIds } = req.body;
   try {
@@ -737,6 +756,7 @@ export const addMembersToGroup = async (req, res) => {
           conversationId: conversation._id,
           isKeyMember: false,
         });
+
         await ConversationSetting.create({
           conversationId: conversation._id,
           userId: memberId,
@@ -747,16 +767,34 @@ export const addMembersToGroup = async (req, res) => {
         });
       })
     );
+
+    const notificationMembers = memberIds.filter((id) => id != currentUserId);
+
+    const notifications = notificationMembers.map((memberId) => ({
+      userIdRef: currentUserId,
+      userId: memberId,
+      content: `add_to_group-${conversation.name}`,
+      status: "pending",
+    }));
+
+    // Tạo thông báo
+    const addMembersToGroupNotifications = await Notification.insertMany(
+      notifications
+    );
+
     return res.status(200).json({
       success: true,
       data: {
         conversation: {
-          ...conversation.toObject(),
-          lastMessage: null,
-          settings: null,
+          conversation: {
+            ...conversation.toObject(),
+            lastMessage: null,
+            settings: null,
+          },
+          users: fullDataNewMembers,
+          unSeenMessageQuantity: 0,
         },
-        users: fullDataNewMembers,
-        unSeenMessageQuantity: 0,
+        notifications: addMembersToGroupNotifications,
       },
       message: "Thêm thành viên vào nhóm thành công",
     });
@@ -767,6 +805,7 @@ export const addMembersToGroup = async (req, res) => {
 };
 
 export const deleteMemberFromGroup = async (req, res) => {
+  const currentUserId = req.user._id;
   const conversationId = req.params.id;
   const { memberId } = req.query;
   try {
@@ -784,22 +823,41 @@ export const deleteMemberFromGroup = async (req, res) => {
     if (!member) {
       return res.status(404).json({ message: "Member not found in group" });
     }
+
     await ConversationMember.deleteOne({ _id: member._id });
     await ConversationSetting.deleteOne({
       conversationId,
       userId: memberId,
     });
+
+    const notifications = [
+      {
+        userIdRef: currentUserId,
+        userId: memberId,
+        content: `delete_from_group-${conversation.name}`,
+        status: "pending",
+      },
+    ];
+
+    // Tạo thông báo
+    const createGroupNotifications = await Notification.insertMany(
+      notifications
+    );
+
     return res.status(200).json({
       success: true,
       data: {
         conversation: {
-          ...conversation.toObject(),
-          lastMessage: null,
-          settings: null,
+          conversation: {
+            ...conversation.toObject(),
+            lastMessage: null,
+            settings: null,
+          },
+          user: {
+            _id: memberId,
+          },
         },
-        user: {
-          _id: memberId,
-        },
+        notifications: createGroupNotifications,
       },
       message: "Xóa thành viên khỏi nhóm thành công",
     });
@@ -885,13 +943,39 @@ export const deleteConversation = async (req, res) => {
 
     // ===== Case 1: GROUP/CHATBOT
     if (conversation.type !== "private") {
+      const memberIds = await ConversationMember.find({ conversationId })
+        .distinct("userId")
+        .session(session);
+
+      const notificationMembers = memberIds.filter(
+        (id) => id.toString() !== currentUserId.toString()
+      );
+
+      const notifications = notificationMembers.map((memberId) => ({
+        userIdRef: currentUserId,
+        userId: memberId,
+        content: `delete_group-${conversation.name}`,
+        status: "pending",
+      }));
+
+      const createGroupNotifications = await Notification.insertMany(
+        notifications,
+        { session }
+      );
+
       const stats = await deleteWholeConversation();
       await session.commitTransaction();
       session.endSession();
+
       return res.status(200).json({
         success: true,
         message: "Conversation deleted successfully",
-        ...stats,
+        data: {
+          conversation: {
+            ...stats.data,
+          },
+          notifications: createGroupNotifications,
+        },
       });
     }
 
@@ -902,6 +986,20 @@ export const deleteConversation = async (req, res) => {
 
     const otherMemberId = memberIds.find(
       (id) => id.toString() !== currentUserId.toString()
+    );
+
+    const notifications = [
+      {
+        userIdRef: currentUserId,
+        userId: otherMemberId,
+        content: `delete_private_conversation`,
+        status: "pending",
+      },
+    ];
+
+    const createGroupNotifications = await Notification.insertMany(
+      notifications,
+      { session }
     );
 
     if (!otherMemberId) {
@@ -916,29 +1014,20 @@ export const deleteConversation = async (req, res) => {
       });
     }
 
-    const isFriend = await Friend.findOne({
-      $or: [
-        { firstId: currentUserId, secondId: otherMemberId },
-        { firstId: otherMemberId, secondId: currentUserId },
-      ],
-    }).session(session);
-
-    if (isFriend) {
-      await session.abortTransaction();
-      session.endSession();
-      return res.status(400).json({
-        message: "Không thể xóa cuộc trò chuyện (người dùng là bạn bè)",
-      });
-    }
-
     const stats = await deleteWholeConversation();
 
     await session.commitTransaction();
     session.endSession();
     return res.status(200).json({
       success: true,
+      data: {
+        conversation: {
+          ...stats.data,
+        },
+        notifications: createGroupNotifications,
+      },
+
       message: " Xóa cuộc trò chuyện thành công",
-      ...stats,
     });
   } catch (error) {
     await session.abortTransaction();

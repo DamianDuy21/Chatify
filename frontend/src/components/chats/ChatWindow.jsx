@@ -45,10 +45,21 @@ import {
   formatRelativeTime,
   isConversationFitFilter,
 } from "../../lib/utils.js";
+import { useNotificationStore } from "../../stores/useNotificationStore.js";
 
 const STREAM_API_KEY = import.meta.env.VITE_STREAM_API_KEY;
 
 const ChatWindow = () => {
+  const deleteConversation_NotificationStore = useNotificationStore(
+    (s) => s.deleteConversation_NotificationStore
+  );
+  const leaveGroup_NotificationStore = useNotificationStore(
+    (s) => s.leaveGroup_NotificationStore
+  );
+  const addMembersToGroup_NotificationStore = useNotificationStore(
+    (s) => s.addMembersToGroup_NotificationStore
+  );
+
   const authUser = useAuthStore((s) => s.authUser);
   const userPresenceList = useAuthStore((s) => s.userPresenceList);
   const [chatClient, setChatClient] = useState(null);
@@ -175,12 +186,24 @@ const ChatWindow = () => {
   } = useMutation({
     mutationFn: addMembersToGroupAPI,
     onSuccess: (data) => {
+      let newConversation = conversations
+        .map((c) =>
+          c.conversation._id == data.data.conversation.conversation._id
+            ? {
+                ...c,
+                settings: null,
+                users: [...c.users, ...data.data.conversation.users],
+              }
+            : null
+        )
+        .filter((c) => c);
       setConversations(
         conversations.map((conversation) =>
-          conversation.conversation._id == data.data.conversation._id
+          conversation.conversation._id ==
+          data.data.conversation.conversation._id
             ? {
                 ...conversation,
-                users: [...conversation.users, ...data.data.users],
+                users: [...conversation.users, ...data.data.conversation.users],
               }
             : conversation
         )
@@ -188,9 +211,25 @@ const ChatWindow = () => {
       if (selectedConversation) {
         setSelectedConversation({
           ...selectedConversation,
-          users: [...selectedConversation.users, ...data.data.users],
+          users: [
+            ...selectedConversation.users,
+            ...data.data.conversation.users,
+          ],
         });
       }
+      addMembersToGroup_NotificationStore({
+        userIds: [...selectedFriendIds],
+        userAlreadyInGroup: conversations
+          .find((c) =>
+            c.conversation._id == data.data.conversation.conversation._id
+              ? c
+              : null
+          )
+          ?.users.map((u) => u.user._id),
+        conversation: newConversation[0],
+        notifications: data.data.notifications,
+        user: authUser.user,
+      });
 
       if (closeAddMemberRef.current) closeAddMemberRef.current();
       showToast({
@@ -243,7 +282,7 @@ const ChatWindow = () => {
       });
     },
     onError: (error) => {
-      console.log("Update chat settings error:", error);
+      console.log("Error updating chat settings:", error);
       showToast({
         message:
           error?.response?.data?.message || "Failed to update chat settings",
@@ -277,6 +316,18 @@ const ChatWindow = () => {
           );
         }
         if (closeLeaveGroupRef.current) closeLeaveGroupRef.current();
+
+        leaveGroup_NotificationStore({
+          userIds: [authUser.user._id],
+          userAlreadyInGroup: conversations
+            .find((c) => c.conversation._id === data.data.conversation._id)
+            ?.users.filter((u) => u.user._id !== authUser.user._id)
+            .map((u) => u.user._id),
+          newKeyMemberId: selectedFriendIds[0] || null,
+          conversation: data.data.conversation,
+          user: authUser.user,
+        });
+
         showToast({
           message: data?.message || "Left group successfully!",
           type: "success",
@@ -298,10 +349,12 @@ const ChatWindow = () => {
   } = useMutation({
     mutationFn: deleteConversationAPI,
     onSuccess: (data) => {
+      console.log("Deleted conversation:", data);
       setConversations(
         conversations.filter(
           (conversation) =>
-            conversation.conversation._id !== data.data.conversation._id
+            conversation.conversation._id !==
+            data.data.conversation.conversation._id
         )
       );
       setSelectedConversation(null);
@@ -309,7 +362,7 @@ const ChatWindow = () => {
         totalConversationQuantityAboveFilter - 1
       );
       const isFitFilter = isConversationFitFilter({
-        conversation: data.data,
+        conversation: data.data.conversation,
         conversationNameFilter,
         authUser,
       });
@@ -318,6 +371,13 @@ const ChatWindow = () => {
           totalConversationQuantityUnderFilter - 1
         );
       }
+
+      deleteConversation_NotificationStore({
+        conversation: data.data.conversation.conversation,
+        userIds: selectedConversation.users.map((u) => u.user._id),
+        notifications: data.data.notifications,
+        user: authUser.user,
+      });
 
       showToast({
         message: data?.message || "Delete conversation successfully!",
@@ -724,87 +784,94 @@ const ChatWindow = () => {
                           );
                         }}
                       </CostumedModal>
-                      <CostumedModal
-                        trigger={
-                          <CommonRoundedButton
-                            className={`${
-                              isOpenModalAddMember
-                                ? "btn-secondary"
-                                : "btn-primary"
-                            }`}
-                          >
-                            <UserRoundPlus className="size-4" />
-                          </CommonRoundedButton>
-                        }
-                        onOpen={() => {
-                          setIsOpenModalAddMember(true);
-                        }}
-                        onClose={() => {
-                          setIsOpenModalAddMember(false);
-                          setSelectedFriendIds([]);
-                          setFilterData({
-                            fullName: "",
-                            nativeLanguage: "",
-                            learningLanguage: "",
-                          });
-                        }}
-                        title="Thêm thành viên"
-                      >
-                        {({ close }) => {
-                          closeAddMemberRef.current = close;
-                          return (
-                            <div>
-                              <div
-                                className={`pb-6 text-sm ${
-                                  isAddingMembersToGroup
-                                    ? "pointer-events-none"
-                                    : ""
-                                }`}
-                              >
-                                <div className="space-y-3 -mt-2">
-                                  {/* GROUP MEMBERS */}
-                                  <div className="form-control w-full">
-                                    <div className="flex items-center justify-between">
-                                      <label className="label">
-                                        <span className="label-text">
-                                          Bạn bè
-                                        </span>
-                                      </label>
-                                      <span className="label-text-alt">
-                                        {selectedFriendIds.length} đã chọn
-                                      </span>
-                                    </div>
 
-                                    <CostumedFriendSelectInModal
-                                      isLoadingGetFriends={isLoadingGetFriends}
-                                      friends={friends}
-                                      selectedFriends={selectedFriendIds}
-                                      onSelected={handleSelectedFriend}
-                                      onFiltered={(value) => {
-                                        setFilterData((prev) => ({
-                                          ...prev,
-                                          fullName: value,
-                                        }));
-                                      }}
-                                    />
+                      {authUser?.user?._id ==
+                        selectedConversation?.users?.find((u) => u.isKeyMember)
+                          ?.user?._id && (
+                        <CostumedModal
+                          trigger={
+                            <CommonRoundedButton
+                              className={`${
+                                isOpenModalAddMember
+                                  ? "btn-secondary"
+                                  : "btn-primary"
+                              }`}
+                            >
+                              <UserRoundPlus className="size-4" />
+                            </CommonRoundedButton>
+                          }
+                          onOpen={() => {
+                            setIsOpenModalAddMember(true);
+                          }}
+                          onClose={() => {
+                            setIsOpenModalAddMember(false);
+                            setSelectedFriendIds([]);
+                            setFilterData({
+                              fullName: "",
+                              nativeLanguage: "",
+                              learningLanguage: "",
+                            });
+                          }}
+                          title="Thêm thành viên"
+                        >
+                          {({ close }) => {
+                            closeAddMemberRef.current = close;
+                            return (
+                              <div>
+                                <div
+                                  className={`pb-6 text-sm ${
+                                    isAddingMembersToGroup
+                                      ? "pointer-events-none"
+                                      : ""
+                                  }`}
+                                >
+                                  <div className="space-y-3 -mt-2">
+                                    {/* GROUP MEMBERS */}
+                                    <div className="form-control w-full">
+                                      <div className="flex items-center justify-between">
+                                        <label className="label">
+                                          <span className="label-text">
+                                            Bạn bè
+                                          </span>
+                                        </label>
+                                        <span className="label-text-alt">
+                                          {selectedFriendIds.length} đã chọn
+                                        </span>
+                                      </div>
+
+                                      <CostumedFriendSelectInModal
+                                        isLoadingGetFriends={
+                                          isLoadingGetFriends
+                                        }
+                                        friends={friends}
+                                        selectedFriends={selectedFriendIds}
+                                        onSelected={handleSelectedFriend}
+                                        onFiltered={(value) => {
+                                          setFilterData((prev) => ({
+                                            ...prev,
+                                            fullName: value,
+                                          }));
+                                        }}
+                                      />
+                                    </div>
                                   </div>
                                 </div>
+                                <div className="">
+                                  <button
+                                    className="btn btn-primary w-full hover:btn-primary"
+                                    onClick={handleAddMembersToGroup}
+                                  >
+                                    {isAddingMembersToGroup ? (
+                                      <LoaderIcon className="size-4 animate-spin" />
+                                    ) : null}
+                                    Xác nhận
+                                  </button>
+                                </div>
                               </div>
-                              <div className="">
-                                <button
-                                  className="btn btn-primary w-full hover:btn-primary"
-                                  onClick={handleAddMembersToGroup}
-                                >
-                                  {isAddingMembersToGroup ? (
-                                    <LoaderIcon className="size-4 animate-spin" />
-                                  ) : null}
-                                  Xác nhận
-                                </button>
-                              </div>
-                            </div>
-                          );
-                        }}
-                      </CostumedModal>
+                            );
+                          }}
+                        </CostumedModal>
+                      )}
                     </>
                   )}
 
@@ -892,89 +959,95 @@ const ChatWindow = () => {
                     </CommonRoundedButton>
                     {selectedConversation.conversation.type == "group" && (
                       <>
-                        <CostumedModal
-                          trigger={
-                            <CommonRoundedButton
-                              className={`${
-                                isOpenModalAddMember
-                                  ? "btn-secondary"
-                                  : "btn-primary"
-                              }`}
-                            >
-                              <UserRoundPlus className="size-4" />
-                            </CommonRoundedButton>
-                          }
-                          onOpen={() => {
-                            setIsOpenModalAddMember(true);
-                          }}
-                          onClose={() => {
-                            setIsOpenModalAddMember(false);
-                            setSelectedFriendIds([]);
-                            setFilterData({
-                              fullName: "",
-                              nativeLanguage: "",
-                              learningLanguage: "",
-                            });
-                          }}
-                          title="Thêm thành viên"
-                        >
-                          {({ close }) => {
-                            closeAddMemberRef.current = close;
-                            return (
-                              <div>
-                                <div
-                                  className={`pb-6 text-sm ${
-                                    isAddingMembersToGroup
-                                      ? "pointer-events-none"
-                                      : ""
-                                  }`}
-                                >
-                                  <div className="space-y-3 -mt-2">
-                                    {/* GROUP MEMBERS */}
-                                    <div className="form-control w-full">
-                                      <div className="flex items-center justify-between">
-                                        <label className="label">
-                                          <span className="label-text">
-                                            Bạn bè
+                        {authUser?.user?._id ==
+                          selectedConversation?.users?.find(
+                            (u) => u.isKeyMember
+                          )?.user?._id && (
+                          <CostumedModal
+                            trigger={
+                              <CommonRoundedButton
+                                className={`${
+                                  isOpenModalAddMember
+                                    ? "btn-secondary"
+                                    : "btn-primary"
+                                }`}
+                              >
+                                <UserRoundPlus className="size-4" />
+                              </CommonRoundedButton>
+                            }
+                            onOpen={() => {
+                              setIsOpenModalAddMember(true);
+                            }}
+                            onClose={() => {
+                              setIsOpenModalAddMember(false);
+                              setSelectedFriendIds([]);
+                              setFilterData({
+                                fullName: "",
+                                nativeLanguage: "",
+                                learningLanguage: "",
+                              });
+                            }}
+                            title="Thêm thành viên"
+                          >
+                            {({ close }) => {
+                              closeAddMemberRef.current = close;
+                              return (
+                                <div>
+                                  <div
+                                    className={`pb-6 text-sm ${
+                                      isAddingMembersToGroup
+                                        ? "pointer-events-none"
+                                        : ""
+                                    }`}
+                                  >
+                                    <div className="space-y-3 -mt-2">
+                                      {/* GROUP MEMBERS */}
+                                      <div className="form-control w-full">
+                                        <div className="flex items-center justify-between">
+                                          <label className="label">
+                                            <span className="label-text">
+                                              Bạn bè
+                                            </span>
+                                          </label>
+                                          <span className="label-text-alt">
+                                            {selectedFriendIds.length} đã chọn
                                           </span>
-                                        </label>
-                                        <span className="label-text-alt">
-                                          {selectedFriendIds.length} đã chọn
-                                        </span>
-                                      </div>
+                                        </div>
 
-                                      <CostumedFriendSelectInModal
-                                        isLoadingGetFriends={
-                                          isLoadingGetFriends
-                                        }
-                                        friends={friends}
-                                        selectedFriends={selectedFriendIds}
-                                        onSelected={handleSelectedFriend}
-                                        onFiltered={(value) => {
-                                          setFilterData((prev) => ({
-                                            ...prev,
-                                            fullName: value,
-                                          }));
-                                        }}
-                                      />
+                                        <CostumedFriendSelectInModal
+                                          isLoadingGetFriends={
+                                            isLoadingGetFriends
+                                          }
+                                          friends={friends}
+                                          selectedFriends={selectedFriendIds}
+                                          onSelected={handleSelectedFriend}
+                                          onFiltered={(value) => {
+                                            setFilterData((prev) => ({
+                                              ...prev,
+                                              fullName: value,
+                                            }));
+                                          }}
+                                        />
+                                      </div>
                                     </div>
                                   </div>
+                                  <div className="">
+                                    <button
+                                      className="btn btn-primary w-full hover:btn-primary"
+                                      onClick={handleAddMembersToGroup}
+                                    >
+                                      {isAddingMembersToGroup ? (
+                                        <LoaderIcon className="size-4 animate-spin" />
+                                      ) : null}
+                                      Xác nhận
+                                    </button>
+                                  </div>
                                 </div>
-                                <div className="">
-                                  <button
-                                    className="btn btn-primary w-full hover:btn-primary"
-                                    onClick={handleAddMembersToGroup}
-                                  >
-                                    {isAddingMembersToGroup ? (
-                                      <LoaderIcon className="size-4 animate-spin" />
-                                    ) : null}
-                                    Xác nhận
-                                  </button>
-                                </div>
-                              </div>
-                            );
-                          }}
-                        </CostumedModal>
+                              );
+                            }}
+                          </CostumedModal>
+                        )}
+
                         <CostumedModal
                           trigger={
                             <CommonRoundedButton

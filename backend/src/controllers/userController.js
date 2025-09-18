@@ -331,35 +331,6 @@ export const getFriends = async (req, res) => {
             ],
           }).select("-password -createdAt -updatedAt -__v");
 
-          // Lấy private conversation giữa 2 user
-          const conversationsMember1 = await ConversationMember.find({
-            userId: currentUserId,
-          });
-          const conversationsMember2 = await ConversationMember.find({
-            userId:
-              friend.firstId == currentUserId
-                ? friend.secondId
-                : friend.firstId,
-          });
-
-          const conversationId = conversationsMember1
-            .map((m1) => {
-              const match = conversationsMember2.find(
-                (m2) =>
-                  m2.conversationId.toString() === m1.conversationId.toString()
-              );
-              return match ? match.conversationId : null;
-            })
-            .filter(Boolean); // loại bỏ null
-
-          let conversation;
-          if (conversationId.length > 0) {
-            conversation = await Conversation.findOne({
-              _id: { $in: conversationId },
-              type: "private",
-            });
-          }
-
           if (!user || user.length === 0) return null;
 
           return {
@@ -369,7 +340,6 @@ export const getFriends = async (req, res) => {
                 ...profile.toObject(),
               },
             },
-            conversation,
           };
         })
       )
@@ -563,7 +533,7 @@ export const updateFriendRequest = async (req, res) => {
       });
 
       // Tạo thông báo
-      await Notification.create({
+      const friendRequestAcceptedNotification = await Notification.create({
         userIdRef: currentUserId,
         userId:
           friendRequest.senderId == currentUserId
@@ -605,6 +575,21 @@ export const updateFriendRequest = async (req, res) => {
       });
       if (c) {
         conversation = c;
+        return res.status(200).json({
+          success: true,
+          data: {
+            request: { ...friendRequest.toObject() },
+            conversation: {
+              conversation: {
+                ...conversation.toObject(),
+              },
+              // users: fullDataMembers,
+            },
+            notification: { ...friendRequestAcceptedNotification.toObject() },
+            isNewCreated: false,
+          },
+          message: "Yêu cầu kết bạn đã được chấp nhận",
+        });
       }
       if (!conversation) {
         conversation = await Conversation.create({
@@ -621,7 +606,7 @@ export const updateFriendRequest = async (req, res) => {
           conversationId: conversation._id,
         });
 
-        const members = [otherUserId];
+        const members = [otherUserId, currentUserId];
 
         const fullDataMembers = (
           await Promise.all(
@@ -678,20 +663,12 @@ export const updateFriendRequest = async (req, res) => {
               users: fullDataMembers,
               unSeenMessageQuantity: 0,
             },
+            notification: { ...friendRequestAcceptedNotification.toObject() },
             isNewCreated: true,
           },
           message: "Yêu cầu kết bạn đã được chấp nhận",
         });
       }
-      return res.status(200).json({
-        success: true,
-        data: {
-          request: { ...friendRequest.toObject() },
-          conversation: null,
-          isNewCreated: false,
-        },
-        message: "Yêu cầu kết bạn đã được chấp nhận",
-      });
     }
 
     if (type == "reject") {

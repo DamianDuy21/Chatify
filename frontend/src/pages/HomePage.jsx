@@ -22,9 +22,17 @@ import {
 } from "../lib/api.js";
 import { useChatStore } from "../stores/useChatStore.js";
 import { useAuthStore } from "../stores/useAuthStore.js";
+import { useNotificationStore } from "../stores/useNotificationStore.js";
 
 const HomePage = () => {
   const { t } = useTranslation("homePage");
+
+  const sendFriendRequest_NotificationStore = useNotificationStore(
+    (s) => s.sendFriendRequest_NotificationStore
+  );
+  const cancelFriendRequest_NotificationStore = useNotificationStore(
+    (s) => s.cancelFriendRequest_NotificationStore
+  );
 
   const authUser = useAuthStore((s) => s.authUser);
   const conversations = useChatStore((s) => s.conversations);
@@ -110,8 +118,7 @@ const HomePage = () => {
       });
     }
 
-    // done: nếu ở trang cuối thì xóa sẽ đúng hơn là chỉ ở trang 1
-    // xóa thì xét trang cuối cùng, thêm vào thì xét trang đầu tiên
+    // done: nếu ở trang cuối thì xóa
     if (currentPage == totalRecommendedUsersPages) {
       if (
         recommendedUserQuantity == (currentPage - 1) * pageSize + 1 &&
@@ -143,16 +150,29 @@ const HomePage = () => {
       });
     }
 
+    // thêm vào outgoingFriendRequests nếu đang ở trang 1
     if (
       !isShowMoreFriendRequests ||
       (isShowMoreFriendRequests && currentPage == 1)
     ) {
-      setOutgoingFriendRequests((prev) => [data.data, ...prev]);
+      setOutgoingFriendRequests((prev) => {
+        if (prev.length >= pageSize) {
+          return [data.data, ...prev.slice(0, -1)];
+        }
+        return [data.data, ...prev];
+      });
       setOutgoingFriendRequestsQuantity((prev) => prev + 1);
       setTotalOutgoingFriendRequestsPages(
         Math.ceil((outgoingFriendRequestsQuantity + 1) / pageSize)
       );
     }
+
+    // socket emit
+    sendFriendRequest_NotificationStore({
+      userIds: [otherUserId],
+      request: data.data.request,
+      user: authUser.user,
+    });
   };
 
   const handleOnErrorSendFriendRequest = () => {
@@ -241,6 +261,13 @@ const HomePage = () => {
     } else {
       fetchOutgoingFriendRequests({ page: currentPage });
     }
+
+    // socket emit
+    cancelFriendRequest_NotificationStore({
+      userIds: [otherUserId],
+      request: data.data.request,
+      user: authUser.user,
+    });
   };
 
   const handleOnErrorCancelFriendRequest = () => {

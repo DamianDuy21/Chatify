@@ -1,20 +1,32 @@
 import { useMutation } from "@tanstack/react-query";
 import { LoaderIcon, X } from "lucide-react";
-import { useRef } from "react";
-import { deleteFriendAPI } from "../../lib/api.js";
+import { useRef, useState } from "react";
+import {
+  createPrivateConversationAPI,
+  deleteFriendAPI,
+  getConversationsAPI,
+} from "../../lib/api.js";
 import { capitalize, getLocaleById } from "../../lib/utils.js";
 import CommonRoundedButton from "../buttons/CommonRoundedButton.jsx";
 import CountAndMessageBadge from "../buttons/CountAndMessageBadge.jsx";
 import CostumedModal from "../costumed/CostumedModal.jsx";
 import { showToast } from "../costumed/CostumedToast.jsx";
 import { getFlagLanguage, getLanguageFlag } from "./FriendCard_Func.jsx";
-
+import { useNavigate } from "react-router";
+import { useChatStore } from "../../stores/useChatStore";
 const FriendCard_v2_FriendsPage = ({
   friend,
-  conversation,
+  isOnline = false,
   onSuccess,
   onError,
 }) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
+  const setSelectedConversation = useChatStore(
+    (s) => s.setSelectedConversation
+  );
+  const conversations = useChatStore((s) => s.conversations);
+  const setConversations = useChatStore((s) => s.setConversations);
   const closeRef = useRef(null);
   const { mutate: deleteFriendMutation, isPending: isDeleting } = useMutation({
     mutationFn: deleteFriendAPI,
@@ -36,6 +48,49 @@ const FriendCard_v2_FriendsPage = ({
     },
   });
 
+  const handleGetPrivateConversation = async () => {
+    try {
+      setIsLoading(true);
+      const { data } = await getConversationsAPI({
+        userId: friend._id,
+      });
+      if (data && data.conversations.length > 0) {
+        setConversations(
+          conversations.map((c) =>
+            c.conversation._id === data.conversations[0].conversation._id
+              ? { ...c, unSeenMessageQuantity: 0 }
+              : c
+          )
+        );
+        setSelectedConversation(data.conversations[0]);
+        navigate(`/chats`);
+      } else {
+        const { data: newConvData } = await createPrivateConversationAPI(
+          friend._id
+        );
+        if (
+          newConvData &&
+          newConvData.isNewCreated &&
+          newConvData.conversation
+        ) {
+          setConversations([newConvData.conversation, ...conversations]);
+          setSelectedConversation(newConvData.conversation);
+          navigate(`/chats`);
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching or creating private conversation:", error);
+      showToast({
+        message:
+          error?.response?.data?.message ||
+          "Failed to fetch or create private conversation",
+        type: "error",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <div
       key={friend._id}
@@ -51,10 +106,17 @@ const FriendCard_v2_FriendsPage = ({
 
           <div>
             <h3 className="font-semibold text-sm">{friend.fullName}</h3>
-            <p className="text-xs text-success flex items-center gap-1">
-              <span className="size-2 rounded-full bg-success inline-block" />
-              Online
-            </p>
+            {isOnline ? (
+              <p className="text-xs text-success flex items-center gap-1">
+                <span className="size-2 rounded-full bg-success inline-block" />
+                Online
+              </p>
+            ) : (
+              <p className="text-xs opacity-70 flex items-center gap-1">
+                <span className="size-2 rounded-full bg-gray-600 opacity-70 inline-block" />
+                Offline
+              </p>
+            )}
           </div>
         </div>
 
@@ -81,7 +143,9 @@ const FriendCard_v2_FriendsPage = ({
         </div>
 
         <CountAndMessageBadge
-          conversation={conversation}
+          // conversation={conversation}
+          onClick={handleGetPrivateConversation}
+          isLoading={isLoading}
           className={"absolute top-2 right-14"}
         ></CountAndMessageBadge>
 

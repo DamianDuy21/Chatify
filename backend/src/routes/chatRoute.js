@@ -1,6 +1,7 @@
 import express from "express";
 
 import {
+  createPrivateConversation,
   getConversations,
   getTotalConversationQuantityAboveFilter,
 } from "../controllers/chatController.js";
@@ -10,6 +11,7 @@ const chatRoute = express.Router();
 
 chatRoute.use(protectedRoute);
 
+chatRoute.post("/conversation/private", createPrivateConversation);
 chatRoute.get("/conversations", getConversations);
 chatRoute.get("/conversations/total", getTotalConversationQuantityAboveFilter);
 

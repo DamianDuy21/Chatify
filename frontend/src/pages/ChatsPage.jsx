@@ -23,8 +23,12 @@ import { createGroupAPI, getFriendsAPI } from "../lib/api.js";
 import { isConversationFitFilter } from "../lib/utils.js";
 import { useAuthStore } from "../stores/useAuthStore.js";
 import { useChatStore } from "../stores/useChatStore.js";
+import { useNotificationStore } from "../stores/useNotificationStore.js";
 
 const ChatsPage = () => {
+  const createGroup_NotificationStore = useNotificationStore(
+    (s) => s.createGroup_NotificationStore
+  );
   const authUser = useAuthStore((s) => s.authUser);
 
   const conversations = useChatStore((s) => s.conversations);
@@ -115,12 +119,12 @@ const ChatsPage = () => {
           totalConversationQuantityAboveFilter + 1
         );
         const isFitFilter = isConversationFitFilter({
-          conversation: data.data,
+          conversation: data.data.conversation,
           conversationNameFilter,
           authUser,
         });
         if (isFitFilter) {
-          setConversations([data.data, ...conversations]);
+          setConversations([data.data.conversation, ...conversations]);
           setTotalConversationQuantityUnderFilter(
             totalConversationQuantityUnderFilter + 1
           );
@@ -129,6 +133,12 @@ const ChatsPage = () => {
         showToast({
           message: data?.message || "Group created successfully!",
           type: "success",
+        });
+        createGroup_NotificationStore({
+          userIds: [...selectedFriendIds],
+          conversation: data.data.conversation,
+          notifications: data.data.notifications,
+          user: authUser.user,
         });
       },
       onError: (error) => {
@@ -437,7 +447,11 @@ const ChatsPage = () => {
             <div className="flex flex-col items-center justify-center">
               {!isOpenSearchFriendsInSmallScreen ? (
                 <div className="h-16 flex items-center justify-center">
-                  <MessageCircleOff className="" />
+                  {isGettingConversations ? (
+                    <LoaderIcon className="size-6 animate-spin" />
+                  ) : (
+                    <MessageCircleOff className="size-6" />
+                  )}
                 </div>
               ) : (
                 <NoDataCommon

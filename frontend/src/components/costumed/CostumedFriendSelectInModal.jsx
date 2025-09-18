@@ -1,7 +1,6 @@
 import { LoaderIcon } from "lucide-react";
 import FriendCard_FriendSelectInModal from "../cards/FriendCard_FriendSelectInModal";
 import CostumedDebounceInput from "./CostumedDebounceInput";
-import NoDataCommon from "../noFounds/NoDataCommon";
 
 const CostumedFriendSelectInModal = ({
   isLoadingGetFriends = false,

@@ -13,6 +13,7 @@ const NotificationCard_NotificationsPage = ({
   onSuccessDelete,
   onError,
 }) => {
+  console.log("Rendering NotificationCard:", notification);
   const { mutate: acceptNotificationMutation, isPending: isAccepting } =
     useMutation({
       mutationFn: acceptNotificationAPI,
@@ -66,8 +67,22 @@ const NotificationCard_NotificationsPage = ({
             {notification.content && (
               <p className="text-sm mb-2">
                 {user?.fullName}{" "}
-                {notification.content == "friend_request_accepted"
+                {notification.content === "friend_request_accepted"
                   ? "đã chấp nhận lời mời kết bạn"
+                  : notification.content.startsWith("add_to_group-")
+                  ? `đã thêm bạn vào nhóm "${
+                      notification.content.split("add_to_group-")[1]
+                    }"`
+                  : notification.content.startsWith("delete_from_group-")
+                  ? `đã xóa bạn khỏi nhóm "${
+                      notification.content.split("delete_from_group-")[1]
+                    }"`
+                  : notification.content.startsWith("delete_group-")
+                  ? `đã giải tán nhóm "${
+                      notification.content.split("delete_group-")[1]
+                    }"`
+                  : notification.content === "delete_private_conversation"
+                  ? "đã xóa cuộc trò chuyện riêng tư với bạn"
                   : ""}
               </p>
             )}

@@ -3,9 +3,17 @@ import { useAuthStore } from "../../stores/useAuthStore";
 import FriendCard_GroupChatMemberList from "../cards/FriendCard_GroupChatMemberList";
 import CostumedDebounceInput from "./CostumedDebounceInput";
 import { useChatStore } from "../../stores/useChatStore";
+import { useNotificationStore } from "../../stores/useNotificationStore";
 
 const CostumedGroupChatMemberList = ({ friends = [] }) => {
   const authUser = useAuthStore((s) => s.authUser);
+
+  const sendFriendRequest_NotificationStore = useNotificationStore(
+    (s) => s.sendFriendRequest_NotificationStore
+  );
+  const deleteMemberFromGroup_NotificationStore = useNotificationStore(
+    (s) => s.deleteMemberFromGroup_NotificationStore
+  );
 
   const selectedConversation = useChatStore((s) => s.selectedConversation);
   const setSelectedConversation = useChatStore(
@@ -41,16 +49,25 @@ const CostumedGroupChatMemberList = ({ friends = [] }) => {
             : userObj
         ),
       });
+
+    // socket emit
+    sendFriendRequest_NotificationStore({
+      userIds: [otherUserId],
+      request: data.data.request,
+      user: authUser.user,
+    });
   };
 
   const handleOnSuccessDeleteMember = (data) => {
+    const otherUserId = data.data.conversation.user._id;
     setConversations(
       conversations.map((conversation) =>
-        conversation.conversation._id === data.data.conversation._id
+        conversation.conversation._id ===
+        data.data.conversation.conversation._id
           ? {
               ...conversation,
               users: conversation.users.filter(
-                (user) => user.user._id !== data.data.user._id
+                (user) => user.user._id !== data.data.conversation.user._id
               ),
             }
           : conversation
@@ -61,9 +78,23 @@ const CostumedGroupChatMemberList = ({ friends = [] }) => {
       setSelectedConversation({
         ...selectedConversation,
         users: selectedConversation.users.filter(
-          (user) => user.user._id !== data.data.user._id
+          (user) => user.user._id !== data.data.conversation.user._id
         ),
       });
+
+    // socket emit
+    deleteMemberFromGroup_NotificationStore({
+      userIds: [otherUserId],
+      userAlreadyInGroup: conversations
+        .find(
+          (c) => c.conversation._id === data.data.conversation.conversation._id
+        )
+        ?.users.filter((u) => u.user._id !== otherUserId)
+        .map((u) => u.user._id),
+      conversation: data.data.conversation,
+      notifications: data.data.notifications,
+      user: authUser.user,
+    });
   };
 
   useEffect(() => {
