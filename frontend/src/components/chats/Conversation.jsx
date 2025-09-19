@@ -1,4 +1,4 @@
-import { ChevronsUp, LoaderIcon } from "lucide-react";
+import { ChevronsDown, ChevronsUp, LoaderIcon } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { GroupedVirtuoso, Virtuoso } from "react-virtuoso";
 import useCalm from "../../hooks/useCalm";
@@ -30,7 +30,10 @@ const Conversation = ({ translatedTo }) => {
   const isGettingMessages = useChatStore((s) => s.isGettingMessages);
 
   const [openedIndex, setOpenedIndex] = useState(-1);
-  const [isFirstVisible, setIsFirstVisible] = useState(false);
+  const [isAtTop, setIsAtTop] = useState(false);
+  const [isAtBottom, setIsAtBottom] = useState(true);
+  const [showScrollBottomBtn, setShowScrollBottomBtn] = useState(false);
+
   const virtuosoRef = useRef(null);
   const didMountRef = useRef(false);
 
@@ -91,6 +94,8 @@ const Conversation = ({ translatedTo }) => {
 
   const isMine = (m) => m?.sender?._id === authUser?.user?._id;
 
+  const lastIndex = Math.max(flat.length - 1, 0);
+
   return (
     <div
       className="w-full h-full relative"
@@ -100,7 +105,7 @@ const Conversation = ({ translatedTo }) => {
         className={`${
           selectedConversation.currentMessagePage <
             selectedConversation.totalMessagePageQuantity &&
-          isFirstVisible &&
+          isAtTop &&
           isCalm
             ? "absolute"
             : "hidden"
@@ -126,12 +131,40 @@ const Conversation = ({ translatedTo }) => {
         </CommonRoundedButton>
       </div>
 
+      <div
+        className={`${
+          showScrollBottomBtn && isCalm ? "absolute" : "hidden"
+        } bottom-0 left-1/2 -translate-x-1/2 z-10 `}
+      >
+        <CommonRoundedButton
+          onClick={() =>
+            virtuosoRef.current?.scrollToIndex({
+              index: Math.max(flat.length - 1, 0),
+              align: "end",
+              behavior: "smooth",
+            })
+          }
+          className={`rounded-full`}
+          type="secondary"
+        >
+          <ChevronsDown className="size-4" />
+        </CommonRoundedButton>
+      </div>
+
       <GroupedVirtuoso
         ref={virtuosoRef}
         // initialTopMostItemIndex={Math.max(flat.length - 1, 0)}
         followOutput="smooth"
         computeItemKey={(i) => flat[i]?._id ?? `idx-${i}`}
-        atTopStateChange={(atTop) => setIsFirstVisible(atTop)} // for the load more message button
+        atTopStateChange={(atTop) => setIsAtTop(atTop)} // for the load more message button
+        atBottomStateChange={(atBottom) => setIsAtBottom(atBottom)} // for the scroll to bottom button
+        rangeChanged={({ startIndex, endIndex }) => {
+          if (startIndex == null || endIndex == null) return;
+
+          const lastVisible = startIndex <= lastIndex && lastIndex <= endIndex;
+
+          setShowScrollBottomBtn(!lastVisible && flat.length > 0);
+        }}
         groupCounts={groupCounts}
         groupContent={(groupIndex) => {
           const key = groupsSorted[groupIndex]?.key;
