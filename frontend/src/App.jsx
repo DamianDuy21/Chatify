@@ -56,7 +56,7 @@ const App = () => {
 
   const isAuthenticated = Boolean(authUser);
 
-  const isOnboarding = authUser?.user?.isOnboarded;
+  const isOnboarded = authUser?.user?.isOnboarded;
 
   useEffect(() => {
     checkAuthAuthStore();
@@ -65,6 +65,10 @@ const App = () => {
   useEffect(() => {
     getConversations();
   }, [getConversations]);
+
+  useEffect(() => {
+    getLanguages();
+  }, [getLanguages]);
 
   useEffect(() => {
     if (!authUser) {
@@ -76,10 +80,6 @@ const App = () => {
     setConversationNameFilter("");
     setSelectedConversation(null);
   }, [authUser]);
-
-  useEffect(() => {
-    getLanguages();
-  }, [getLanguages]);
 
   useEffect(() => {
     if (!socketChat) return;
@@ -103,12 +103,15 @@ const App = () => {
 
   return (
     <>
-      <div className="min-h-screen" data-theme={theme}>
+      <div
+        className="min-h-dvh bg-base-100 text-base-content"
+        data-theme={theme}
+      >
         <Routes>
           <Route
             path="/"
             element={
-              isAuthenticated && isOnboarding ? (
+              isAuthenticated && isOnboarded ? (
                 <MainLayout>
                   <HomePage />
                 </MainLayout>
@@ -120,7 +123,7 @@ const App = () => {
           <Route
             path="/chats"
             element={
-              isAuthenticated && isOnboarding ? (
+              isAuthenticated && isOnboarded ? (
                 <MainLayout>
                   <ChatsPage />
                 </MainLayout>
@@ -132,7 +135,7 @@ const App = () => {
           <Route
             path="/video-call/:id"
             element={
-              isAuthenticated && isOnboarding ? (
+              isAuthenticated && isOnboarded ? (
                 <CallPage />
               ) : (
                 <Navigate to={!isAuthenticated ? "/signin" : "/onboarding"} />
@@ -142,7 +145,7 @@ const App = () => {
           <Route
             path="/notifications"
             element={
-              isAuthenticated && isOnboarding ? (
+              isAuthenticated && isOnboarded ? (
                 <MainLayout>
                   <NotificationsPage />
                 </MainLayout>
@@ -154,7 +157,7 @@ const App = () => {
           <Route
             path="/friends"
             element={
-              isAuthenticated && isOnboarding ? (
+              isAuthenticated && isOnboarded ? (
                 <MainLayout>
                   <FriendsPage />
                 </MainLayout>
@@ -166,7 +169,7 @@ const App = () => {
           <Route
             path="/profile"
             element={
-              isAuthenticated && isOnboarding ? (
+              isAuthenticated && isOnboarded ? (
                 <MainLayout>
                   <ProfilePage />
                 </MainLayout>
@@ -178,7 +181,7 @@ const App = () => {
           <Route
             path="/change-password"
             element={
-              isAuthenticated && isOnboarding ? (
+              isAuthenticated && isOnboarded ? (
                 <MainLayout>
                   <ChangePasswordPage />
                 </MainLayout>
@@ -192,7 +195,7 @@ const App = () => {
             path="/onboarding"
             element={
               isAuthenticated ? (
-                !isOnboarding ? (
+                !isOnboarded ? (
                   <OnboardingPage />
                 ) : (
                   <Navigate to={"/"} />
@@ -208,7 +211,7 @@ const App = () => {
               !isAuthenticated ? (
                 <SignUpPage />
               ) : (
-                <Navigate to={!isOnboarding ? "/onboarding" : "/"} />
+                <Navigate to={!isOnboarded ? "/onboarding" : "/"} />
               )
             }
           />
@@ -218,7 +221,7 @@ const App = () => {
               !isAuthenticated ? (
                 <LoginPage />
               ) : (
-                <Navigate to={!isOnboarding ? "/onboarding" : "/"} />
+                <Navigate to={!isOnboarded ? "/onboarding" : "/"} />
               )
             }
           />
@@ -228,7 +231,7 @@ const App = () => {
               !isAuthenticated ? (
                 <ForgotPasswordPage />
               ) : (
-                <Navigate to={!isOnboarding ? "/onboarding" : "/"} />
+                <Navigate to={!isOnboarded ? "/onboarding" : "/"} />
               )
             }
           />

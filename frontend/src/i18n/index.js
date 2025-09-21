@@ -73,7 +73,7 @@ i18n
       "homePage",
       "friendsPage",
     ],
-    defaultNS: "loginPage", // Default namespace
+    defaultNS: "loginPage",
     interpolation: {
       escapeValue: false,
     },

@@ -1,10 +1,6 @@
 import { File, Forward, LoaderIcon, Smile, X } from "lucide-react";
-import { useCallback, useEffect, useRef, useState } from "react";
-import {
-  formatFileSize,
-  getFileExtension,
-  getLocaleById,
-} from "../../lib/utils";
+import { useCallback, useEffect, useRef } from "react";
+import { formatFileSize, getFileExtension } from "../../lib/utils";
 import { useChatStore } from "../../stores/useChatStore";
 import CommonRoundedButton from "../buttons/CommonRoundedButton";
 import CostumedEmojiPicker from "../costumed/CostumedEmojiPicker";
@@ -324,6 +320,7 @@ const TextEditor = ({
             type="text"
             placeholder="Type a message..."
             className="input input-bordered w-full text-sm"
+            maxLength={1000}
           />
         </div>
         {/* Send button */}

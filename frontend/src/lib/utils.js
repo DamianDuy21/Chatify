@@ -56,14 +56,11 @@ export const copyToClipboard = (text) => {
 };
 
 export const getLocalImageAsFile = async (fileName) => {
-  // Đường dẫn file ảnh (giả sử để trong thư mục public/images/avatar)
   const response = await fetch(`/images/avatar/${fileName}`);
   const blob = await response.blob();
 
-  // Lấy MIME type từ blob
   const fileType = blob.type || "image/png";
 
-  // Tạo File object (giống như khi input chọn file)
   const file = new File([blob], fileName, { type: fileType });
   return file;
 };

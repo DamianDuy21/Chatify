@@ -1,4 +1,8 @@
-export default function Home() {
+import { use } from "react";
+
+export default function Home({ params }) {
+  const { locale } = use(params);
+
   return (
     <main className="p-8">
       <h1 className="text-3xl font-bold text-brand">Chatify on Next 15</h1>

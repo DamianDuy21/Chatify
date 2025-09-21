@@ -36,6 +36,13 @@ export default function LocaleSwitcher({ bordered = true }) {
     }
   };
 
+  const locales = [
+    { locale: "vi", name: "Tiếng Việt" },
+    { locale: "en", name: "English" },
+    { locale: "jp", name: "日本語" },
+    { locale: "id", name: "Bahasa Indonesia" },
+  ];
+
   useEffect(() => {
     if (isOpen) {
       if (ulRef.current) {
@@ -87,24 +94,26 @@ export default function LocaleSwitcher({ bordered = true }) {
             dropUp ? "bottom-14" : "top-14"
           } -right-2`}
         >
-          <li onClick={() => toggleLanguage("vi")}>
-            <div className="btn btn-ghost btn-circle">
-              <img
-                src={getFlagSrcByLocale("vi")}
-                alt="VN"
-                className="w-6 h-6 object-contain"
-              />
-            </div>
-          </li>
-          {/* <li onClick={() => toggleLanguage("en")}>
-            <div className="btn btn-ghost btn-circle">
-              <img
-                src={getFlagSrcByLocale("en")}
-                alt="EN"
-                className="w-6 h-6 object-contain"
-              />
-            </div>
-          </li> */}
+          {locales.map((lang) => (
+            <li
+              onClick={() => toggleLanguage(lang.locale)}
+              key={lang.locale}
+              role="option"
+              aria-selected={i18n.language === lang.locale}
+            >
+              <button
+                className="btn btn-ghost btn-circle"
+                type="button"
+                aria-label={lang.name}
+              >
+                <img
+                  src={getFlagSrcByLocale(lang.locale)}
+                  alt={lang.locale}
+                  className="w-6 h-6 object-contain"
+                />
+              </button>
+            </li>
+          ))}
         </ul>
       )}
     </div>

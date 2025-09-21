@@ -23,7 +23,6 @@ body {
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -32,6 +31,8 @@ body {
   box-sizing: border-box;
   padding: 0;
   margin: 0;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
 a {
@@ -43,4 +44,458 @@ a {
   html {
     color-scheme: dark;
   }
+}
+
+.str-video {
+  height: 100% !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+/* avatar người dùng khi không bật video */
+.str-video__video-placeholder__avatar {
+  width: 40px !important  ;
+  height: 40px !important;
+}
+
+/* bg của user khi không share video */
+.str-video__video-placeholder,
+.str-video__video {
+  --tw-bg-opacity: 1;
+  background-color: var(
+    --fallback-b1,
+    oklch(var(--b1) / var(--tw-bg-opacity, 1))
+  ) !important;
+}
+
+/* layout  */
+.str-video__speaker-layout {
+  display: flex !important;
+  flex-direction: row !important;
+  height: 100% !important;
+}
+
+/* layout */
+.str-video__speaker-layout > div:nth-of-type(1),
+.str-video__speaker-layout > div:nth-of-type(2) {
+  flex: 1;
+}
+
+/* border của frame */
+.str-video__participant-view.str-video__participant-view--no-video.str-video__participant-view--no-audio,
+.str-video__video.str-video__video--mirror {
+  border-radius: var(--rounded-box, 1rem /* 16px */ /* 16px */) !important;
+}
+
+/* gap khi có hơn 2 người và share màn hình */
+.str-video__speaker-layout__participants-bar {
+  display: flex !important;
+  gap: 8px !important;
+}
+
+.str-video__call-controls__button {
+  width: 32px !important;
+  height: 32px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* layout user */
+.str-video__speaker-layout__participants-bar-buttons-wrapper
+  > div:nth-of-type(1) {
+  width: 100% !important;
+}
+
+/* layout user */
+.str-video__speaker-layout__participant-tile {
+  padding: 0 !important;
+  max-width: 100% !important;
+  min-width: none;
+  width: 100% !important;
+  border-radius: var(--rounded-box, 1rem /* 16px */ /* 16px */) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* ẩn cái outline của user khi nói */
+.str-video__participant-view--speaking {
+  outline: none !important;
+}
+
+/* layout của trang */
+@media (max-width: 1024px) {
+  .str-video__speaker-layout {
+    flex-direction: column !important;
+  }
+  .str-video__speaker-layout > div:nth-of-type(1),
+  .str-video__speaker-layout > div:nth-of-type(2) {
+    width: 100% !important;
+    height: calc(50% - 8px) !important;
+    flex: none;
+  }
+  .str-video__speaker-layout__participants-bar-wrapper,
+  .str-video__speaker-layout__participants-bar,
+  .str-video__speaker-layout__participant-tile {
+    height: 100% !important;
+  }
+  .str-video__participant-view {
+    height: 100% !important;
+  }
+  /* layout */
+}
+
+/* cái video trong frame video */
+@media (min-width: 600px) {
+  .str-video__speaker-layout
+    .str-video__speaker-layout__spotlight
+    .str-video__video {
+    object-fit: cover !important;
+  }
+}
+
+/* kích cỡ các nút ở hàng option */
+.str-video__call-controls .str-video__composite-button__button {
+  width: 24px !important;
+  height: 24px !important;
+}
+
+/* do ẩn cái option của mic và video nên thu nhỏ button lại */
+.str-video__composite-button.str-video__composite-button--menu {
+  width: 40px !important;
+  height: 40px !important;
+}
+
+/* dịch icon mic và video sang phải */
+.str-video__composite-button.str-video__composite-button--menu span {
+  position: relative !important;
+  right: -2px !important;
+}
+
+/* ẩn cái thông báo không có quyền truy cập */
+.str-video__no-media-permission,
+.str-video__pending-permission {
+  display: none !important;
+}
+
+/* icon share màn hình trên màn hình share */
+.str-video__icon {
+  width: 20px !important;
+  height: 20px !important;
+}
+
+/* .ẩn record và reaction */
+.str-video__call-controls > div:nth-of-type(3),
+.str-video__call-controls > div:nth-of-type(5) {
+  display: none !important;
+}
+
+/* ẩn option của user */
+.str-video__participant-view > button {
+  display: none !important;
+}
+
+/* ẩn cái option của mic và video */
+.str-video__call-controls__button.str-video__menu-toggle-button {
+  display: none !important;
+}
+
+/* nút end call */
+button.str-video__call-controls__button.str-video__call-controls__button--variant-danger {
+  padding: 8px !important;
+  width: 40px !important;
+  height: 40px !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.str-video__participant-view.str-video__participant-view--dominant-speaker.str-video__participant-view--no-video.str-video__participant-view--no-audio {
+  border-radius: var(--rounded-box, 1rem /* 16px */ /* 16px */) !important;
+  overflow: hidden !important;
+}
+
+/* cái này là selection của audio và video */
+.str-video__device-settings__option,
+.str-video__device-settings__option.str-video__device-settings__option--selected {
+  height: 40px !important;
+}
+
+/* ẩn tooltip đi */
+.str-video__notification,
+.str-video__tooltip {
+  display: none !important;
+}
+
+/* selection của góc trên trái */
+.str-video__generic-menu--item button {
+  height: 36px !important;
+}
+
+/* cái này là phần góc dưới trái */
+.str-video__participant-details {
+  padding: 0px 12px 2.25px 12px !important;
+  width: fit-content !important;
+  height: 32px !important;
+  gap: 8px !important;
+  left: 8px !important;
+  bottom: 8px !important;
+  border-radius: var(--rounded-box, 1rem /* 16px */ /* 16px */) !important;
+}
+
+/* tên user */
+.str-video__participant-details__name {
+  gap: 12px !important;
+  padding: 0 !important;
+  color: white !important;
+}
+
+/* dịch cái tên của góc dưới trái trong frame lên chút */
+.str-video__participant-details__name span {
+  position: relative !important;
+  top: 1px !important;
+}
+
+/* cái này là sóng tín hiệu */
+.str-video__participant-details__connection-quality.str-video__participant-details__connection-quality--excellent,
+.str-video__participant-details__connection-quality.str-video__participant-details__connection-quality--good {
+  height: 32px !important;
+  width: 32px !important;
+  right: 8px !important;
+  bottom: 8px !important;
+  border-radius: var(--rounded-box, 1rem /* 16px */) !important;
+}
+
+/* ẩn cái dòng ở giữa của share screen */
+.str-video__screen-share-overlay__title {
+  display: none !important;
+}
+
+/* css cái nút dừng chia sẻ */
+.str-video__screen-share-overlay__button {
+  height: 40px !important;
+  font-size: 14px !important;
+  background-color: var(--str-video__button-tertiary-base) !important;
+}
+/* css cái nút dừng chia sẻ */
+.str-video__screen-share-overlay__button:hover {
+  background-color: var(--str-video__button-tertiary-hover) !important;
+}
+/* ẩn dấu x ở cái nút dừng chia sẻ */
+.str-video__screen-share-overlay__button > span {
+  display: none !important;
+}
+
+/* Costumed Select */
+.costumedSelect {
+  display: inline-flex;
+  cursor: pointer;
+  user-select: none;
+  appearance: none;
+  height: 3rem /* 48px */;
+  min-height: 3rem /* 48px */;
+  padding-inline: 1rem /* 16px */;
+  font-size: 0.875rem /* 14px */;
+  line-height: 1.25rem /* 20px */;
+  line-height: 2;
+  border-radius: var(--rounded-btn, 0.5rem /* 8px */);
+  border-width: 1px;
+  border-color: var(--fallback-bc, oklch(var(--bc) / 0.2));
+  --tw-bg-opacity: 1;
+  background-color: var(--fallback-b1, oklch(var(--b1) / var(--tw-bg-opacity)));
+}
+.costumedSelect[multiple] {
+  height: auto;
+}
+.costumedSelect:focus {
+  box-shadow: none;
+  border-color: var(--fallback-bc, oklch(var(--bc) / 0.2));
+  outline-style: solid;
+  outline-width: 2px;
+  outline-offset: 2px;
+  outline-color: var(--fallback-bc, oklch(var(--bc) / 0.2));
+}
+.costumedSelect-disabled,
+.costumedSelect:disabled,
+.costumedSelect[disabled] {
+  cursor: not-allowed;
+  --tw-border-opacity: 1;
+  border-color: var(--fallback-b2, oklch(var(--b2) / var(--tw-border-opacity)));
+  --tw-bg-opacity: 1;
+  background-color: var(--fallback-b2, oklch(var(--b2) / var(--tw-bg-opacity)));
+  color: var(--fallback-bc, oklch(var(--bc) / 0.4));
+}
+.costumedSelect-disabled,
+.costumedSelect:disabled,
+.costumedSelect[disabled] {
+  cursor: not-allowed;
+  --tw-border-opacity: 1;
+  border-color: var(--fallback-b2, oklch(var(--b2) / var(--tw-border-opacity)));
+  --tw-bg-opacity: 1;
+  background-color: var(--fallback-b2, oklch(var(--b2) / var(--tw-bg-opacity)));
+  color: var(--fallback-bc, oklch(var(--bc) / 0.4));
+}
+.costumedSelect-disabled::placeholder,
+.costumedSelect:disabled::placeholder,
+.costumedSelect[disabled]::placeholder {
+  color: var(--fallback-bc, oklch(var(--bc) / var(--tw-placeholder-opacity)));
+  --tw-placeholder-opacity: 0.2;
+}
+.costumedSelect-disabled::placeholder,
+.costumedSelect:disabled::placeholder,
+.costumedSelect[disabled]::placeholder {
+  color: var(--fallback-bc, oklch(var(--bc) / var(--tw-placeholder-opacity)));
+  --tw-placeholder-opacity: 0.2;
+}
+.costumedSelect-multiple,
+.costumedSelect[multiple],
+.costumedSelect[size].costumedSelect:not([size="1"]) {
+  background-image: none;
+  padding-right: 1rem /* 16px */;
+}
+.costumedSelect-multiple,
+.costumedSelect[multiple],
+.costumedSelect[size].costumedSelect:not([size="1"]) {
+  background-image: none;
+  padding-right: 1rem /* 16px */;
+}
+.costumedSelect-multiple,
+.costumedSelect[multiple],
+.costumedSelect[size].costumedSelect:not([size="1"]) {
+  background-image: none;
+  padding-right: 1rem /* 16px */;
+}
+[dir="rtl"] .costumedSelect {
+  background-position: calc(0% + 12px) calc(1px + 50%),
+    calc(0% + 16px) calc(1px + 50%);
+}
+
+.costumedSelectOptionContainer {
+  border-radius: var(--rounded-btn, 0.5rem /* 8px */);
+  border-width: 1px;
+  border-color: var(--fallback-bc, oklch(var(--bc) / 0.2));
+  --tw-bg-opacity: 1;
+  background-color: var(--fallback-b1, oklch(var(--b1) / var(--tw-bg-opacity)));
+}
+
+/* Ghi đè font Emoji Picker */
+.epr-main,
+.epr-body,
+.epr-emoji-category-label,
+.epr-search,
+.epr-emoji,
+.epr-preview,
+.epr-emoji-list,
+.epr-search-container input {
+  font-family: "Segoe UI", system-ui, sans-serif !important;
+}
+
+.epr-search-container {
+  font-weight: 500;
+}
+
+.epr-header:first-child {
+  padding-inline: 2px !important;
+  padding-block: 1px !important;
+}
+
+.epr-search-container input {
+  padding-left: 34px;
+  padding-right: 16px;
+  border-color: var(--fallback-bc, oklch(var(--bc) / 0.2)) !important;
+  background-color: var(
+    --fallback-b1,
+    oklch(var(--b1) / var(--tw-bg-opacity))
+  ) !important;
+  --tw-text-opacity: 1;
+  color: var(--fallback-bc, oklch(var(--bc) / var(--tw-text-opacity, 1)));
+  font-size: 14px !important;
+  font-weight: 400 !important;
+}
+
+.epr-search-container input::placeholder {
+  opacity: 70%;
+  font-size: 14px !important;
+}
+
+.epr-search-container button {
+  display: none !important;
+}
+
+.epr-icn-search {
+  opacity: 70%;
+}
+
+.epr-emoji-category h2 {
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.epr-emoji-list li {
+  margin-bottom: 16px;
+}
+
+.epr-emoji-list:last-child {
+  margin-bottom: 0;
+}
+.epr-category-nav {
+  display: none !important;
+}
+
+.epr-emoji-category-label {
+  border-color: var(--fallback-bc, oklch(var(--bc) / 0.2)) !important;
+  --tw-bg-opacity: 0.7 !important;
+  background-color: var(
+    --fallback-b1,
+    oklch(var(--b1) / var(--tw-bg-opacity))
+  ) !important;
+
+  padding-bottom: 0 !important;
+  margin-bottom: 8px !important;
+  cursor: default !important;
+  padding-inline: 12px !important;
+}
+.epr-emoji-category-content {
+  margin-inline: 12px !important;
+  /* padding-block: 8px !important; */
+}
+.epr-main {
+  padding-bottom: 0 !important;
+}
+
+.epr-btn,
+.epr-btn:hover,
+.epr-btn:focus,
+.epr-btn:active {
+  background: none !important;
+  box-shadow: none !important;
+  transition: transform 0.15s ease-in-out;
+}
+
+.epr-btn:hover,
+.epr-btn:focus {
+  transform: scale(1.2) translateX(-0.5px);
+}
+
+/* for overflow text */
+.break-words {
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+/* text editor */
+.tiptap p {
+  min-height: 48px !important;
+}
+
+.ProseMirror {
+  outline: none !important;
+  box-shadow: none !important;
+  border: none !important;
+}
+
+.ProseMirror:focus {
+  outline: none !important;
+  box-shadow: none !important;
 }
