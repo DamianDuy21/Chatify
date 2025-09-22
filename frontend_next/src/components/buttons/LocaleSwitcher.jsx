@@ -102,6 +102,7 @@ export default function LocaleSwitcher({ bordered = true }) {
                 className="btn btn-ghost btn-circle"
                 type="button"
                 aria-label={lang.name}
+                disabled={locale === lang.locale}
               >
                 <img
                   src={getFlagSrcByLocale(lang.locale)}
