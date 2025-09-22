@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { setUserLocale } from "@/services/locale";
 import { useLocale } from "next-intl";
+import Image from "next/image";
 
 const getFlagSrcByLocale = (locale) => {
   switch (locale) {
@@ -71,10 +72,12 @@ export default function LocaleSwitcher({ bordered = true }) {
         aria-haspopup="listbox"
         aria-expanded={isOpen}
       >
-        <img
+        <Image
           src={getFlagSrcByLocale(locale)}
           alt={`${locale} flag`}
           className="w-6 h-6 object-contain"
+          width={24}
+          height={24}
         />
       </button>
 
@@ -102,10 +105,12 @@ export default function LocaleSwitcher({ bordered = true }) {
                 aria-label={lang.name}
                 disabled={locale === lang.locale}
               >
-                <img
+                <Image
                   src={getFlagSrcByLocale(lang.locale)}
                   alt={lang.locale}
                   className="w-6 h-6 object-contain"
+                  width={24}
+                  height={24}
                 />
               </button>
             </li>

@@ -26,7 +26,6 @@ const FriendsPage = () => {
 
   const authUser = useAuthStore((s) => s.authUser);
   const userPresenceList = useAuthStore((s) => s.userPresenceList);
-
   const conversations = useChatStore((s) => s.conversations);
   const setConversations = useChatStore((s) => s.setConversations);
   const selectedConversation = useChatStore((s) => s.selectedConversation);
@@ -284,9 +283,11 @@ const FriendsPage = () => {
                       <div key={friend.user._id || idx}>
                         <FriendCard_v2_FriendsPage
                           friend={friend.user}
-                          isOnline={userPresenceList.find(
-                            (u) => u.userId === friend.user._id && u.online
-                          )}
+                          isOnline={
+                            userPresenceList.find(
+                              (u) => u.userId === friend.user._id && u.online
+                            )?.online
+                          }
                           onSuccess={handleOnSuccessDeleteFriend}
                           onError={handleOnErrorDeleteFriend}
                         />

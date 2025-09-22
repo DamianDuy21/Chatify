@@ -6,6 +6,7 @@ import CommonRoundedButton from "../buttons/CommonRoundedButton";
 import { useMutation } from "@tanstack/react-query";
 import { acceptNotificationAPI, deleteNotificationAPI } from "../../lib/api";
 import { showToast } from "../costumed/CostumedToast";
+import Image from "next/image";
 
 const NotificationCard_NotificationsPage = ({
   notification,
@@ -60,7 +61,12 @@ const NotificationCard_NotificationsPage = ({
         <div className="flex items-start gap-3">
           <div className="avatar">
             <div className="w-10 rounded-full">
-              <img src={user?.profile?.profilePic} alt={""} />
+              <Image
+                src={user?.profile?.profilePic}
+                alt={""}
+                width={40}
+                height={40}
+              />
             </div>
           </div>
           <div className="flex-1">

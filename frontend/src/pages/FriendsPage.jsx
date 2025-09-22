@@ -283,9 +283,11 @@ const FriendsPage = () => {
                       <div key={friend.user._id || idx}>
                         <FriendCard_v2_FriendsPage
                           friend={friend.user}
-                          isOnline={userPresenceList.find(
-                            (u) => u.userId === friend.user._id && u.online
-                          )}
+                          isOnline={
+                            userPresenceList.find(
+                              (u) => u.userId === friend.user._id && u.online
+                            )?.online
+                          }
                           onSuccess={handleOnSuccessDeleteFriend}
                           onError={handleOnErrorDeleteFriend}
                         />

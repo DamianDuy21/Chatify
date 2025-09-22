@@ -16,6 +16,7 @@ import { showToast } from "../costumed/CostumedToast.jsx";
 import { getFlagLanguage, getLanguageFlag } from "./FriendCard_Func.jsx";
 import { useChatStore } from "../../stores/useChatStore";
 import { useRouter } from "next/navigation";
+import Image from "next/image.js";
 const FriendCard_v2_FriendsPage = ({
   friend,
   isOnline = false,
@@ -102,7 +103,12 @@ const FriendCard_v2_FriendsPage = ({
         <div className="flex items-center gap-3">
           <div className="avatar">
             <div className="w-10 rounded-full">
-              <img src={friend.profile.profilePic} alt={friend.fullName} />
+              <Image
+                src={friend.profile.profilePic}
+                alt={friend.fullName}
+                width={40}
+                height={40}
+              />
             </div>
           </div>
 

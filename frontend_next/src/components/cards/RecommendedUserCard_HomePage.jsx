@@ -7,6 +7,7 @@ import { getFlagLanguage, getLanguageFlag } from "./FriendCard_Func";
 import { useMutation } from "@tanstack/react-query";
 import { sendFriendRequestAPI } from "../../lib/api";
 import { showToast } from "../costumed/CostumedToast";
+import Image from "next/image";
 
 const RecommendedUserCard_HomePage = ({ user, onSuccess, onError }) => {
   const {
@@ -40,7 +41,12 @@ const RecommendedUserCard_HomePage = ({ user, onSuccess, onError }) => {
         <div className="flex items-center gap-3">
           <div className="avatar">
             <div className="w-10 rounded-full">
-              <img src={user.profile.profilePic} alt={user.fullName} />
+              <Image
+                src={user.profile.profilePic}
+                alt={user.fullName}
+                width={40}
+                height={40}
+              />
             </div>
           </div>
 

@@ -8,6 +8,7 @@ import CommonRoundedButton from "../buttons/CommonRoundedButton";
 import CostumedModal from "../costumed/CostumedModal";
 import { showToast } from "../costumed/CostumedToast";
 import { getFlagLanguage, getLanguageFlag } from "./FriendCard_Func";
+import Image from "next/image";
 
 const FriendCard_NotificationsPage_IncomingRequest = ({
   friend,
@@ -70,7 +71,12 @@ const FriendCard_NotificationsPage_IncomingRequest = ({
         <div className="flex items-center gap-3">
           <div className="avatar">
             <div className="w-10 rounded-full">
-              <img src={friend.profile.profilePic} alt={friend.fullName} />
+              <Image
+                src={friend.profile.profilePic}
+                alt={friend.fullName}
+                width={40}
+                height={40}
+              />
             </div>
           </div>
 

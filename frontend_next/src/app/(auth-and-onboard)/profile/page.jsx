@@ -16,6 +16,7 @@ import { deepTrimObj } from "@/lib/utils.js";
 import { useAuthStore } from "@/stores/useAuthStore.js";
 import { useLanguageStore } from "@/stores/useLanguageStore.js";
 import Link from "next/link";
+import Image from "next/image";
 
 const ProfilePage = () => {
   const setAuthUser = useAuthStore((s) => s.setAuthUser);
@@ -165,10 +166,12 @@ const ProfilePage = () => {
                 {/* IMAGE PREVIEW */}
                 <div className="size-32 rounded-full bg-base-200 overflow-hidden">
                   {profilePic && (
-                    <img
+                    <Image
                       src={profilePic}
                       alt=""
                       className="w-full h-full object-cover"
+                      width={128}
+                      height={128}
                     />
                   )}
                 </div>
