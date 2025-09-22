@@ -91,7 +91,7 @@ export default function CustomSelect({
               <button
                 type="button"
                 className="block w-full text-left px-4 py-2 hover:bg-base-200 text-sm h-[48px] rounded-btn"
-                onClick={() => handleSelect(null)}
+                onClick={() => handleSelect("")}
               >
                 Hủy lựa chọn
               </button>

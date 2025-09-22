@@ -366,8 +366,8 @@ const SignUpPage = () => {
                     src={`/images/signup_pic/${theme}.png`}
                     alt="Language connection illustration"
                     className="w-full h-full"
-                    width={360}
-                    height={360}
+                    width={1000}
+                    height={1000}
                   />
                 </div>
 

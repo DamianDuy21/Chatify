@@ -1,31 +1,29 @@
 "use client";
-
 import { useMutation } from "@tanstack/react-query";
-import { LoaderIcon, MapPinIcon, ShuffleIcon } from "lucide-react";
+import {
+  LoaderIcon,
+  MapPinIcon,
+  RotateCcwKey,
+  ShuffleIcon,
+} from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 
-import { useTranslation } from "react-i18next";
 import CostumedSelect from "@/components/costumed/CostumedSelect.jsx";
 import { showToast } from "@/components/costumed/CostumedToast.jsx";
-import { onboardingAPI } from "@/lib/api";
-import { deepTrimObj, getProfilePicUrl } from "@/lib/utils.js";
-
-import LocaleSwitcher from "@/components/buttons/LocaleSwitcher.jsx";
-import ThemesSelector from "@/components/buttons/ThemeSelector.jsx";
-
+import { updateProfileAPI } from "@/lib/api.js";
+import { deepTrimObj } from "@/lib/utils.js";
 import { useAuthStore } from "@/stores/useAuthStore.js";
 import { useLanguageStore } from "@/stores/useLanguageStore.js";
-import { useRouter } from "next/navigation";
-import Image from "next/image";
+import Link from "next/link";
 
-const OnboardingPage = () => {
-  const { t } = useTranslation("onboardingPage");
-  const router = useRouter();
-
-  const authUser = useAuthStore((s) => s.authUser);
+const ProfilePage = () => {
   const setAuthUser = useAuthStore((s) => s.setAuthUser);
+  const authUser = useAuthStore((s) => s.authUser);
 
   const languages = useLanguageStore((s) => s.languages);
+
+  const t = useTranslations("ProfilePage");
 
   const [formState, setFormState] = useState({
     bio: authUser?.user?.profile?.bio || "",
@@ -34,13 +32,13 @@ const OnboardingPage = () => {
     location: authUser?.user?.profile?.location || "",
   });
 
+  const [profilePic, setProfilePic] = useState(null);
+  const profilePicInputRef = useRef(null);
+
   const [nativeLanguageSelection, setNativeLanguageSelection] = useState([]);
   const [learningLanguageSelection, setLearningLanguageSelection] = useState(
     []
   );
-
-  const [profilePic, setProfilePic] = useState(null);
-  const profilePicInputRef = useRef(null);
 
   const [nativeLanguage, setNativeLanguage] = useState(
     authUser?.user?.profile?.nativeLanguage || ""
@@ -49,31 +47,34 @@ const OnboardingPage = () => {
     authUser?.user?.profile?.learningLanguage || ""
   );
 
-  const { mutateAsync: onboardingMutation, isPending: isOnboarding } =
+  const { mutateAsync: updateProfileMutation, isPending: isUpdatingProfile } =
     useMutation({
-      mutationFn: onboardingAPI,
+      mutationFn: updateProfileAPI,
       onSuccess: (data) => {
-        setAuthUser(data?.data);
-        router.replace("/");
         showToast({
-          message: data?.message || "Chào mừng bạn đến với Chatify!",
+          message: data.message || "Cập nhật hồ sơ thành công",
           type: "success",
         });
       },
       onError: (error) => {
-        console.error("Onboarding failed:", error);
         showToast({
           message:
-            error.response.data.message || "Có lỗi xảy ra, vui lòng thử lại",
+            error.response.data.message ||
+            "Cập nhật hồ sơ thất bại. Vui lòng thử lại sau.",
           type: "error",
         });
       },
     });
 
-  const validateOnboardingData = () => {
+  const validateProfileData = () => {
     const trimmedFormState = deepTrimObj(formState);
-    trimmedFormState.nativeLanguage = nativeLanguage?._id;
-    trimmedFormState.learningLanguage = learningLanguage?._id;
+    trimmedFormState.nativeLanguage =
+      nativeLanguage?._id ||
+      nativeLanguageSelection.find((lang) => lang._id === nativeLanguage)?._id;
+    trimmedFormState.learningLanguage =
+      learningLanguage?._id ||
+      learningLanguageSelection.find((lang) => lang._id === learningLanguage)
+        ?._id;
     const onboardingData = {
       bio: trimmedFormState.bio,
       location: trimmedFormState.location,
@@ -99,7 +100,7 @@ const OnboardingPage = () => {
   };
 
   const handleRandomAvatar = () => {
-    const idx = Math.floor(Math.random() * 10) + 1;
+    const idx = Math.floor(Math.random() * 10) + 1; // 1-10 included
     const randomAvatar = `https://avatar.iran.liara.run/public/${idx}.png`;
 
     setProfilePic(randomAvatar);
@@ -107,7 +108,7 @@ const OnboardingPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const { message, cleanedData: onboardingData } = validateOnboardingData();
+    const { message, cleanedData: onboardingData } = validateProfileData();
     if (message) {
       showToast({
         message,
@@ -116,48 +117,58 @@ const OnboardingPage = () => {
       return;
     }
     try {
-      const payload = {
+      await updateProfileMutation({
         ...onboardingData,
         profilePic,
-      };
+      });
 
-      await onboardingMutation(payload);
+      await setAuthUser({
+        ...authUser,
+        user: {
+          ...authUser.user,
+          profile: {
+            ...authUser.user.profile,
+            ...onboardingData,
+            profilePic,
+          },
+        },
+      });
     } catch (error) {
       console.error("Onboarding failed:", error);
       showToast({
-        message: error?.message || "Có lỗi xảy ra, vui lòng thử lại",
+        message: error.message || "Onboarding failed",
         type: "error",
       });
     }
   };
 
   useEffect(() => {
+    setProfilePic(authUser?.user?.profile?.profilePic || "");
+  }, [authUser]);
+
+  useEffect(() => {
     setNativeLanguageSelection(languages);
     setLearningLanguageSelection(languages);
-    handleRandomAvatar();
   }, [languages]);
 
   return (
     <>
-      <div className="min-h-screen flex items-center justify-center p-4 sm:p-6 lg:p-8">
+      <div className="min-h-[calc(100vh-64px)]  flex items-center justify-center p-4 sm:p-6 lg:p-6">
         <div className="card bg-base-200 w-full max-w-3xl shadow-lg">
-          <div className="card-body p-8 pb-4">
-            <h1 className="text-3xl font-bold text-center mb-4">
-              Hoàn thiện hồ sơ
+          <div className="card-body p-8">
+            <h1 className="text-2xl sm:text-3xl font-bold text-center mb-4">
+              {t("hero.title")}
             </h1>
-
             <form action="" onSubmit={handleSubmit} className="space-y-3">
               {/* PROFILE PIC CONTAINER */}
               <div className="flex flex-col items-center justify-center space-y-4 relative">
                 {/* IMAGE PREVIEW */}
                 <div className="size-32 rounded-full bg-base-200 overflow-hidden">
                   {profilePic && (
-                    <Image
-                      src={getProfilePicUrl(profilePic)}
+                    <img
+                      src={profilePic}
                       alt=""
                       className="w-full h-full object-cover"
-                      width={128}
-                      height={128}
                     />
                   )}
                 </div>
@@ -191,34 +202,58 @@ const OnboardingPage = () => {
                   <button
                     type="button"
                     onClick={handleRandomAvatar}
-                    className="btn btn-accent"
+                    className="btn btn-secondary"
                   >
                     <ShuffleIcon className="size-4" />
-                    Tạo hình đại diện ngẫu nhiên
+                    {t("hero.genAvatarButton")}
                   </button>
                 </div>
               </div>
 
-              {/* FULL NAME */}
-              <div className="form-control">
-                <label className="label">
-                  <span className="label-text">Họ và tên</span>
-                </label>
-                <input
-                  type="text"
-                  name="fullName"
-                  value={authUser?.user?.fullName || ""}
-                  onChange={() => {}}
-                  className="input input-bordered w-full pointer-events-none text-sm"
-                  placeholder="Nhập họ và tên"
-                  maxLength={50}
-                />
+              {/* EMAIL */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="form-control">
+                  <label className="label">
+                    <span className="label-text">{t("form.email.label")}</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="email"
+                    value={authUser?.user.email}
+                    className="input input-bordered w-full pointer-events-none text-sm"
+                    placeholder={t("form.email.placeholder")}
+                    onChange={() => {}}
+                  />
+                </div>
+                <div className="form-control">
+                  <label className="label">
+                    <span className="label-text">
+                      {t("form.fullName.label")}
+                    </span>
+                  </label>
+                  <input
+                    type="text"
+                    name="fullName"
+                    value={authUser?.user.fullName}
+                    onChange={() => {}}
+                    className="input input-bordered w-full pointer-events-none text-sm"
+                    placeholder={t("form.fullName.placeholder")}
+                    maxLength={50}
+                  />
+                </div>
+              </div>
+
+              <div className="!mt-6">
+                <Link href="/change-password" className="btn btn-primary">
+                  <RotateCcwKey className="size-4" />
+                  {t("form.changePasswordButton")}
+                </Link>
               </div>
 
               {/* BIO */}
               <div className="form-control">
                 <label className="label">
-                  <span className="label-text">Giới thiệu</span>
+                  <span className="label-text">{t("form.bio.label")}</span>
                 </label>
                 <textarea
                   name="bio"
@@ -227,9 +262,7 @@ const OnboardingPage = () => {
                     setFormState({ ...formState, bio: e.target.value })
                   }
                   className="textarea textarea-bordered h-24"
-                  placeholder={
-                    "Giới thiệu bản thân và mục tiêu học ngoại ngữ của bạn"
-                  }
+                  placeholder={t("form.bio.placeholder")}
                 />
               </div>
 
@@ -238,26 +271,36 @@ const OnboardingPage = () => {
                 {/* NATIVE LANGUAGE */}
                 <div className="form-control">
                   <label className="label">
-                    <span className="label-text">Ngôn ngữ mẹ đẻ</span>
+                    <span className="label-text">
+                      {t("form.nativeLanguage.label")}
+                    </span>
                   </label>
 
                   <CostumedSelect
-                    placeholder="Chọn ngôn ngữ mẹ đẻ"
+                    placeholder={t("form.nativeLanguage.placeholder")}
                     options={nativeLanguageSelection}
                     onSelect={(option) => setNativeLanguage(option)}
+                    defaultValue={nativeLanguageSelection.find(
+                      (lang) => lang._id == nativeLanguage
+                    )}
                   />
                 </div>
 
                 {/* LEARNING LANGUAGE */}
                 <div className="form-control">
                   <label className="label">
-                    <span className="label-text">Ngôn ngữ đang học</span>
+                    <span className="label-text">
+                      {t("form.learningLanguage.label")}
+                    </span>
                   </label>
 
                   <CostumedSelect
-                    placeholder="Chọn ngôn ngữ đang học"
+                    placeholder={t("form.learningLanguage.placeholder")}
                     options={learningLanguageSelection}
                     onSelect={(option) => setLearningLanguage(option)}
+                    defaultValue={learningLanguageSelection.find(
+                      (lang) => lang._id == learningLanguage
+                    )}
                   />
                 </div>
               </div>
@@ -265,7 +308,7 @@ const OnboardingPage = () => {
               {/* LOCATION */}
               <div className="form-control">
                 <label className="label">
-                  <span className="label-text">Vị trí</span>
+                  <span className="label-text">{t("form.location.label")}</span>
                 </label>
                 <div className="relative">
                   <MapPinIcon className="absolute top-1/2 transform -translate-y-1/2 left-3 size-5 text-base-content opacity-70" />
@@ -277,7 +320,7 @@ const OnboardingPage = () => {
                       setFormState({ ...formState, location: e.target.value })
                     }
                     className="input input-bordered w-full pl-10 text-sm"
-                    placeholder="Thành phố, bang hoặc khu vực bạn đang sống"
+                    placeholder={t("form.location.placeholder")}
                     maxLength={50}
                   />
                 </div>
@@ -286,23 +329,19 @@ const OnboardingPage = () => {
               {/* SUBMIT BUTTON */}
               <button
                 className="btn btn-primary w-full !mt-6"
-                disabled={isOnboarding}
+                disabled={isUpdatingProfile}
                 type="submit"
               >
-                {!isOnboarding ? (
-                  <>Lưu và tiếp tục</>
+                {!isUpdatingProfile ? (
+                  <>{t("form.submitButton.text")}</>
                 ) : (
                   <>
                     <LoaderIcon className="animate-spin size-5" />
-                    Đang lưu...
+                    {t("form.submitButton.loadingText")}
                   </>
                 )}
               </button>
             </form>
-            <div className="flex items-center justify-center mt-2 gap-2">
-              <ThemesSelector />
-              <LocaleSwitcher />
-            </div>
           </div>
         </div>
       </div>
@@ -310,4 +349,4 @@ const OnboardingPage = () => {
   );
 };
 
-export default OnboardingPage;
+export default ProfilePage;

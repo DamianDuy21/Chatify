@@ -384,6 +384,7 @@ const HomePage = () => {
         learningLanguage: "",
       });
       setIsOpenFilter(false);
+      fetchRecommendedUsers();
     }
     window.scrollTo({ top: 0, behavior: "smooth" });
   };

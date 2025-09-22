@@ -1,20 +1,21 @@
+"use client";
 import { Funnel, LoaderIcon, X } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
-import CommonRoundedButton from "../components/buttons/CommonRoundedButton.jsx";
-import CountBadge from "../components/buttons/CountBadge.jsx";
-import FriendCard_v2_FriendsPage from "../components/cards/FriendCard_FriendsPage.jsx";
-import CommonPagination from "../components/costumed/CostumedPagination.jsx";
-import { showToast } from "../components/costumed/CostumedToast.jsx";
-import NoDataCommon from "../components/noFounds/NoDataCommon.jsx";
-import FriendFilterInput from "../components/others/FriendFilterInput.jsx";
-import { getFriendsAPI } from "../lib/api.js";
-import { useChatStore } from "../stores/useChatStore.js";
-import { useAuthStore } from "../stores/useAuthStore.js";
-import { useNotificationStore } from "../stores/useNotificationStore.js";
+import { useTranslations } from "next-intl";
+import CommonRoundedButton from "@/components/buttons/CommonRoundedButton.jsx";
+import CountBadge from "@/components/buttons/CountBadge.jsx";
+import FriendCard_v2_FriendsPage from "@/components/cards/FriendCard_FriendsPage.jsx";
+import CommonPagination from "@/components/costumed/CostumedPagination.jsx";
+import { showToast } from "@/components/costumed/CostumedToast.jsx";
+import NoDataCommon from "@/components/noFounds/NoDataCommon.jsx";
+import FriendFilterInput from "@/components/others/FriendFilterInput.jsx";
+import { getFriendsAPI } from "@/lib/api.js";
+import { useChatStore } from "@/stores/useChatStore.js";
+import { useAuthStore } from "@/stores/useAuthStore.js";
+import { useNotificationStore } from "@/stores/useNotificationStore.js";
 
 const FriendsPage = () => {
-  const { t } = useTranslation("friendsPage");
+  const t = useTranslations("FriendsPage");
 
   const pendingFriends = useNotificationStore((s) => s.pendingFriends);
   const setPendingFriends = useNotificationStore((s) => s.setPendingFriends);

@@ -9,7 +9,7 @@ import {
   X,
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
+
 import CommonRoundedButton from "@/components/buttons/CommonRoundedButton.jsx";
 import CountBadge from "@/components/buttons/CountBadge.jsx";
 import FriendCard_HomePage_OutgoingRequest from "@/components/cards/FriendCard_HomePage_OutgoingRequest.jsx";
@@ -25,9 +25,10 @@ import {
 import { useChatStore } from "@/stores/useChatStore.js";
 import { useAuthStore } from "@/stores/useAuthStore.js";
 import { useNotificationStore } from "@/stores/useNotificationStore.js";
+import { useTranslations } from "next-intl";
 
 const HomePage = () => {
-  const { t } = useTranslation("homePage");
+  const t = useTranslations("HomePage");
 
   const sendFriendRequest_NotificationStore = useNotificationStore(
     (s) => s.sendFriendRequest_NotificationStore
@@ -386,6 +387,7 @@ const HomePage = () => {
         learningLanguage: "",
       });
       setIsOpenFilter(false);
+      fetchRecommendedUsers();
     }
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -482,7 +484,7 @@ const HomePage = () => {
                 <div className="flex flex-col sm:flex-row items-start justify-between gap-4">
                   <div className="flex items-center gap-4">
                     <h2 className="text-2xl sm:text-2xl font-bold">
-                      Kết nối bạn mới
+                      {t("title")}
                     </h2>
                     {<CountBadge count={recommendedUserQuantity}></CountBadge>}
                   </div>

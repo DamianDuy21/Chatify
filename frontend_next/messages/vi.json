@@ -1,1 +1,112 @@
-{}
+{
+  "HomePage": {
+    "title": "Kết nối bạn mới"
+  },
+  "FriendsPage": {
+    "friendsList": {
+      "title": "Danh sách bạn bè"
+    }
+  },
+  "ProfilePage": {
+    "hero": {
+      "title": "Hồ sơ cá nhân",
+      "genAvatarButton": "Tạo hình đại diện ngẫu nhiên"
+    },
+    "form": {
+      "email": {
+        "label": "Email",
+        "placeholder": "Nhập email của bạn"
+      },
+      "fullName": {
+        "label": "Họ và tên",
+        "placeholder": "Nhập họ và tên của bạn"
+      },
+      "changePasswordButton": "Đổi mật khẩu",
+      "bio": {
+        "label": "Giới thiệu",
+        "placeholder": "Giới thiệu bản thân và mục tiêu học ngoại ngữ của bạn"
+      },
+      "location": {
+        "label": "Vị trí",
+        "placeholder": "Thành phố, bang hoặc khu vực bạn đang sống"
+      },
+      "nativeLanguage": {
+        "label": "Ngôn ngữ mẹ đẻ",
+        "placeholder": "Chọn ngôn ngữ mẹ đẻ"
+      },
+      "learningLanguage": {
+        "label": "Ngôn ngữ bạn đang học",
+        "placeholder": "Chọn ngôn ngữ bạn đang học"
+      },
+      "submitButton": {
+        "text": "Cập nhật",
+        "loadingText": "Đang lưu..."
+      }
+    }
+  },
+  "ChangePasswordPage": {
+    "step1": {
+      "hero": {
+        "title": "Đổi mật khẩu",
+        "subtitle": "Vui lòng nhập mật khẩu hiện tại của bạn và mật khẩu mới."
+      },
+      "form": {
+        "currentPassword": {
+          "label": "Mật khẩu hiện tại",
+          "placeholder": "Nhập mật khẩu hiện tại"
+        },
+        "newPassword": {
+          "label": "Mật khẩu mới",
+          "placeholder": "Nhập mật khẩu mới"
+        },
+        "submitButton": {
+          "text": "Xác nhận",
+          "loadingText": "Đang xác nhận..."
+        }
+      },
+      "toast": {
+        "changePasswordMutation": {
+          "success": "Mã xác thực đã được gửi đến email của bạn",
+          "error": "Đã xảy ra lỗi khi gửi mã xác thực. Vui lòng thử lại."
+        },
+
+        "validateChangePassword": {
+          "allFieldsRequired": "Tất cả các trường đều bắt buộc"
+        },
+        "handleChangePassword": {
+          "error": "Đã xảy ra lỗi khi gửi mã xác thực. Vui lòng thử lại."
+        }
+      }
+    },
+    "step2": {
+      "hero": {
+        "title": "Đổi mật khẩu",
+        "subtitle": "Vui lòng nhập mã xác thực đã gửi đến email của bạn."
+      },
+      "form": {
+        "verificationCode": {
+          "label": "Mã xác thực",
+          "placeholder": "Nhập mã xác thực"
+        },
+        "submitButton": {
+          "text": "Xác nhận",
+          "loadingText": "Đang xác nhận..."
+        },
+        "resend": "Gửi lại"
+      },
+      "toast": {
+        "changePasswordVerificationMutation": {
+          "success": "Đổi mật khẩu thành công",
+          "error": "Đã xảy ra lỗi khi xác thực mã. Vui lòng thử lại."
+        },
+        "validateChangePasswordVerification": {
+          "allFieldsRequired": "Tất cả các trường đều bắt buộc",
+          "invalidVerificationCode": "Mã xác thực không hợp lệ"
+        },
+        "handleChangePasswordVerification": {
+          "error": "Đã xảy ra lỗi khi xác thực mã. Vui lòng thử lại."
+        }
+      }
+    }
+  }
+}

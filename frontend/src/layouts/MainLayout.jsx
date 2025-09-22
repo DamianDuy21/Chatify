@@ -9,18 +9,16 @@ const MainLayout = ({ children }) => {
 
   return (
     <>
-      <div className="min-h-screen bg-base-100 text-base-content">
-        <div className="flex">
-          {/* SIDEBAR */}
-          {isChatPage || isProfilePage || isChangePasswordPage ? null : (
-            <Sidebar />
-          )}
+      <div className="flex">
+        {/* SIDEBAR */}
+        {isChatPage || isProfilePage || isChangePasswordPage ? null : (
+          <Sidebar />
+        )}
 
-          <main className="flex-1 flex flex-col">
-            <Navbar />
-            <main className="flex-1 overflow-y-auto">{children}</main>
-          </main>
-        </div>
+        <main className="flex-1 flex flex-col">
+          <Navbar />
+          <main className="flex-1 overflow-y-auto">{children}</main>
+        </main>
       </div>
     </>
   );
