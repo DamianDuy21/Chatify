@@ -46,12 +46,12 @@ const Sidebar = () => {
     };
   }, []);
 
-  // useEffect(() => {
-  //   const unseenCount = conversations.reduce((total, conv) => {
-  //     return total + (conv.unSeenMessageQuantity || 0);
-  //   }, 0);
-  //   setTotalUnseenMessages(unseenCount);
-  // }, [conversations]);
+  useEffect(() => {
+    const unseenCount = conversations.reduce((total, conv) => {
+      return total + (conv.unSeenMessageQuantity || 0);
+    }, 0);
+    setTotalUnseenMessages(unseenCount);
+  }, [conversations]);
 
   return (
     <>
