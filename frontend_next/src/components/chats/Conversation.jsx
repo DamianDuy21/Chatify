@@ -237,7 +237,7 @@ const Conversation = ({ translatedTo }) => {
                     setOpenedIndex((prev) => (prev === index ? -1 : index))
                   }
                   translatedTo={translatedTo}
-                  isShowAvatar={isGroupHead}
+                  isShowAvatar={isGroupHead || currDate !== prevDate}
                   isShowTime={isGroupTail || currDate !== nextDate}
                 />
               </div>

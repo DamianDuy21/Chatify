@@ -9,6 +9,12 @@ const MainLayout = ({ children }) => {
   const isProfilePage = pathname?.includes("/profile");
   const isChangePasswordPage = pathname?.includes("/change-password");
 
+  const isVideoCallPage = pathname?.includes("/video-call");
+
+  if (isVideoCallPage) {
+    return <>{children}</>;
+  }
+
   return (
     <>
       <div className="min-h-screen">
