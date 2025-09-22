@@ -1,11 +1,10 @@
-import { routing } from "@/i18n/routing";
 import TanstackReactQueryProvider from "@/providers/TanstackReactQueryProvider";
 import ToastProvider from "@/providers/ToastProvider";
-import { NextIntlClientProvider, hasLocale } from "next-intl";
+import { NextIntlClientProvider } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import { cookies } from "next/headers";
-import { notFound } from "next/navigation";
-import "../globals.css";
+import "./globals.css";
+import { getUserLocale } from "@/services/locale";
 
 export const metadata = {
   title: "Chatify",
@@ -48,12 +47,8 @@ const themeInit = `
 })();
 `;
 
-export default async function RootLayout({ children, params }) {
-  const { locale } = await params;
-
-  if (!hasLocale(routing.locales, locale)) {
-    notFound();
-  }
+export default async function RootLayout({ children }) {
+  const locale = await getUserLocale();
 
   setRequestLocale(locale);
   const messages = await getMessages();
@@ -72,7 +67,7 @@ export default async function RootLayout({ children, params }) {
         <meta name="color-scheme" content="light dark" />
       </head>
       <body className="min-h-screen bg-base-100 text-base-content">
-        <NextIntlClientProvider locale={locale} messages={messages}>
+        <NextIntlClientProvider>
           <TanstackReactQueryProvider>
             <ToastProvider>{children}</ToastProvider>
           </TanstackReactQueryProvider>

@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { setUserLocale } from "@/services/locale";
 import { useLocale } from "next-intl";
-import { usePathname, useRouter } from "@/i18n/navigation";
 
 const getFlagSrcByLocale = (locale) => {
   switch (locale) {
@@ -33,8 +33,6 @@ export default function LocaleSwitcher({ bordered = true }) {
   const ulRef = useRef(null);
 
   const locale = useLocale();
-  const pathname = usePathname();
-  const router = useRouter();
 
   const toggleDropdown = () => setIsOpen((p) => !p);
   const closeDropdown = () => {
@@ -43,7 +41,7 @@ export default function LocaleSwitcher({ bordered = true }) {
   };
 
   const toggleLanguage = (lang) => {
-    router.replace(pathname, { locale: lang });
+    setUserLocale(lang);
     closeDropdown();
   };
 
