@@ -21,10 +21,9 @@ const Sidebar = () => {
   const location = useLocation();
   const currentPath = location.pathname;
 
-  const isChatPage = location.pathname?.startsWith("/chat");
-  const isProfilePage = location.pathname?.startsWith("/profile");
-  const isChangePasswordPage =
-    location.pathname?.startsWith("/change-password");
+  const isChatPage = location.pathname?.includes("/chat");
+  const isProfilePage = location.pathname?.includes("/profile");
+  const isChangePasswordPage = location.pathname?.includes("/change-password");
 
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 

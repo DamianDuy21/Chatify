@@ -5,9 +5,9 @@ import { usePathname } from "next/navigation";
 
 const MainLayout = ({ children }) => {
   const pathname = usePathname();
-  const isChatPage = pathname?.startsWith("/chat");
-  const isProfilePage = pathname?.startsWith("/profile");
-  const isChangePasswordPage = pathname?.startsWith("/change-password");
+  const isChatPage = pathname?.includes("/chat");
+  const isProfilePage = pathname?.includes("/profile");
+  const isChangePasswordPage = pathname?.includes("/change-password");
 
   return (
     <>

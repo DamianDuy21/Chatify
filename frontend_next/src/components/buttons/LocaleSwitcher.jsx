@@ -88,7 +88,7 @@ export default function LocaleSwitcher({ bordered = true }) {
             bordered ? "border border-primary/25" : ""
           } dropdown-content bg-base-200 rounded-card shadow-lg p-2 ${
             dropUp ? "bottom-14" : "top-14"
-          } -right-2`}
+          } -right-2 flex flex-col gap-1`}
           role="listbox"
         >
           {locales.map((lang) => (

@@ -13,9 +13,9 @@ const Navbar = () => {
   const authUser = useAuthStore((s) => s.authUser);
 
   const pathname = usePathname();
-  const isChatPage = pathname?.startsWith("/chat");
-  const isProfilePage = pathname?.startsWith("/profile");
-  const isChangePasswordPage = pathname?.startsWith("/change-password");
+  const isChatPage = pathname?.includes("/chat");
+  const isProfilePage = pathname?.includes("/profile");
+  const isChangePasswordPage = pathname?.includes("/change-password");
 
   const { mutate: logoutMutation, isPending: isLoggingOut } = useLogout();
 
