@@ -1,10 +1,10 @@
 "use client";
-import { getFlagToLanguage, getUserLocaleClient } from "@/lib/utils";
+import { getUserLocaleClient } from "@/lib/utils";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import CostumedDebounceInput from "./CostumedDebounceInput";
 
-export default function CustomSelect({
+export default function CostumedSelect({
   placeholder,
   options = [],
   onSelect,
@@ -49,7 +49,7 @@ export default function CustomSelect({
         onClick={() => setOpen((prev) => !prev)}
         className="costumedSelect w-full justify-between flex items-center"
       >
-        {getFlagToLanguage(selected?.locale, NEXT_LOCALE) || placeholder}
+        {selected?.name[NEXT_LOCALE] || placeholder}
         <svg
           className={`h-4 w-4 transition-transform ${open ? "rotate-180" : ""}`}
           xmlns="http://www.w3.org/2000/svg"
@@ -77,9 +77,9 @@ export default function CustomSelect({
                 onChange={(value) => {
                   setDisplayOptions(
                     options.filter((opt) =>
-                      getFlagToLanguage(opt.locale, NEXT_LOCALE)
-                        .toLowerCase()
-                        .includes(value.toLowerCase())
+                      opt.name[NEXT_LOCALE].toLowerCase().includes(
+                        value.toLowerCase()
+                      )
                     )
                   );
                 }}
@@ -108,7 +108,7 @@ export default function CustomSelect({
                     className="block w-full text-left px-4 py-2 hover:bg-base-200 text-sm h-[48px] rounded-btn"
                     onClick={() => handleSelect(opt)}
                   >
-                    {getFlagToLanguage(opt.locale, NEXT_LOCALE)}
+                    {opt.name[NEXT_LOCALE]}
                   </button>
                 </li>
               );

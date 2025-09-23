@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { FLAG_TO_LANGUAGE } from "../../constants";
-import CostumedDebounceInput from "./CostumedDebounceInput";
 import { useTranslation } from "react-i18next";
 import { getFlagToLanguage } from "../../lib/utils";
+import CostumedDebounceInput from "./CostumedDebounceInput";
 
 export default function CustomSelect({
   placeholder,
@@ -58,7 +57,7 @@ export default function CustomSelect({
         onClick={() => setOpen((prev) => !prev)}
         className="costumedSelect w-full justify-between flex items-center"
       >
-        {getFlagToLanguage(selected?.locale, userLocale) || placeholder}
+        {selected?.name[userLocale] || placeholder}
         <svg
           className={`h-4 w-4 transition-transform ${open ? "rotate-180" : ""}`}
           xmlns="http://www.w3.org/2000/svg"
@@ -86,7 +85,7 @@ export default function CustomSelect({
                 onChange={(value) => {
                   setDisplayOptions(
                     options.filter((opt) =>
-                      getFlagToLanguage(opt.locale, userLocale)
+                      opt.name[userLocale]
                         .toLowerCase()
                         .includes(value.toLowerCase())
                     )
@@ -117,7 +116,7 @@ export default function CustomSelect({
                     className="block w-full text-left px-4 py-2 hover:bg-base-200 text-sm h-[48px] rounded-btn"
                     onClick={() => handleSelect(opt)}
                   >
-                    {getFlagToLanguage(opt.locale, userLocale)}
+                    {opt.name[userLocale]}
                   </button>
                 </li>
               );
