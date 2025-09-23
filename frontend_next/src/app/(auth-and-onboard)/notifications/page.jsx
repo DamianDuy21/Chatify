@@ -15,8 +15,10 @@ import { useAuthStore } from "@/stores/useAuthStore.js";
 import { useChatStore } from "@/stores/useChatStore.js";
 import { isConversationFitFilter } from "@/lib/utils.js";
 import { useNotificationStore } from "@/stores/useNotificationStore.js";
+import { useTranslations } from "next-intl";
 
 const NotificationsPage = () => {
+  const t = useTranslations("NotificationsPage");
   const pendingNotifications = useNotificationStore(
     (s) => s.pendingNotifications
   );
@@ -295,7 +297,7 @@ const NotificationsPage = () => {
       setTotalIncomingFriendRequestsPages(data.pagination.totalPages);
     } catch (error) {
       showToast({
-        message: error?.message,
+        message: error?.message || t("toast.fetchIncomingFriendRequests.error"),
         type: "error",
       });
     } finally {
@@ -312,7 +314,7 @@ const NotificationsPage = () => {
       setTotalNotificationsPages(data.pagination.totalPages);
     } catch (error) {
       showToast({
-        message: error?.message,
+        message: error?.message || t("toast.fetchNotifications.error"),
         type: "error",
       });
     } finally {
@@ -422,7 +424,7 @@ const NotificationsPage = () => {
               <div className="flex flex-col sm:flex-row items-start justify-between gap-4 mb-4 sm:mb-4">
                 <div className="flex items-center gap-4">
                   <h1 className="text-2xl sm:text-2xl font-bold">
-                    Lời mời kết bạn
+                    {t("incomingFriendRequests.title")}
                   </h1>
                   {
                     <CountBadge
@@ -437,7 +439,9 @@ const NotificationsPage = () => {
                     onClick={handleClickShowMoreIncomingFriendRequests}
                   >
                     <Forward className="size-4" />
-                    <span className="">Xem thêm</span>
+                    <span className="">
+                      {t("incomingFriendRequests.subButton.seeMore")}
+                    </span>
                   </div>
                 ) : (
                   <div
@@ -445,7 +449,9 @@ const NotificationsPage = () => {
                     onClick={handleClickShowLessIncomingFriendRequests}
                   >
                     <Undo2 className="size-4" />
-                    <span className="">Thu gọn</span>
+                    <span className="">
+                      {t("incomingFriendRequests.subButton.seeLess")}
+                    </span>
                   </div>
                 )}
               </div>
@@ -477,10 +483,8 @@ const NotificationsPage = () => {
                     </section>
                   ) : (
                     <NoDataCommon
-                      title={"Không có lời mời kết bạn"}
-                      content={
-                        "Bạn sẽ nhận được thông báo khi có lời mời kết bạn mới."
-                      }
+                      title={t("incomingFriendRequests.noData.title")}
+                      content={t("incomingFriendRequests.noData.subtitle")}
                     />
                   )}
                 </>
@@ -496,7 +500,9 @@ const NotificationsPage = () => {
             >
               <div className="flex flex-col sm:flex-row items-start justify-between gap-4 mb-4 sm:mb-4">
                 <div className="flex items-center gap-4">
-                  <h1 className="text-2xl sm:text-2xl font-bold">Thông báo</h1>
+                  <h1 className="text-2xl sm:text-2xl font-bold">
+                    {t("notifications.title")}
+                  </h1>
 
                   <CountBadge count={notificationsQuantity}></CountBadge>
                 </div>
@@ -507,7 +513,9 @@ const NotificationsPage = () => {
                     onClick={handleClickShowMoreNotifications}
                   >
                     <Forward className="size-4 " />
-                    <span className="">Xem thêm</span>
+                    <span className="">
+                      {t("notifications.subButton.seeMore")}
+                    </span>
                   </div>
                 ) : (
                   <div
@@ -515,7 +523,9 @@ const NotificationsPage = () => {
                     onClick={handleClickShowLessNotifications}
                   >
                     <Undo2 className="size-4 " />
-                    <span className="">Thu gọn</span>
+                    <span className="">
+                      {t("notifications.subButton.seeLess")}
+                    </span>
                   </div>
                 )}
               </div>
@@ -555,10 +565,8 @@ const NotificationsPage = () => {
                   ) : (
                     <>
                       <NoDataCommon
-                        title={"Không có thông báo"}
-                        content={
-                          "Kết bạn và trò chuyện với bạn bè để nhận thông báo mới."
-                        }
+                        title={t("notifications.noData.title")}
+                        content={t("notifications.noData.subtitle")}
                       />
                     </>
                   )}

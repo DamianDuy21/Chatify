@@ -31,7 +31,25 @@
     },
     "submitButton": {
       "text": "Cập nhật",
-      "loadingText": "Đang lưu..."
+      "loadingText": "Đang cập nhật..."
+    }
+  },
+  "toast": {
+    "updateProfileMutation": {
+      "success": "Cập nhật hồ sơ thành công!",
+      "error": "Cập nhật hồ sơ thất bại. Vui lòng thử lại."
+    },
+    "validateProfileData": {
+      "missingLanguages": "Vui lòng chọn ngôn ngữ",
+      "allFieldsRequired": "Tất cả các trường đều bắt buộc"
+    },
+    "handleRandomAvatar": {
+      "error": "Không thể tạo hình đại diện ngẫu nhiên. Vui lòng thử lại.",
+      "success": "Tạo hình đại diện ngẫu nhiên thành công"
+    },
+    "handleSubmit": {
+      "error": "Không thể lưu hồ sơ. Vui lòng thử lại.",
+      "success": "Cập nhật hồ sơ thành công!"
     }
   }
 }

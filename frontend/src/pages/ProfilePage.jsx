@@ -52,7 +52,7 @@ const ProfilePage = () => {
       mutationFn: updateProfileAPI,
       onSuccess: (data) => {
         showToast({
-          message: data.message || "Cập nhật hồ sơ thành công",
+          message: data.message || t("toast.updateProfileMutation.success"),
           type: "success",
         });
       },
@@ -60,7 +60,7 @@ const ProfilePage = () => {
         showToast({
           message:
             error.response.data.message ||
-            "Cập nhật hồ sơ thất bại. Vui lòng thử lại sau.",
+            t("toast.updateProfileMutation.error"),
           type: "error",
         });
       },
@@ -86,13 +86,13 @@ const ProfilePage = () => {
       !trimmedFormState.learningLanguage
     ) {
       return {
-        message: "Vui lòng chọn ngôn ngữ",
+        message: t("toast.validateProfileData.missingLanguages"),
         cleanedData: onboardingData,
       };
     }
     if (!trimmedFormState.bio || !trimmedFormState.location) {
       return {
-        message: "Tất cả các trường đều bắt buộc",
+        message: t("toast.validateProfileData.allFieldsRequired"),
         cleanedData: onboardingData,
       };
     }
@@ -136,7 +136,7 @@ const ProfilePage = () => {
     } catch (error) {
       console.error("Onboarding failed:", error);
       showToast({
-        message: error.message || "Onboarding failed",
+        message: error.message || t("toast.handleSubmit.error"),
         type: "error",
       });
     }

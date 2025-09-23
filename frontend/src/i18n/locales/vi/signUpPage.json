@@ -79,7 +79,7 @@
       "invalidPassword": "Mật khẩu phải chứa ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt.",
       "termsAndPolicyNotAgreed": "Bạn phải đồng ý với điều khoản dịch vụ và chính sách bảo mật."
     },
-    "handleSignup": {
+    "handleSignUp": {
       "error": "Đăng ký không thành công. Vui lòng thử lại."
     },
     "handleResendVerificationCode": {

@@ -1,0 +1,79 @@
+{
+  "friendFilterInput": {
+    "fullName": {
+      "label": "Full Name",
+      "placeholder": "Enter full name"
+    },
+    "nativeLanguage": {
+      "label": "Native Language",
+      "placeholder": "Select native language"
+    },
+    "learningLanguage": {
+      "label": "Learning Language",
+      "placeholder": "Select learning language"
+    },
+    "button": {
+      "text": "Filter",
+      "loadingText": "Filtering..."
+    }
+  },
+  "costumedSelect": {
+    "search": {
+      "placeholder": "Search..."
+    },
+    "noneOption": "Deselect option"
+  },
+  "recommendedUserCard_HomePage": {
+    "languages": {
+      "native": "Native",
+      "learning": "Learning"
+    }
+  },
+  "friendCard_HomePage_OutgoingRequest": {
+    "cancelRequestModal": {
+      "title": "Cancel friend request",
+      "subtitle": "Are you sure you want to cancel the friend request to",
+      "button": {
+        "confirm": "Confirm",
+        "cancel": "Later"
+      }
+    },
+    "languages": {
+      "native": "Native",
+      "learning": "Learning"
+    },
+    "toast": {
+      "cancelFriendRequestMutation": {
+        "success": "Cancel friend request successful",
+        "error": "Cancel friend request failed. Please try again later"
+      }
+    }
+  },
+  "friendCard_FriendsPage": {
+    "status": {
+      "online": "Online",
+      "offline": "Offline"
+    },
+    "deleteFriendModal": {
+      "title": "Unfriend",
+      "subtitle": "Are you sure you want to unfriend ",
+      "button": {
+        "confirm": "Confirm",
+        "cancel": "Later"
+      }
+    },
+    "languages": {
+      "native": "Native",
+      "learning": "Learning"
+    },
+    "toast": {
+      "deleteFriendMutation": {
+        "success": "Unfriend successful",
+        "error": "Unfriend failed. Please try again later"
+      },
+      "handleGetPrivateConversation": {
+        "error": "Lấy cuộc trò chuyện riêng tư thất bại. Vui lòng thử lại sau"
+      }
+    }
+  }
+}

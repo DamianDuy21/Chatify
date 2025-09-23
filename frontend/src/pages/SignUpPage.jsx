@@ -37,7 +37,7 @@ const SignUpPage = () => {
     onError: (error) => {
       showToast({
         message:
-          error?.response?.data?.message || t("toast.handleSignup.error"),
+          error?.response?.data?.message || t("toast.handleSignUp.error"),
         type: "error",
       });
     },
@@ -130,7 +130,7 @@ const SignUpPage = () => {
     return { message: null, cleanedData: signUpData };
   };
 
-  const handleSignup = (e) => {
+  const handleSignUp = (e) => {
     e.preventDefault();
     const { message, cleanedData } = validateSignUpData(
       signUpData,
@@ -149,7 +149,7 @@ const SignUpPage = () => {
     } catch (error) {
       console.error("Sign up failed:", error);
       showToast({
-        message: error?.message || t("toast.handleSignup.error"),
+        message: error?.message || t("toast.handleSignUp.error"),
         type: "error",
       });
     }
@@ -225,7 +225,7 @@ const SignUpPage = () => {
 
               <div className="w-full">
                 {/* arrow function need to pass event or else not working in onSubmit? */}
-                <form onSubmit={(e) => handleSignup(e)} action="">
+                <form onSubmit={(e) => handleSignUp(e)} action="">
                   <div className="space-y-4">
                     {/* <div>
                       <h2 className="text-xl font-semibold">

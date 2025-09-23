@@ -1,15 +1,23 @@
 "use client";
 
-import { capitalize, getLocaleById } from "../../lib/utils";
-import { LoaderIcon, MapPinIcon, UserRoundPlus } from "lucide-react";
-import CommonRoundedButton from "../buttons/CommonRoundedButton";
-import { getFlagLanguage, getLanguageFlag } from "./FriendCard_Func";
 import { useMutation } from "@tanstack/react-query";
-import { sendFriendRequestAPI } from "../../lib/api";
-import { showToast } from "../costumed/CostumedToast";
+import { LoaderIcon, MapPinIcon, UserRoundPlus } from "lucide-react";
 import Image from "next/image";
+import { sendFriendRequestAPI } from "../../lib/api";
+import {
+  capitalize,
+  getFlagToLanguage,
+  getLocaleById,
+  getUserLocaleClient,
+} from "../../lib/utils";
+import CommonRoundedButton from "../buttons/CommonRoundedButton";
+import { showToast } from "../costumed/CostumedToast";
+import { getLanguageFlag } from "./FriendCard_Func";
+import { useTranslations } from "next-intl";
 
 const RecommendedUserCard_HomePage = ({ user, onSuccess, onError }) => {
+  const NEXT_LOCALE = getUserLocaleClient() || "vi";
+  const t = useTranslations("Components.recommendedUserCard_HomePage");
   const {
     mutate: sendFriendRequestMutation,
     isPending: isSendingFriendRequest,
@@ -69,16 +77,22 @@ const RecommendedUserCard_HomePage = ({ user, onSuccess, onError }) => {
         <div className="flex flex-wrap gap-2">
           <span className="badge badge-secondary h-8 px-4 flex items-center gap-1 relative -top-[1px]">
             {getLanguageFlag(getLocaleById(user.profile.nativeLanguage))}
-            Native:{" "}
+            {t("languages.native")}:{" "}
             {capitalize(
-              getFlagLanguage(getLocaleById(user.profile.nativeLanguage))
+              getFlagToLanguage(
+                getLocaleById(user.profile.nativeLanguage),
+                NEXT_LOCALE
+              )
             )}
           </span>
           <span className="badge badge-outline h-8 px-4 flex items-center gap-1 relative -top-[1px]">
             {getLanguageFlag(getLocaleById(user.profile.learningLanguage))}
-            Learning:{" "}
+            {t("languages.learning")}:{" "}
             {capitalize(
-              getFlagLanguage(getLocaleById(user.profile.learningLanguage))
+              getFlagToLanguage(
+                getLocaleById(user.profile.learningLanguage),
+                NEXT_LOCALE
+              )
             )}
           </span>
         </div>

@@ -1,12 +1,12 @@
-import { useMutation } from "@tanstack/react-query";
-import { useTranslation } from "react-i18next";
 import { showToast } from "@/components/costumed/CostumedToast";
 import { useAuthStore } from "@/stores/useAuthStore.js";
 import { useChatStore } from "@/stores/useChatStore.js";
+import { useMutation } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 
 export const useLogin = () => {
-  const { t } = useTranslation("loginPage");
+  const t = useTranslations("SignInPage");
   const router = useRouter();
   const signInAuthStore = useAuthStore((s) => s.signInAuthStore);
   const getConversations = useChatStore((s) => s.getConversations);

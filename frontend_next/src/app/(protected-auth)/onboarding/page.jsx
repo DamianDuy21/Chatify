@@ -4,7 +4,6 @@ import { useMutation } from "@tanstack/react-query";
 import { LoaderIcon, MapPinIcon, ShuffleIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
-import { useTranslation } from "react-i18next";
 import CostumedSelect from "@/components/costumed/CostumedSelect.jsx";
 import { showToast } from "@/components/costumed/CostumedToast.jsx";
 import { onboardingAPI } from "@/lib/api";
@@ -15,11 +14,12 @@ import ThemesSelector from "@/components/buttons/ThemeSelector.jsx";
 
 import { useAuthStore } from "@/stores/useAuthStore.js";
 import { useLanguageStore } from "@/stores/useLanguageStore.js";
-import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 const OnboardingPage = () => {
-  const { t } = useTranslation("onboardingPage");
+  const t = useTranslations("OnboardingPage");
   const router = useRouter();
 
   const authUser = useAuthStore((s) => s.authUser);
@@ -56,7 +56,7 @@ const OnboardingPage = () => {
         setAuthUser(data?.data);
         router.replace("/");
         showToast({
-          message: data?.message || "Chào mừng bạn đến với Chatify!",
+          message: data?.message || t("toast.onboardingMutation.success"),
           type: "success",
         });
       },
@@ -64,7 +64,7 @@ const OnboardingPage = () => {
         console.error("Onboarding failed:", error);
         showToast({
           message:
-            error.response.data.message || "Có lỗi xảy ra, vui lòng thử lại",
+            error.response.data.message || t("toast.onboardingMutation.error"),
           type: "error",
         });
       },
@@ -85,13 +85,13 @@ const OnboardingPage = () => {
       !trimmedFormState.learningLanguage
     ) {
       return {
-        message: "Vui lòng chọn ngôn ngữ",
+        message: t("toast.validateOnboardingData.missingLanguages"),
         cleanedData: onboardingData,
       };
     }
     if (!trimmedFormState.bio || !trimmedFormState.location) {
       return {
-        message: "Tất cả các trường đều bắt buộc",
+        message: t("toast.validateOnboardingData.allFieldsRequired"),
         cleanedData: onboardingData,
       };
     }
@@ -125,7 +125,7 @@ const OnboardingPage = () => {
     } catch (error) {
       console.error("Onboarding failed:", error);
       showToast({
-        message: error?.message || "Có lỗi xảy ra, vui lòng thử lại",
+        message: error?.message || t("toast.handleSubmit.error"),
         type: "error",
       });
     }
@@ -143,7 +143,7 @@ const OnboardingPage = () => {
         <div className="card bg-base-200 w-full max-w-3xl shadow-lg">
           <div className="card-body p-8 pb-4">
             <h1 className="text-3xl font-bold text-center mb-4">
-              Hoàn thiện hồ sơ
+              {t("hero.title")}
             </h1>
 
             <form action="" onSubmit={handleSubmit} className="space-y-3">
@@ -194,7 +194,7 @@ const OnboardingPage = () => {
                     className="btn btn-accent"
                   >
                     <ShuffleIcon className="size-4" />
-                    Tạo hình đại diện ngẫu nhiên
+                    {t("hero.genAvatarButton")}
                   </button>
                 </div>
               </div>
@@ -202,7 +202,7 @@ const OnboardingPage = () => {
               {/* FULL NAME */}
               <div className="form-control">
                 <label className="label">
-                  <span className="label-text">Họ và tên</span>
+                  <span className="label-text">{t("form.fullName.label")}</span>
                 </label>
                 <input
                   type="text"
@@ -210,7 +210,7 @@ const OnboardingPage = () => {
                   value={authUser?.user?.fullName || ""}
                   onChange={() => {}}
                   className="input input-bordered w-full pointer-events-none text-sm"
-                  placeholder="Nhập họ và tên"
+                  placeholder={t("form.fullName.placeholder")}
                   maxLength={50}
                 />
               </div>
@@ -218,7 +218,7 @@ const OnboardingPage = () => {
               {/* BIO */}
               <div className="form-control">
                 <label className="label">
-                  <span className="label-text">Giới thiệu</span>
+                  <span className="label-text">{t("form.bio.label")}</span>
                 </label>
                 <textarea
                   name="bio"
@@ -227,9 +227,7 @@ const OnboardingPage = () => {
                     setFormState({ ...formState, bio: e.target.value })
                   }
                   className="textarea textarea-bordered h-24"
-                  placeholder={
-                    "Giới thiệu bản thân và mục tiêu học ngoại ngữ của bạn"
-                  }
+                  placeholder={t("form.bio.placeholder")}
                 />
               </div>
 
@@ -238,11 +236,14 @@ const OnboardingPage = () => {
                 {/* NATIVE LANGUAGE */}
                 <div className="form-control">
                   <label className="label">
-                    <span className="label-text">Ngôn ngữ mẹ đẻ</span>
+                    <span className="label-text">
+                      {" "}
+                      {t("form.nativeLanguage.label")}
+                    </span>
                   </label>
 
                   <CostumedSelect
-                    placeholder="Chọn ngôn ngữ mẹ đẻ"
+                    placeholder={t("form.nativeLanguage.placeholder")}
                     options={nativeLanguageSelection}
                     onSelect={(option) => setNativeLanguage(option)}
                   />
@@ -251,11 +252,13 @@ const OnboardingPage = () => {
                 {/* LEARNING LANGUAGE */}
                 <div className="form-control">
                   <label className="label">
-                    <span className="label-text">Ngôn ngữ đang học</span>
+                    <span className="label-text">
+                      {t("form.learningLanguage.label")}
+                    </span>
                   </label>
 
                   <CostumedSelect
-                    placeholder="Chọn ngôn ngữ đang học"
+                    placeholder={t("form.learningLanguage.placeholder")}
                     options={learningLanguageSelection}
                     onSelect={(option) => setLearningLanguage(option)}
                   />
@@ -265,7 +268,7 @@ const OnboardingPage = () => {
               {/* LOCATION */}
               <div className="form-control">
                 <label className="label">
-                  <span className="label-text">Vị trí</span>
+                  <span className="label-text">{t("form.location.label")}</span>
                 </label>
                 <div className="relative">
                   <MapPinIcon className="absolute top-1/2 transform -translate-y-1/2 left-3 size-5 text-base-content opacity-70" />
@@ -277,7 +280,7 @@ const OnboardingPage = () => {
                       setFormState({ ...formState, location: e.target.value })
                     }
                     className="input input-bordered w-full pl-10 text-sm"
-                    placeholder="Thành phố, bang hoặc khu vực bạn đang sống"
+                    placeholder={t("form.location.placeholder")}
                     maxLength={50}
                   />
                 </div>
@@ -290,11 +293,11 @@ const OnboardingPage = () => {
                 type="submit"
               >
                 {!isOnboarding ? (
-                  <>Lưu và tiếp tục</>
+                  <>{t("form.button.text")}</>
                 ) : (
                   <>
                     <LoaderIcon className="animate-spin size-5" />
-                    Đang lưu...
+                    {t("form.button.loadingText")}
                   </>
                 )}
               </button>

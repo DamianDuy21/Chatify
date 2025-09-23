@@ -40,7 +40,7 @@
     },
     "onboardingMutation": {
       "error": "Unable to save profile. Please try again.",
-      "success": "Saved profile successfully!"
+      "success": "Welcome to Chatify!"
     },
     "handleRandomAvatar": {
       "error": "Unable to generate random avatar. Please try again.",
@@ -51,7 +51,8 @@
       "success": "Saved profile successfully!"
     },
     "validateOnboardingData": {
-      "error": "Please select native language and learning language",
+      "missingLanguages": "Please select languages",
+      "allFieldsRequired": "All fields are required",
       "success": ""
     }
   }

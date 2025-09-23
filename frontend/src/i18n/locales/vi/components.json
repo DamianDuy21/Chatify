@@ -1,0 +1,79 @@
+{
+  "friendFilterInput": {
+    "fullName": {
+      "label": "Họ và tên",
+      "placeholder": "Nhập họ và tên"
+    },
+    "nativeLanguage": {
+      "label": "Ngôn ngữ mẹ đẻ",
+      "placeholder": "Chọn ngôn ngữ mẹ đẻ"
+    },
+    "learningLanguage": {
+      "label": "Ngôn ngữ đang học",
+      "placeholder": "Chọn ngôn ngữ đang học"
+    },
+    "button": {
+      "text": "Lọc",
+      "loadingText": "Đang lọc..."
+    }
+  },
+  "costumedSelect": {
+    "search": {
+      "placeholder": "Tìm kiếm..."
+    },
+    "noneOption": "Hủy lựa chọn"
+  },
+  "recommendedUserCard_HomePage": {
+    "languages": {
+      "native": "Mẹ đẻ",
+      "learning": "Đang học"
+    }
+  },
+  "friendCard_HomePage_OutgoingRequest": {
+    "cancelRequestModal": {
+      "title": "Hủy yêu cầu kết bạn",
+      "subtitle": "Bạn có chắc chắn muốn hủy yêu cầu kết bạn với",
+      "button": {
+        "confirm": "Xác nhận",
+        "cancel": "Để sau"
+      }
+    },
+    "languages": {
+      "native": "Mẹ đẻ",
+      "learning": "Đang học"
+    },
+    "toast": {
+      "cancelFriendRequestMutation": {
+        "success": "Hủy yêu cầu kết bạn thành công",
+        "error": "Hủy yêu cầu kết bạn thất bại. Vui lòng thử lại sau"
+      }
+    }
+  },
+  "friendCard_FriendsPage": {
+    "status": {
+      "online": "Trực tuyến",
+      "offline": "Ngoại tuyến"
+    },
+    "deleteFriendModal": {
+      "title": "Hủy kết bạn",
+      "subtitle": "Bạn có chắc chắn muốn hủy kết bạn với ",
+      "button": {
+        "confirm": "Xác nhận",
+        "cancel": "Để sau"
+      }
+    },
+    "languages": {
+      "native": "Mẹ đẻ",
+      "learning": "Đang học"
+    },
+    "toast": {
+      "deleteFriendMutation": {
+        "success": "Hủy kết bạn thành công",
+        "error": "Hủy kết bạn thất bại. Vui lòng thử lại sau"
+      },
+      "handleGetPrivateConversation": {
+        "error": "Lấy cuộc trò chuyện riêng tư thất bại. Vui lòng thử lại sau"
+      }
+    }
+  }
+}

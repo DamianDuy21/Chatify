@@ -1,25 +1,39 @@
 import { useMutation } from "@tanstack/react-query";
 import { LoaderIcon, X } from "lucide-react";
 import { useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router";
 import {
   createPrivateConversationAPI,
   deleteFriendAPI,
   getConversationsAPI,
 } from "../../lib/api.js";
-import { capitalize, getLocaleById } from "../../lib/utils.js";
+import {
+  capitalize,
+  getFlagToLanguage,
+  getLocaleById,
+} from "../../lib/utils.js";
+import { useChatStore } from "../../stores/useChatStore";
 import CommonRoundedButton from "../buttons/CommonRoundedButton.jsx";
 import CountAndMessageBadge from "../buttons/CountAndMessageBadge.jsx";
 import CostumedModal from "../costumed/CostumedModal.jsx";
 import { showToast } from "../costumed/CostumedToast.jsx";
-import { getFlagLanguage, getLanguageFlag } from "./FriendCard_Func.jsx";
-import { useNavigate } from "react-router";
-import { useChatStore } from "../../stores/useChatStore";
+import { getLanguageFlag } from "./FriendCard_Func.jsx";
 const FriendCard_v2_FriendsPage = ({
   friend,
   isOnline = false,
   onSuccess,
   onError,
 }) => {
+  const { t } = useTranslation("components", {
+    keyPrefix: "friendCard_FriendsPage",
+  });
+  const { i18n } = useTranslation();
+  const getUserLocaleClient = () => {
+    if (typeof window === "undefined") return "vi";
+    return i18n.language || "vi";
+  };
+  const userLocale = getUserLocaleClient();
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const setSelectedConversation = useChatStore(
@@ -109,12 +123,12 @@ const FriendCard_v2_FriendsPage = ({
             {isOnline ? (
               <p className="text-xs text-success flex items-center gap-1">
                 <span className="size-2 rounded-full bg-success inline-block" />
-                Online
+                {t("status.online")}
               </p>
             ) : (
               <p className="text-xs opacity-70 flex items-center gap-1">
                 <span className="size-2 rounded-full bg-gray-600 opacity-70 inline-block" />
-                Offline
+                {t("status.offline")}
               </p>
             )}
           </div>
@@ -128,16 +142,22 @@ const FriendCard_v2_FriendsPage = ({
         <div className="flex flex-wrap gap-2">
           <span className="badge badge-secondary h-8 px-4 flex items-center gap-1 relative -top-[1px]">
             {getLanguageFlag(getLocaleById(friend.profile.nativeLanguage))}
-            Native:{" "}
+            {t("languages.native")}:{" "}
             {capitalize(
-              getFlagLanguage(getLocaleById(friend.profile.nativeLanguage))
+              getFlagToLanguage(
+                getLocaleById(friend.profile.nativeLanguage),
+                userLocale
+              )
             )}
           </span>
           <span className="badge badge-outline h-8 px-4 flex items-center gap-1 relative -top-[1px]">
             {getLanguageFlag(getLocaleById(friend.profile.learningLanguage))}
-            Learning:{" "}
+            {t("languages.learning")}:{" "}
             {capitalize(
-              getFlagLanguage(getLocaleById(friend.profile.learningLanguage))
+              getFlagToLanguage(
+                getLocaleById(friend.profile.learningLanguage),
+                userLocale
+              )
             )}
           </span>
         </div>
@@ -159,7 +179,7 @@ const FriendCard_v2_FriendsPage = ({
               <X className="size-4" />
             </CommonRoundedButton>
           }
-          title="Thông báo"
+          title={t("deleteFriendModal.title")}
         >
           {({ close }) => {
             closeRef.current = close;
@@ -170,9 +190,8 @@ const FriendCard_v2_FriendsPage = ({
                     isDeleting ? "pointer-events-none" : ""
                   }`}
                 >
-                  Bạn có chắc muốn hủy kết bạn với{" "}
-                  <span className="font-semibold">{friend.fullName}</span>{" "}
-                  không?
+                  {t("deleteFriendModal.subtitle")}{" "}
+                  <span className="font-semibold">{friend.fullName}</span>?
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <button
@@ -181,7 +200,7 @@ const FriendCard_v2_FriendsPage = ({
                       close();
                     }}
                   >
-                    Để sau
+                    {t("deleteFriendModal.button.cancel")}
                   </button>
                   <button
                     className="btn btn-primary w-full hover:btn-primary"
@@ -192,7 +211,7 @@ const FriendCard_v2_FriendsPage = ({
                     {isDeleting ? (
                       <LoaderIcon className="size-4 animate-spin" />
                     ) : null}
-                    Hủy kết bạn
+                    {t("deleteFriendModal.button.confirm")}
                   </button>
                 </div>
               </div>

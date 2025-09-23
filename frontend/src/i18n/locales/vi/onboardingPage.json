@@ -40,7 +40,7 @@
     },
     "onboardingMutation": {
       "error": "Không thể lưu hồ sơ. Vui lòng thử lại.",
-      "success": "Lưu hồ sơ thành công"
+      "success": "Chào mừng đến với Chatify! "
     },
     "handleRandomAvatar": {
       "error": "Không thể tạo hình đại diện ngẫu nhiên. Vui lòng thử lại.",
@@ -51,7 +51,8 @@
       "success": "Hồ sơ đã được lưu thành công"
     },
     "validateOnboardingData": {
-      "error": "Vui lòng chọn ngôn ngữ mẹ đẻ và ngôn ngữ bạn đang học",
+      "missingLanguages": "Vui lòng chọn ngôn ngữ",
+      "allFieldsRequired": "Tất cả các trường đều bắt buộc",
       "success": ""
     }
   }

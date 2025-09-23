@@ -1,5 +1,18 @@
 {
-  "friendsList": {
-    "title": "Your Friends"
+  "friends": {
+    "title": "Your Friends",
+    "noData": {
+      "title": "No friends yet",
+      "subtitle": "Send friend requests to start connecting."
+    },
+    "noMatch": {
+      "title": "No matching friends found",
+      "subtitle": "Please adjust your search criteria and try again."
+    }
+  },
+  "toast": {
+    "fetchFriends": {
+      "error": "Error fetching friends list. Please try again later."
+    }
   }
 }

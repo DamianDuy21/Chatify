@@ -1,3 +1,4 @@
+import Cookies from "js-cookie";
 import { LANGUAGES_DATA } from "./constants";
 
 export const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
@@ -182,4 +183,53 @@ export const formatISOToParts = (iso, timeZone = "Asia/Bangkok") => {
   }).format(d);
 
   return { time, date };
+};
+
+export const getFlagToLanguage = (locale, next_locale) => {
+  const map = {
+    vi: {
+      gb: "Tiếng Anh",
+      es: "Tiếng Tây Ban Nha",
+      fr: "Tiếng Pháp",
+      de: "Tiếng Đức",
+      cn: "Tiếng Quan Thoại",
+      jp: "Tiếng Nhật",
+      kr: "Tiếng Hàn",
+      in: "Tiếng Hindi",
+      ru: "Tiếng Nga",
+      pt: "Tiếng Bồ Đào Nha",
+      sa: "Tiếng Ả Rập",
+      it: "Tiếng Ý",
+      tr: "Tiếng Thổ Nhĩ Kỳ",
+      nl: "Tiếng Hà Lan",
+      vn: "Tiếng Việt",
+      th: "Tiếng Thái",
+    },
+    en: {
+      gb: "English",
+      es: "Spanish",
+      fr: "French",
+      de: "German",
+      cn: "Mandarin",
+      jp: "Japanese",
+      kr: "Korean",
+      in: "Hindi",
+      ru: "Russian",
+      pt: "Portuguese",
+      sa: "Arabic",
+      it: "Italian",
+      tr: "Turkish",
+      nl: "Dutch",
+      vn: "Vietnamese",
+      th: "Thai",
+    },
+  };
+
+  const currentMap = map[next_locale] || map.vi;
+  return currentMap[locale] || locale;
+};
+
+export const getUserLocaleClient = () => {
+  if (typeof window === "undefined") return "vi";
+  return Cookies.get("NEXT_LOCALE") || "vi";
 };

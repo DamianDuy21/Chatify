@@ -1,14 +1,19 @@
 "use client";
 import { useMutation } from "@tanstack/react-query";
 import { Check, LoaderIcon, MapPinIcon, X } from "lucide-react";
+import Image from "next/image";
 import { useRef } from "react";
 import { acceptFriendRequestAPI, rejectFriendRequestAPI } from "../../lib/api";
-import { capitalize, getLocaleById } from "../../lib/utils";
+import {
+  capitalize,
+  getFlagToLanguage,
+  getLocaleById,
+  getUserLocaleClient,
+} from "../../lib/utils";
 import CommonRoundedButton from "../buttons/CommonRoundedButton";
 import CostumedModal from "../costumed/CostumedModal";
 import { showToast } from "../costumed/CostumedToast";
-import { getFlagLanguage, getLanguageFlag } from "./FriendCard_Func";
-import Image from "next/image";
+import { getLanguageFlag } from "./FriendCard_Func";
 
 const FriendCard_NotificationsPage_IncomingRequest = ({
   friend,
@@ -17,6 +22,7 @@ const FriendCard_NotificationsPage_IncomingRequest = ({
   onError,
 }) => {
   const closeRef = useRef(null);
+  const NEXT_LOCALE = getUserLocaleClient() || "vi";
   const { mutate: acceptFriendRequestMutation, isPending: isAccepting } =
     useMutation({
       mutationFn: acceptFriendRequestAPI,
@@ -99,14 +105,20 @@ const FriendCard_NotificationsPage_IncomingRequest = ({
             {getLanguageFlag(getLocaleById(friend.profile.nativeLanguage))}
             Native:{" "}
             {capitalize(
-              getFlagLanguage(getLocaleById(friend.profile.nativeLanguage))
+              getFlagToLanguage(
+                getLocaleById(friend.profile.nativeLanguage),
+                NEXT_LOCALE
+              )
             )}
           </span>
           <span className="badge badge-outline h-8 px-4 flex items-center gap-1 relative -top-[1px]">
             {getLanguageFlag(getLocaleById(friend.profile.learningLanguage))}
             Learning:{" "}
             {capitalize(
-              getFlagLanguage(getLocaleById(friend.profile.learningLanguage))
+              getFlagToLanguage(
+                getLocaleById(friend.profile.learningLanguage),
+                NEXT_LOCALE
+              )
             )}
           </span>
         </div>

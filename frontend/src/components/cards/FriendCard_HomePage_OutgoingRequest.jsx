@@ -1,12 +1,13 @@
 import { useMutation } from "@tanstack/react-query";
 import { LoaderIcon, MapPinIcon, Undo2 } from "lucide-react";
 import { useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { cancelFriendRequestAPI } from "../../lib/api";
-import { capitalize, getLocaleById } from "../../lib/utils";
+import { capitalize, getFlagToLanguage, getLocaleById } from "../../lib/utils";
 import CommonRoundedButton from "../buttons/CommonRoundedButton";
 import CostumedModal from "../costumed/CostumedModal";
 import { showToast } from "../costumed/CostumedToast";
-import { getFlagLanguage, getLanguageFlag } from "./FriendCard_Func";
+import { getLanguageFlag } from "./FriendCard_Func";
 
 const FriendCard_HomePage_OutgoingRequest = ({
   friend,
@@ -14,6 +15,15 @@ const FriendCard_HomePage_OutgoingRequest = ({
   onSuccess,
   onError,
 }) => {
+  const { t } = useTranslation("components", {
+    keyPrefix: "friendCard_HomePage_OutgoingRequest",
+  });
+  const { i18n } = useTranslation();
+  const getUserLocaleClient = () => {
+    if (typeof window === "undefined") return "vi";
+    return i18n.language || "vi";
+  };
+  const userLocale = getUserLocaleClient();
   const closeRef = useRef(null);
   const {
     mutate: cancelFriendRequestMutation,
@@ -24,7 +34,8 @@ const FriendCard_HomePage_OutgoingRequest = ({
       onSuccess(data);
       if (closeRef.current) closeRef.current();
       showToast({
-        message: data?.message || "Friend request cancelled successfully!",
+        message:
+          data?.message || t("toast.cancelFriendRequestMutation.success"),
         type: "success",
       });
     },
@@ -33,7 +44,8 @@ const FriendCard_HomePage_OutgoingRequest = ({
       console.log("Cancel friend request error:", error);
       showToast({
         message:
-          error?.response?.data?.message || "Failed to cancel friend request",
+          error?.response?.data?.message ||
+          t("toast.cancelFriendRequestMutation.error"),
         type: "error",
       });
     },
@@ -68,16 +80,22 @@ const FriendCard_HomePage_OutgoingRequest = ({
         <div className="flex flex-wrap gap-2">
           <span className="badge badge-secondary h-8 px-4 flex items-center gap-1 relative -top-[1px]">
             {getLanguageFlag(getLocaleById(friend.profile.nativeLanguage))}
-            Native:{" "}
+            {t("languages.native")}:{" "}
             {capitalize(
-              getFlagLanguage(getLocaleById(friend.profile.nativeLanguage))
+              getFlagToLanguage(
+                getLocaleById(friend.profile.nativeLanguage),
+                userLocale
+              )
             )}
           </span>
           <span className="badge badge-outline h-8 px-4 flex items-center gap-1 relative -top-[1px]">
             {getLanguageFlag(getLocaleById(friend.profile.learningLanguage))}
-            Learning:{" "}
+            {t("languages.learning")}:{" "}
             {capitalize(
-              getFlagLanguage(getLocaleById(friend.profile.learningLanguage))
+              getFlagToLanguage(
+                getLocaleById(friend.profile.learningLanguage),
+                userLocale
+              )
             )}
           </span>
         </div>
@@ -94,7 +112,7 @@ const FriendCard_HomePage_OutgoingRequest = ({
               <Undo2 className="size-4" />
             </CommonRoundedButton>
           }
-          title="Thông báo"
+          title={t("cancelRequestModal.title")}
         >
           {({ close }) => {
             closeRef.current = close;
@@ -105,9 +123,8 @@ const FriendCard_HomePage_OutgoingRequest = ({
                 }`}
               >
                 <div className={`pb-6 text-sm `}>
-                  Bạn có chắc muốn hủy lời mời kết bạn với{" "}
-                  <span className="font-semibold">{friend.fullName}</span>{" "}
-                  không?
+                  {t("cancelRequestModal.subtitle")}{" "}
+                  <span className="font-semibold">{friend.fullName}</span>?
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <button
@@ -116,7 +133,7 @@ const FriendCard_HomePage_OutgoingRequest = ({
                       close();
                     }}
                   >
-                    Để sau
+                    {t("cancelRequestModal.button.cancel")}
                   </button>
                   <button
                     className="btn btn-primary w-full hover:btn-primary"
@@ -127,7 +144,7 @@ const FriendCard_HomePage_OutgoingRequest = ({
                     {isCancellingFriendRequest ? (
                       <LoaderIcon className="size-4 animate-spin" />
                     ) : null}
-                    Hủy lời mời
+                    {t("cancelRequestModal.button.confirm")}
                   </button>
                 </div>
               </div>

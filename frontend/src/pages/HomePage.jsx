@@ -308,7 +308,8 @@ const HomePage = () => {
       console.log("Error fetching recommended users:", error);
       showToast({
         message:
-          error?.response?.data?.message || "Failed to fetch recommended users",
+          error?.response?.data?.message ||
+          t("toast.fetchRecommendedUsers.error"),
         type: "error",
       });
     } finally {
@@ -328,7 +329,7 @@ const HomePage = () => {
       showToast({
         message:
           error?.response?.data?.message ||
-          "Failed to fetch outgoing friend requests",
+          t("toast.fetchOutgoingFriendRequests.error"),
         type: "error",
       });
     } finally {
@@ -401,6 +402,7 @@ const HomePage = () => {
   const handleClickSeeLessRecommendedUsersButton = () => {
     setIsShowMoreRecommendedUsers(false);
     setCurrentPage(1);
+    //  fetchOutgoingFriendRequests();
     const { fullName, nativeLanguage, learningLanguage } = filterData;
     if (currentPage !== 1) {
       fetchRecommendedUsers({
@@ -410,7 +412,7 @@ const HomePage = () => {
         page: 1,
       });
     }
-    fetchOutgoingFriendRequests();
+
     window.scrollTo({
       top: 0,
       behavior: "smooth",
@@ -432,7 +434,7 @@ const HomePage = () => {
   const handleClickSeeLessOutGoingFriendRequests = () => {
     setIsShowMoreFriendRequests(false);
     setCurrentPage(1);
-    fetchRecommendedUsers();
+    // fetchRecommendedUsers();
 
     if (currentPage !== 1) {
       fetchOutgoingFriendRequests({
@@ -517,7 +519,9 @@ const HomePage = () => {
                             onClick={handleClickSeeMoreRecommendedUsersButton}
                           >
                             <Forward className="size-4" />
-                            <span className="">Xem thêm</span>
+                            <span className="">
+                              {t("recommendedUsers.subButton.seeMore")}
+                            </span>
                           </div>
                         ) : (
                           <div
@@ -525,7 +529,9 @@ const HomePage = () => {
                             onClick={handleClickSeeLessRecommendedUsersButton}
                           >
                             <Undo2 className="size-4" />
-                            <span className="">Thu gọn</span>
+                            <span className="">
+                              {t("recommendedUsers.subButton.seeLess")}
+                            </span>
                           </div>
                         )}
                       </div>
@@ -551,13 +557,13 @@ const HomePage = () => {
                 filterData.nativeLanguage === "" &&
                 filterData.learningLanguage === "" ? (
                   <NoDataCommon
-                    title={"Chưa có người học mới"}
-                    content={"Hãy mời bạn bè tham gia hoặc thử lại sau."}
+                    title={t("recommendedUsers.noData.title")}
+                    content={t("recommendedUsers.noData.subtitle")}
                   />
                 ) : (
                   <NoDataCommon
-                    title={"Không có người dùng nào phù hợp"}
-                    content={"Hãy thử điều chỉnh bộ lọc và thử lại."}
+                    title={t("recommendedUsers.noMatch.title")}
+                    content={t("recommendedUsers.noMatch.subtitle")}
                   />
                 )
               ) : (
@@ -592,7 +598,7 @@ const HomePage = () => {
             <div className="flex flex-col sm:flex-row items-start justify-between gap-4 mb-4 sm:mb-4">
               <div className="flex items-center gap-4">
                 <h1 className="text-2xl sm:text-2xl font-bold">
-                  Lời mời kết bạn đã gửi
+                  {t("outgoingFriendRequests.title")}
                 </h1>
 
                 <CountBadge count={outgoingFriendRequestsQuantity}></CountBadge>
@@ -604,7 +610,9 @@ const HomePage = () => {
                   onClick={handleClickSeeMoreOutGoingFriendRequests}
                 >
                   <Forward className="size-4" />
-                  <span className="">Xem thêm</span>
+                  <span className="">
+                    {t("outgoingFriendRequests.subButton.seeMore")}
+                  </span>
                 </div>
               ) : (
                 <div
@@ -612,7 +620,9 @@ const HomePage = () => {
                   onClick={handleClickSeeLessOutGoingFriendRequests}
                 >
                   <Undo2 className="size-4" />
-                  <span className="">Thu gọn</span>
+                  <span className="">
+                    {t("outgoingFriendRequests.subButton.seeLess")}
+                  </span>
                 </div>
               )}
             </div>
@@ -644,10 +654,8 @@ const HomePage = () => {
                   </section>
                 ) : (
                   <NoDataCommon
-                    title={"Chưa có lời mời kết bạn nào đã gửi"}
-                    content={
-                      "Hãy gửi lời mời kết bạn đến người dùng khác để bắt đầu kết nối."
-                    }
+                    title={t("outgoingFriendRequests.noData.title")}
+                    content={t("outgoingFriendRequests.noData.subtitle")}
                   />
                 )}
               </>

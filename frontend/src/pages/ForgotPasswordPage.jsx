@@ -24,9 +24,7 @@ const ForgotPasswordPage = () => {
       mutationFn: resetPasswordAPI,
       onSuccess: (data) => {
         showToast({
-          message:
-            data?.message ||
-            "Please check your email for the verification code",
+          message: data?.message || t("toast.resetPasswordMutation.success"),
           type: "success",
         });
         setStep(2);
@@ -35,7 +33,7 @@ const ForgotPasswordPage = () => {
         showToast({
           message:
             error?.response?.data?.message ||
-            "Failed to send verification code",
+            t("toast.resetPasswordMutation.error"),
           type: "error",
         });
       },
@@ -48,14 +46,17 @@ const ForgotPasswordPage = () => {
     mutationFn: resetPasswordVerificationAPI,
     onSuccess: (data) => {
       showToast({
-        message: data?.message || "Password reset successful!",
+        message:
+          data?.message || t("toast.resetPasswordVerificationMutation.success"),
         type: "success",
       });
       navigate("/signin");
     },
     onError: (error) => {
       showToast({
-        message: error?.response?.data?.message || "Failed to reset password",
+        message:
+          error?.response?.data?.message ||
+          t("toast.resetPasswordVerificationMutation.error"),
         type: "error",
       });
     },
@@ -93,7 +94,7 @@ const ForgotPasswordPage = () => {
     } catch (error) {
       console.error(error);
       showToast({
-        message: error?.message || "Failed to send verification code",
+        message: error?.message || t("toast.handleResetPassword.error"),
         type: "error",
       });
     }

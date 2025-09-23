@@ -22,8 +22,7 @@ const ChangePasswordPage = () => {
       mutationFn: changePasswordAPI,
       onSuccess: (data) => {
         showToast({
-          message:
-            data?.message || t("step1.toast.changePasswordMutation.success"),
+          message: data?.message || t("toast.changePasswordMutation.success"),
           type: "success",
         });
         setStep(2);
@@ -32,7 +31,7 @@ const ChangePasswordPage = () => {
         showToast({
           message:
             error?.response?.data?.message ||
-            t("step1.toast.changePasswordMutation.error"),
+            t("toast.changePasswordMutation.error"),
           type: "error",
         });
       },
@@ -47,7 +46,7 @@ const ChangePasswordPage = () => {
       showToast({
         message:
           data?.message ||
-          t("step2.toast.changePasswordVerificationMutation.success"),
+          t("toast.changePasswordVerificationMutation.success"),
         type: "success",
       });
 
@@ -57,7 +56,7 @@ const ChangePasswordPage = () => {
       showToast({
         message:
           error?.response?.data?.message ||
-          t("step2.toast.changePasswordVerificationMutation.error"),
+          t("toast.changePasswordVerificationMutation.error"),
         type: "error",
       });
     },
@@ -69,7 +68,7 @@ const ChangePasswordPage = () => {
     const trimmedNewPassword = newPassword.trim();
     if (!trimmedOldPassword || !trimmedNewPassword) {
       showToast({
-        message: t("step1.toast.validateChangePassword.allFieldsRequired"),
+        message: t("toast.validateChangePassword.allFieldsRequired"),
         type: "error",
       });
       return;
@@ -81,8 +80,7 @@ const ChangePasswordPage = () => {
       });
     } catch (error) {
       showToast({
-        message:
-          error?.message || t("step1.toast.changePasswordMutation.error"),
+        message: error?.message || t("toast.changePasswordMutation.error"),
         type: "error",
       });
     }
@@ -93,7 +91,7 @@ const ChangePasswordPage = () => {
     if (!trimmedVerificationCode) {
       showToast({
         message: t(
-          "step2.toast.validateChangePasswordVerification.allFieldsRequired"
+          "toast.validateChangePasswordVerification.allFieldsRequired"
         ),
         type: "error",
       });
@@ -104,8 +102,7 @@ const ChangePasswordPage = () => {
     } catch (error) {
       showToast({
         message:
-          error?.message ||
-          t("step2.toast.handleChangePasswordVerification.error"),
+          error?.message || t("toast.handleChangePasswordVerification.error"),
         type: "error",
       });
     }

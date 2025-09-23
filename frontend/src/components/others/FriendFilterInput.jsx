@@ -7,7 +7,9 @@ import { useLanguageStore } from "../../stores/useLanguageStore";
 
 const FriendFilterInput = ({ data, onChange, onSubmit }) => {
   const languages = useLanguageStore((s) => s.languages);
-  const { t } = useTranslation("onboardingPage");
+  const { t } = useTranslation("components", {
+    keyPrefix: "friendFilterInput",
+  });
   const [nativeLanguageSelection, setNativeLanguageSelection] = useState([]);
   const [learningLanguageSelection, setLearningLanguageSelection] = useState(
     []
@@ -30,7 +32,7 @@ const FriendFilterInput = ({ data, onChange, onSubmit }) => {
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-x-4 gap-y-3">
             <div className="form-control">
               <label className="label">
-                <span className="label-text">Họ và tên</span>
+                <span className="label-text">{t("fullName.label")}</span>
               </label>
               <input
                 type="text"
@@ -40,17 +42,17 @@ const FriendFilterInput = ({ data, onChange, onSubmit }) => {
                   onChange({ ...data, fullName: e.target.value });
                 }}
                 className="input input-bordered w-full text-sm"
-                placeholder={"Nhập họ và tên bạn muốn tìm kiếm"}
+                placeholder={t("fullName.placeholder")}
                 maxLength={50}
               />
             </div>
             <div className="form-control">
               <label className="label">
-                <span className="label-text">Ngôn ngữ mẹ đẻ</span>
+                <span className="label-text">{t("nativeLanguage.label")}</span>
               </label>
 
               <CostumedSelect
-                placeholder={t("form.nativeLanguage.placeholder")}
+                placeholder={t("nativeLanguage.placeholder")}
                 options={nativeLanguageSelection}
                 onSelect={(option) =>
                   onChange({ ...data, nativeLanguage: option })
@@ -60,11 +62,14 @@ const FriendFilterInput = ({ data, onChange, onSubmit }) => {
             </div>
             <div className="form-control">
               <label className="label">
-                <span className="label-text">Ngôn ngữ bạn đang học</span>
+                <span className="label-text">
+                  {" "}
+                  {t("learningLanguage.label")}
+                </span>
               </label>
 
               <CostumedSelect
-                placeholder={t("form.learningLanguage.placeholder")}
+                placeholder={t("learningLanguage.placeholder")}
                 options={learningLanguageSelection}
                 onSelect={(option) =>
                   onChange({ ...data, learningLanguage: option })
@@ -83,11 +88,11 @@ const FriendFilterInput = ({ data, onChange, onSubmit }) => {
           {/* <Search className="size-4" /> */}
           <Funnel className="size-4" />
           {true ? (
-            <>Lọc</>
+            <>{t("button.text")}</>
           ) : (
             <>
               <LoaderIcon className="animate-spin size-5" />
-              Đang lọc...
+              {t("button.loadingText")}
             </>
           )}
         </div>

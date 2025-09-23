@@ -1,0 +1,32 @@
+{
+  "incomingFriendRequests": {
+    "title": "Friend Requests",
+    "noData": {
+      "title": "No friend requests",
+      "subtitle": "You don't have any friend requests yet."
+    },
+    "subButton": {
+      "seeMore": "See more",
+      "seeLess": "See less"
+    }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "noData": {
+      "title": "No notifications",
+      "subtitle": "You don't have any notifications yet."
+    },
+    "subButton": {
+      "seeMore": "See more",
+      "seeLess": "See less"
+    }
+  },
+  "toast": {
+    "fetchNotifications": {
+      "error": "Failed to load notifications. Please try again."
+    },
+    "fetchIncomingFriendRequests": {
+      "error": "Failed to load friend requests. Please try again."
+    }
+  }
+}

@@ -78,7 +78,7 @@
       "invalidPassword": "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character.",
       "termsAndPolicyNotAgreed": "You must agree to the terms of service and privacy policy."
     },
-    "handleSignup": {
+    "handleSignUp": {
       "error": "Sign up failed. Please try again."
     },
     "handleResendVerificationCode": {

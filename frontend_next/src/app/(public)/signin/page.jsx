@@ -2,21 +2,20 @@
 
 import { Hexagon, LoaderIcon } from "lucide-react";
 import { useState } from "react";
-import { useTranslation } from "react-i18next";
-
-import { showToast } from "@/components/costumed/CostumedToast.jsx";
-import Cookies from "js-cookie";
-import { useLogin } from "@/hooks/useLogin.js";
-import { deepTrimObj } from "@/lib/utils.js";
 import LocaleSwitcher from "@/components/buttons/LocaleSwitcher.jsx";
 import ThemesSelector from "@/components/buttons/ThemeSelector.jsx";
-import { useThemeStore } from "@/stores/useThemeStore.js";
 import CostumedPasswordInput from "@/components/costumed/CostumedPasswordInput.jsx";
-import Link from "next/link.js";
+import { showToast } from "@/components/costumed/CostumedToast.jsx";
+import { useLogin } from "@/hooks/useLogin.js";
+import { deepTrimObj } from "@/lib/utils.js";
+import { useThemeStore } from "@/stores/useThemeStore.js";
+import Cookies from "js-cookie";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
+import Link from "next/link.js";
 
 const SignInPage = () => {
-  const { t } = useTranslation("signInPage");
+  const t = useTranslations("SignInPage");
   const { theme } = useThemeStore();
 
   const [loginData, setLoginData] = useState({
@@ -32,13 +31,13 @@ const SignInPage = () => {
     const cleanedLoginData = deepTrimObj(loginData);
     if (!cleanedLoginData.email || !cleanedLoginData.password) {
       showToast({
-        message: "Tất cả các trường là bắt buộc",
+        message: t("toast.handleLogin.allFieldsAreRequired"),
         type: "error",
       });
       return;
     } else if (!isCheckedPolicy) {
       showToast({
-        message: "Bạn cần đồng ý với điều khoản dịch vụ và chính sách bảo mật",
+        message: t("toast.handleLogin.termsAndPolicyNotAgreed"),
         type: "error",
       });
       return;
@@ -48,7 +47,7 @@ const SignInPage = () => {
     } catch (error) {
       console.error(error);
       showToast({
-        message: error?.message || "Đã xảy ra lỗi, vui lòng thử lại",
+        message: error?.message || t("toast.handleLogin.error"),
         type: "error",
       });
     }
@@ -84,12 +83,12 @@ const SignInPage = () => {
                   <div className="space-y-3">
                     {/* EMAIL */}
                     <div className="form-control w-full">
-                      <label className="label">
-                        <span className="label-text">Email</span>
-                      </label>
+                      <span className="label-text">
+                        {t("leftSide.form.email.label")}
+                      </span>
                       <input
                         type="text"
-                        placeholder={"email@example.com"}
+                        placeholder={t("leftSide.form.email.placeholder")}
                         className="input input-bordered w-full text-sm"
                         value={loginData.email}
                         onChange={(e) =>
@@ -104,13 +103,15 @@ const SignInPage = () => {
                     {/* PASSWORD */}
                     <div className="form-control w-full">
                       <label className="label">
-                        <span className="label-text">Mật khẩu</span>
+                        <span className="label-text">
+                          {t("leftSide.form.password.label")}
+                        </span>
                       </label>
 
                       <CostumedPasswordInput
                         data={loginData}
                         setData={setLoginData}
-                        placeholder={"********"}
+                        placeholder={t("leftSide.form.password.placeholder")}
                       />
                     </div>
 
@@ -126,13 +127,13 @@ const SignInPage = () => {
                           }}
                         />
                         <span className="text-xs leading-tight">
-                          Tôi đồng ý với{" "}
+                          {t("leftSide.form.termsAndPolicy.label")}{" "}
                           <span className="text-primary hover:underline">
-                            điều khoản dịch vụ
+                            {t("leftSide.form.termsAndPolicy.terms")}
                           </span>{" "}
-                          và{" "}
+                          {t("leftSide.form.termsAndPolicy.and")}{" "}
                           <span className="text-primary hover:underline">
-                            chính sách bảo mật
+                            {t("leftSide.form.termsAndPolicy.privacyPolicy")}
                           </span>
                         </span>
                       </label>
@@ -148,40 +149,43 @@ const SignInPage = () => {
                     {isLoggingIn ? (
                       <>
                         <LoaderIcon className="animate-spin size-5" />
-                        Đang đăng nhập...
+                        {t("leftSide.form.signInButton.loadingText")}
                       </>
                     ) : (
-                      "Đăng nhập"
+                      t("leftSide.form.signInButton.text")
                     )}
                   </button>
 
                   {/* REDIRECT SIGNIN */}
                   <div className="text-center !mt-6">
                     <p className="text-sm">
-                      Chưa có tài khoản?{" "}
+                      {t("leftSide.prompt.noAccount.text")}{" "}
                       <Link
                         href="/signup"
                         className="text-primary hover:underline"
                       >
-                        Đăng ký
+                        {t("leftSide.prompt.noAccount.linkText")}
                       </Link>
                     </p>
                   </div>
 
                   <div className="flex items-center gap-4">
                     <div className="flex-1 h-px bg-gray-600"></div>
-                    <span className="text-gray-600 text-sm">hoặc</span>
+                    <span className="text-gray-600 text-sm">
+                      {" "}
+                      {t("leftSide.prompt.or")}
+                    </span>
                     <div className="flex-1 h-px bg-gray-600"></div>
                   </div>
 
                   <div className="text-center mt-4">
                     <p className="text-sm">
-                      Quên mật khẩu?{" "}
+                      {t("leftSide.prompt.forgotPassword.text")}{" "}
                       <Link
                         href="/forgot-password"
                         className="text-primary hover:underline"
                       >
-                        Khôi phục
+                        {t("leftSide.prompt.forgotPassword.linkText")}
                       </Link>
                     </p>
                   </div>
@@ -212,11 +216,11 @@ const SignInPage = () => {
               <div className="text-center space-y-3 mt-6">
                 <h2 className="text-xl font-semibold">
                   {/* {t("rightSide.title")} */}
-                  Chào mừng trở lại
+                  {t("leftSide.hero.title")}
                 </h2>
                 <p className="opacity-70 text-sm">
                   {/* {t("rightSide.subtitle")} */}
-                  Đăng nhập để tiếp tục hành trình học ngôn ngữ của bạn
+                  {t("leftSide.hero.subtitle")}
                 </p>
               </div>
             </div>

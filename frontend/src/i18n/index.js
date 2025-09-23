@@ -11,6 +11,9 @@ import viSignUpPage from "./locales/vi/signUpPage.json";
 import enForgotPasswordPage from "./locales/en/forgotPasswordPage.json";
 import viForgotPasswordPage from "./locales/vi/forgotPasswordPage.json";
 
+import enNavbar from "./locales/en/navbar.json";
+import viNavbar from "./locales/vi/navbar.json";
+
 import enOnboardingPage from "./locales/en/onboardingPage.json";
 import viOnboardingPage from "./locales/vi/onboardingPage.json";
 
@@ -29,6 +32,12 @@ import viHomePage from "./locales/vi/homePage.json";
 import enFriendsPage from "./locales/en/friendsPage.json";
 import viFriendsPage from "./locales/vi/friendsPage.json";
 
+import enNotificationsPage from "./locales/en/notificationsPage.json";
+import viNotificationsPage from "./locales/vi/notificationsPage.json";
+
+import enComponents from "./locales/en/components.json";
+import viComponents from "./locales/vi/components.json";
+
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
@@ -44,6 +53,9 @@ i18n
         sidebar: enSidebar,
         homePage: enHomePage,
         friendsPage: enFriendsPage,
+        navbar: enNavbar,
+        notificationsPage: enNotificationsPage,
+        components: enComponents,
       },
       vi: {
         loginPage: viLoginPage,
@@ -55,6 +67,9 @@ i18n
         sidebar: viSidebar,
         homePage: viHomePage,
         friendsPage: viFriendsPage,
+        navbar: viNavbar,
+        notificationsPage: viNotificationsPage,
+        components: viComponents,
       },
     },
     fallbackLng: "en",
@@ -72,6 +87,9 @@ i18n
       "sidebar",
       "homePage",
       "friendsPage",
+      "navbar",
+      "notificationsPage",
+      "components",
     ],
     defaultNS: "loginPage",
     interpolation: {

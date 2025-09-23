@@ -1,10 +1,354 @@
 {
-  "HomePage": {
-    "title": "Kết nối bạn mới"
+  "Components": {
+    "friendFilterInput": {
+      "fullName": {
+        "label": "Họ và tên",
+        "placeholder": "Nhập họ và tên"
+      },
+      "nativeLanguage": {
+        "label": "Ngôn ngữ mẹ đẻ",
+        "placeholder": "Chọn ngôn ngữ mẹ đẻ"
+      },
+      "learningLanguage": {
+        "label": "Ngôn ngữ đang học",
+        "placeholder": "Chọn ngôn ngữ đang học"
+      },
+      "button": {
+        "text": "Lọc",
+        "loadingText": "Đang lọc..."
+      }
+    },
+    "costumedSelect": {
+      "search": {
+        "placeholder": "Tìm kiếm..."
+      },
+      "noneOption": "Hủy lựa chọn"
+    },
+    "recommendedUserCard_HomePage": {
+      "languages": {
+        "native": "Mẹ đẻ",
+        "learning": "Đang học"
+      }
+    },
+    "friendCard_HomePage_OutgoingRequest": {
+      "cancelRequestModal": {
+        "title": "Hủy yêu cầu kết bạn",
+        "subtitle": "Bạn có chắc chắn muốn hủy yêu cầu kết bạn với",
+        "button": {
+          "confirm": "Xác nhận",
+          "cancel": "Để sau"
+        }
+      },
+      "languages": {
+        "native": "Mẹ đẻ",
+        "learning": "Đang học"
+      },
+      "toast": {
+        "cancelFriendRequestMutation": {
+          "success": "Hủy yêu cầu kết bạn thành công",
+          "error": "Hủy yêu cầu kết bạn thất bại. Vui lòng thử lại sau"
+        }
+      }
+    },
+    "friendCard_FriendsPage": {
+      "status": {
+        "online": "Trực tuyến",
+        "offline": "Ngoại tuyến"
+      },
+      "deleteFriendModal": {
+        "title": "Hủy kết bạn",
+        "subtitle": "Bạn có chắc chắn muốn hủy kết bạn với ",
+        "button": {
+          "confirm": "Xác nhận",
+          "cancel": "Để sau"
+        }
+      },
+      "languages": {
+        "native": "Mẹ đẻ",
+        "learning": "Đang học"
+      },
+      "toast": {
+        "deleteFriendMutation": {
+          "success": "Hủy kết bạn thành công",
+          "error": "Hủy kết bạn thất bại. Vui lòng thử lại sau"
+        },
+        "handleGetPrivateConversation": {
+          "error": "Lấy cuộc trò chuyện riêng tư thất bại. Vui lòng thử lại sau"
+        }
+      }
+    }
   },
-  "FriendsPage": {
-    "friendsList": {
-      "title": "Danh sách bạn bè"
+  "SignInPage": {
+    "leftSide": {
+      "hero": {
+        "title": "Chào mừng trở lại",
+        "subtitle": "Đăng nhập để tiếp tục hành trình học ngôn ngữ của bạn."
+      },
+      "form": {
+        "email": {
+          "label": "Email",
+          "placeholder": "email@example.com"
+        },
+        "password": {
+          "label": "Mật khẩu",
+          "placeholder": "********"
+        },
+        "termsAndPolicy": {
+          "label": "Tôi đồng ý với",
+          "terms": "điều khoản dịch vụ",
+          "and": "và",
+          "privacyPolicy": "chính sách bảo mật"
+        },
+
+        "signInButton": {
+          "text": "Đăng nhập",
+          "loadingText": "Đang đăng nhập..."
+        }
+      },
+      "prompt": {
+        "noAccount": {
+          "text": "Chưa có tài khoản?",
+          "linkText": "Đăng ký"
+        },
+        "or": "hoặc",
+        "forgotPassword": {
+          "text": "Quên mật khẩu?",
+          "linkText": "Khôi phục"
+        }
+      }
+    },
+    "rightSide": {
+      "title": "Kết nối bạn bè trên toàn thế giới",
+      "subtitle": "Trò chuyện, kết bạn và nâng cao khả năng ngoại ngữ"
+    },
+    "toast": {
+      "useLogin": {
+        "success": "Đăng nhập thành công!",
+        "error": "Đăng nhập thất bại. Vui lòng thử lại."
+      },
+      "handleLogin": {
+        "allFieldsAreRequired": "Tất cả các trường đều bắt buộc.",
+        "termsAndPolicyNotAgreed": "Bạn phải đồng ý với điều khoản dịch vụ và chính sách bảo mật.",
+        "error": "Đăng nhập không thành công. Vui lòng thử lại."
+      }
+    }
+  },
+  "SignUpPage": {
+    "leftSide": {
+      "hero": {
+        "title": "Tạo tài khoản",
+        "subtitle": "Tham gia Chatify và bắt đầu hành trình học ngôn ngữ của bạn!"
+      },
+      "form": {
+        "fullName": {
+          "label": "Họ và tên",
+          "placeholder": "Nhập họ và tên của bạn",
+          "helperText": "Bạn sẽ không thể thay đổi họ và tên của mình."
+        },
+        "email": {
+          "label": "Email",
+          "placeholder": "email@example.com"
+        },
+        "password": {
+          "label": "Mật khẩu",
+          "placeholder": "********"
+        },
+        "termsAndPolicy": {
+          "label": "Tôi đồng ý với",
+          "terms": "điều khoản dịch vụ",
+          "and": "và",
+          "privacyPolicy": "chính sách bảo mật"
+        },
+
+        "signUpButton": {
+          "text": "Đăng ký",
+          "loadingText": "Đang đăng ký..."
+        }
+      },
+      "prompt": {
+        "alreadyHaveAccount": {
+          "text": "Đã có tài khoản?",
+          "linkText": "Đăng nhập"
+        }
+      }
+    },
+    "rightSide": {
+      "title": "Kết nối bạn bè trên toàn thế giới",
+      "subtitle": "Trò chuyện, kết bạn và nâng cao khả năng ngoại ngữ"
+    },
+    "verificationStep": {
+      "title": "Xác thực tài khoản",
+      "subtitle": "Nhập mã xác thực đã gửi đến email của bạn",
+      "form": {
+        "verificationCode": {
+          "label": "Mã xác thực",
+          "placeholder": "Nhập mã xác thực"
+        },
+        "resendCode": {
+          "text": "Gửi lại"
+        },
+        "verifyButton": {
+          "text": "Xác thực",
+          "loadingText": "Đang xác thực..."
+        }
+      }
+    },
+
+    "toast": {
+      "signUpMutation": {
+        "success": "Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản.",
+        "error": "Đăng ký không thành công. Vui lòng thử lại."
+      },
+      "signUpVerificationMutation": {
+        "success": "Xác thực thành công! Bạn có thể đăng nhập ngay bây giờ.",
+        "error": "Xác thực không thành công. Vui lòng thử lại."
+      },
+      "resendVerificationCodeMutation": {
+        "success": "Mã xác thực đã được gửi lại. Vui lòng kiểm tra email của bạn.",
+        "error": "Gửi mã xác thực không thành công. Vui lòng thử lại."
+      },
+      "validateSignUpData": {
+        "allFieldsAreRequired": "Tất cả các trường đều bắt buộc.",
+        "invalidFullName": "Họ và tên chỉ chứa chữ cái.",
+        "invalidEmail": "Email không hợp lệ.",
+        "invalidPassword": "Mật khẩu phải chứa ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt.",
+        "termsAndPolicyNotAgreed": "Bạn phải đồng ý với điều khoản dịch vụ và chính sách bảo mật."
+      },
+      "handleSignUp": {
+        "error": "Đăng ký không thành công. Vui lòng thử lại."
+      },
+      "handleResendVerificationCode": {
+        "error": "Gửi mã xác thực không thành công. Vui lòng thử lại."
+      },
+      "handleSignUpVerification": {
+        "emptyVerificationCode": "Vui lòng nhập mã xác thực",
+        "error": "Xác thực không thành công. Vui lòng thử lại."
+      }
+    }
+  },
+  "ForgotPasswordPage": {
+    "emailStep": {
+      "title": "Quên mật khẩu",
+      "subtitle": "Nhập email của bạn để nhận mã xác thực",
+      "form": {
+        "email": {
+          "label": "Email",
+          "placeholder": "email@example.com"
+        },
+
+        "sendButton": {
+          "text": "Gửi mã",
+          "loadingText": "Đang gửi..."
+        },
+        "backButton": {
+          "text": "Quay lại đăng nhập"
+        }
+      }
+    },
+    "verificationStep": {
+      "title": "Xác thực khôi phục mật khẩu",
+      "subtitle": "Nhập mật khẩu mới và mã xác thực",
+      "form": {
+        "newPassword": {
+          "label": "Mật khẩu mới",
+          "placeholder": "Nhập mật khẩu mới"
+        },
+        "verificationCode": {
+          "label": "Mã xác thực",
+          "placeholder": "Nhập mã xác thực"
+        },
+        "resendCode": {
+          "text": "Gửi lại"
+        },
+        "verifyButton": {
+          "text": "Xác thực",
+          "loadingText": "Đang xác thực..."
+        }
+      }
+    },
+    "toast": {
+      "resetPasswordMutation": {
+        "success": "Mã xác thực đã được gửi đến email của bạn",
+        "error": "Đã xảy ra lỗi khi gửi mã xác thực. Vui lòng thử lại."
+      },
+      "resetPasswordVerificationMutation": {
+        "success": "Mật khẩu đã được khôi phục thành công",
+        "error": "Đã xảy ra lỗi khi khôi phục mật khẩu. Vui lòng thử lại."
+      },
+      "validateResetPasswordData": {
+        "allFieldsAreRequired": "Tất cả các trường đều bắt buộc",
+        "invalidEmail": "Email không hợp lệ"
+      },
+      "handleResetPassword": {
+        "error": "Đã xảy ra lỗi khi gửi mã xác thực. Vui lòng thử lại."
+      },
+
+      "validateResetPasswordVerificationData": {
+        "allFieldsAreRequired": "Tất cả các trường đều bắt buộc",
+        "invalidPassword": "Mật khẩu phải chứa ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt."
+      },
+      "handleResetPasswordVerification": {
+        "error": "Đã xảy ra lỗi khi khôi phục mật khẩu. Vui lòng thử lại."
+      }
+    }
+  },
+  "OnboardingPage": {
+    "hero": {
+      "title": "Hoàn thiện hồ sơ",
+      "genAvatarButton": "Tạo hình đại diện ngẫu nhiên"
+    },
+    "form": {
+      "fullName": {
+        "label": "Họ và tên",
+        "placeholder": "Nhập họ và tên của bạn"
+      },
+      "bio": {
+        "label": "Giới thiệu",
+        "placeholder": "Giới thiệu bản thân và mục tiêu học ngoại ngữ của bạn"
+      },
+      "location": {
+        "label": "Vị trí",
+        "placeholder": "Thành phố, bang hoặc khu vực bạn đang sống"
+      },
+      "nativeLanguage": {
+        "label": "Ngôn ngữ mẹ đẻ",
+        "placeholder": "Chọn ngôn ngữ mẹ đẻ"
+      },
+      "learningLanguage": {
+        "label": "Ngôn ngữ bạn đang học",
+        "placeholder": "Chọn ngôn ngữ bạn đang học"
+      },
+      "button": {
+        "text": "Lưu và tiếp tục",
+        "loadingText": "Đang lưu..."
+      }
+    },
+    "toast": {
+      "getNativeLanguagesMutation": {
+        "error": "Không thể lấy danh sách ngôn ngữ mẹ đẻ",
+        "success": "Lấy danh sách ngôn ngữ mẹ đẻ thành công"
+      },
+      "getLearningLanguagesMutation": {
+        "error": "Không thể lấy danh sách ngôn ngữ bạn đang học",
+        "success": "Lấy danh sách ngôn ngữ bạn đang học thành công"
+      },
+      "onboardingMutation": {
+        "error": "Không thể lưu hồ sơ. Vui lòng thử lại.",
+        "success": "Chào mừng đến với Chatify!"
+      },
+      "handleRandomAvatar": {
+        "error": "Không thể tạo hình đại diện ngẫu nhiên. Vui lòng thử lại.",
+        "success": "Tạo hình đại diện ngẫu nhiên thành công"
+      },
+      "handleSubmit": {
+        "error": "Không thể lưu hồ sơ. Vui lòng thử lại.",
+        "success": "Hồ sơ đã được lưu thành công"
+      },
+      "validateOnboardingData": {
+        "missingLanguages": "Vui lòng chọn ngôn ngữ",
+        "allFieldsRequired": "Tất cả các trường đều bắt buộc",
+        "success": ""
+      }
     }
   },
   "ProfilePage": {
@@ -40,7 +384,25 @@
       },
       "submitButton": {
         "text": "Cập nhật",
-        "loadingText": "Đang lưu..."
+        "loadingText": "Đang cập nhật..."
+      }
+    },
+    "toast": {
+      "updateProfileMutation": {
+        "success": "Cập nhật hồ sơ thành công!",
+        "error": "Cập nhật hồ sơ thất bại. Vui lòng thử lại."
+      },
+      "validateProfileData": {
+        "missingLanguages": "Vui lòng chọn ngôn ngữ",
+        "allFieldsRequired": "Tất cả các trường đều bắt buộc"
+      },
+      "handleRandomAvatar": {
+        "error": "Không thể tạo hình đại diện ngẫu nhiên. Vui lòng thử lại.",
+        "success": "Tạo hình đại diện ngẫu nhiên thành công"
+      },
+      "handleSubmit": {
+        "error": "Không thể lưu hồ sơ. Vui lòng thử lại.",
+        "success": "Cập nhật hồ sơ thành công!"
       }
     }
   },
@@ -64,19 +426,7 @@
           "loadingText": "Đang xác nhận..."
         }
       },
-      "toast": {
-        "changePasswordMutation": {
-          "success": "Mã xác thực đã được gửi đến email của bạn",
-          "error": "Đã xảy ra lỗi khi gửi mã xác thực. Vui lòng thử lại."
-        },
-
-        "validateChangePassword": {
-          "allFieldsRequired": "Tất cả các trường đều bắt buộc"
-        },
-        "handleChangePassword": {
-          "error": "Đã xảy ra lỗi khi gửi mã xác thực. Vui lòng thử lại."
-        }
-      }
+      "toast": {}
     },
     "step2": {
       "hero": {
@@ -93,19 +443,135 @@
           "loadingText": "Đang xác nhận..."
         },
         "resend": "Gửi lại"
+      }
+    },
+    "toast": {
+      "changePasswordVerificationMutation": {
+        "success": "Đổi mật khẩu thành công",
+        "error": "Đã xảy ra lỗi khi xác thực mã. Vui lòng thử lại."
       },
-      "toast": {
-        "changePasswordVerificationMutation": {
-          "success": "Đổi mật khẩu thành công",
-          "error": "Đã xảy ra lỗi khi xác thực mã. Vui lòng thử lại."
-        },
-        "validateChangePasswordVerification": {
-          "allFieldsRequired": "Tất cả các trường đều bắt buộc",
-          "invalidVerificationCode": "Mã xác thực không hợp lệ"
-        },
-        "handleChangePasswordVerification": {
-          "error": "Đã xảy ra lỗi khi xác thực mã. Vui lòng thử lại."
-        }
+      "validateChangePasswordVerification": {
+        "allFieldsRequired": "Tất cả các trường đều bắt buộc",
+        "invalidVerificationCode": "Mã xác thực không hợp lệ"
+      },
+      "handleChangePasswordVerification": {
+        "error": "Đã xảy ra lỗi khi xác thực mã. Vui lòng thử lại."
+      },
+      "changePasswordMutation": {
+        "success": "Mã xác thực đã được gửi đến email của bạn",
+        "error": "Đã xảy ra lỗi khi gửi mã xác thực. Vui lòng thử lại."
+      },
+
+      "validateChangePassword": {
+        "allFieldsRequired": "Tất cả các trường đều bắt buộc"
+      },
+      "handleChangePassword": {
+        "error": "Đã xảy ra lỗi khi gửi mã xác thực. Vui lòng thử lại."
+      }
+    }
+  },
+  "Navbar": {
+    "useLogout": {
+      "success": "Đăng xuất thành công",
+      "error": "Đã xảy ra lỗi khi đăng xuất. Vui lòng thử lại."
+    }
+  },
+  "Sidebar": {
+    "pages": {
+      "home": "Khám phá",
+      "friends": "Bạn bè",
+      "chats": "Trò chuyện",
+      "notifications": "Thông báo"
+    },
+    "user": {
+      "status": {
+        "online": "Trực tuyến"
+      }
+    }
+  },
+  "HomePage": {
+    "recommendedUsers": {
+      "title": "Kết nối bạn mới",
+      "noData": {
+        "title": "Chưa có người học mới",
+        "subtitle": "Hãy thử lại sau hoặc mời bạn bè tham gia!"
+      },
+      "noMatch": {
+        "title": "Không có người dùng phù hợp",
+        "subtitle": "Hãy thử điều chỉnh tiêu chí tìm kiếm và thử lại."
+      },
+      "subButton": {
+        "seeMore": "Xem thêm",
+        "seeLess": "Thu gọn"
+      }
+    },
+    "outgoingFriendRequests": {
+      "title": "Lời mời kết bạn đã gửi",
+      "noData": {
+        "title": "Chưa có lời mời kết bạn nào đã gửi",
+        "subtitle": "Hãy gửi lời mời kết bạn đến người dùng khác để bắt đầu kết nối."
+      },
+      "subButton": {
+        "seeMore": "Xem thêm",
+        "seeLess": "Thu gọn"
+      }
+    },
+    "toast": {
+      "fetchRecommendedUsers": {
+        "error": "Không thể tải người dùng mới. Vui lòng thử lại."
+      },
+      "fetchOutgoingFriendRequests": {
+        "error": "Không thể tải lời mời kết bạn đã gửi. Vui lòng thử lại."
+      }
+    }
+  },
+  "FriendsPage": {
+    "friends": {
+      "title": "Danh sách bạn bè",
+      "noData": {
+        "title": "Chưa có bạn bè",
+        "subtitle": "Hãy gửi lời mời kết bạn để bắt đầu kết nối."
+      },
+      "noMatch": {
+        "title": "Không tìm thấy bạn bè phù hợp",
+        "subtitle": "Hãy thử điều chỉnh tiêu chí tìm kiếm và thử lại."
+      }
+    },
+    "toast": {
+      "fetchFriends": {
+        "error": "Lỗi khi tải danh sách bạn bè. Vui lòng thử lại sau."
+      }
+    }
+  },
+  "NotificationsPage": {
+    "incomingFriendRequests": {
+      "title": "Lời mời kết bạn",
+      "noData": {
+        "title": "Không có lời mời kết bạn",
+        "subtitle": "Bạn sẽ nhận được thông báo khi có lời mời kết bạn mới."
+      },
+      "subButton": {
+        "seeMore": "Xem thêm",
+        "seeLess": "Thu gọn"
+      }
+    },
+    "notifications": {
+      "title": "Thông báo",
+      "noData": {
+        "title": "Không có thông báo",
+        "subtitle": "Hãy tương tác nhiều hơn để nhận thông báo mới."
+      },
+      "subButton": {
+        "seeMore": "Xem thêm",
+        "seeLess": "Thu gọn"
+      }
+    },
+    "toast": {
+      "fetchNotifications": {
+        "error": "Không thể tải thông báo. Vui lòng thử lại."
+      },
+      "fetchIncomingFriendRequests": {
+        "error": "Không thể tải lời mời kết bạn. Vui lòng thử lại."
       }
     }
   }

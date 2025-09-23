@@ -1,0 +1,32 @@
+{
+  "incomingFriendRequests": {
+    "title": "Lời mời kết bạn",
+    "noData": {
+      "title": "Không có lời mời kết bạn",
+      "subtitle": "Bạn sẽ nhận được thông báo khi có lời mời kết bạn mới."
+    },
+    "subButton": {
+      "seeMore": "Xem thêm",
+      "seeLess": "Thu gọn"
+    }
+  },
+  "notifications": {
+    "title": "Thông báo",
+    "noData": {
+      "title": "Không có thông báo",
+      "subtitle": "Hãy tương tác nhiều hơn để nhận thông báo mới."
+    },
+    "subButton": {
+      "seeMore": "Xem thêm",
+      "seeLess": "Thu gọn"
+    }
+  },
+  "toast": {
+    "fetchNotifications": {
+      "error": "Không thể tải thông báo. Vui lòng thử lại."
+    },
+    "fetchIncomingFriendRequests": {
+      "error": "Không thể tải lời mời kết bạn. Vui lòng thử lại."
+    }
+  }
+}

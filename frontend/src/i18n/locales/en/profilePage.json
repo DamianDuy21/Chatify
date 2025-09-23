@@ -31,7 +31,25 @@
     },
     "submitButton": {
       "text": "Update Profile",
-      "loadingText": "Saving..."
+      "loadingText": "Updating..."
+    }
+  },
+  "toast": {
+    "updateProfileMutation": {
+      "success": "Profile updated successfully!",
+      "error": "Profile update failed. Please try again."
+    },
+    "validateProfileData": {
+      "missingLanguages": "Please select languages",
+      "allFieldsRequired": "All fields are required"
+    },
+    "handleRandomAvatar": {
+      "error": "Unable to generate random avatar. Please try again.",
+      "success": "Generated random avatar successfully!"
+    },
+    "handleSubmit": {
+      "error": "Unable to save profile. Please try again.",
+      "success": "Updated profile successfully!"
     }
   }
 }

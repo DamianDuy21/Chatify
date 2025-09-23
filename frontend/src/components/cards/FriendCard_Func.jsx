@@ -19,12 +19,4 @@ export function getLanguageFlag(countryCode) {
   return null;
 }
 
-export function getFlagLanguage(countryCode) {
-  if (!countryCode) return null;
-
-  const lang = FLAG_TO_LANGUAGE[countryCode];
-
-  return lang;
-}
-
 export default FriendCard_Func;

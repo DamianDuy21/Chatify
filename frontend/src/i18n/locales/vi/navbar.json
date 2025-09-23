@@ -1,0 +1,6 @@
+{
+  "useLogout": {
+    "success": "Đăng xuất thành công",
+    "error": "Đã xảy ra lỗi khi đăng xuất. Vui lòng thử lại."
+  }
+}

@@ -9,14 +9,14 @@ import { deepTrimObj } from "@/lib/utils.js";
 import { useThemeStore } from "@/stores/useThemeStore.js";
 import { useMutation } from "@tanstack/react-query";
 import { ArrowLeft, Hexagon, LoaderIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link.js";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { useTranslation } from "react-i18next";
 
 const SignUpPage = () => {
-  const { t } = useTranslation("signUpPage");
+  const t = useTranslations("SignUpPage");
   const { theme } = useThemeStore();
   const router = useRouter();
 
@@ -33,9 +33,7 @@ const SignUpPage = () => {
     mutationFn: (data) => signUpAPI(data),
     onSuccess: (data) => {
       showToast({
-        message:
-          data?.message ||
-          "Đăng ký thành công! Vui lòng kiểm tra email để lấy mã xác minh",
+        message: data?.message || t("toast.signUpMutation.success"),
         type: "success",
       });
       setStep(2);
@@ -43,7 +41,7 @@ const SignUpPage = () => {
     onError: (error) => {
       showToast({
         message:
-          error?.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại",
+          error?.response?.data?.message || t("toast.handleSignUp.error"),
         type: "error",
       });
     },
@@ -56,14 +54,16 @@ const SignUpPage = () => {
     mutationFn: (data) => signUpAPI(data),
     onSuccess: (data) => {
       showToast({
-        message: data?.message || "Vui lòng kiểm tra email để lấy mã xác minh",
+        message:
+          data?.message || t("toast.resendVerificationCodeMutation.success"),
         type: "success",
       });
     },
     onError: (error) => {
       showToast({
         message:
-          error?.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại",
+          error?.response?.data?.message ||
+          t("toast.resendVerificationCodeMutation.error"),
         type: "error",
       });
     },
@@ -74,16 +74,18 @@ const SignUpPage = () => {
       mutationFn: signUpVerificationAPI,
       onSuccess: (data) => {
         showToast({
-          message: data?.message || "Xác minh đăng ký thành công!",
+          message:
+            data?.message || t("toast.signUpVerificationMutation.success"),
           type: "success",
         });
-        router.replace("/signin");
+        router.push("/signin");
       },
       onError: (error) => {
         console.error("Sign up verification error:", error);
         showToast({
           message:
-            error?.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại",
+            error?.response?.data?.message ||
+            t("toast.signUpVerificationMutation.error"),
           type: "error",
         });
       },
@@ -104,27 +106,27 @@ const SignUpPage = () => {
 
     if (!signUpData.fullName || !signUpData.email || !signUpData.password) {
       return {
-        message: "Tất cả các trường là bắt buộc",
+        message: t("toast.validateSignUpData.allFieldsAreRequired"),
         cleanedData: signUpData,
       };
     } else if (!nameIsValid) {
       return {
-        message: "Họ và tên không hợp lệ",
+        message: t("toast.validateSignUpData.invalidFullName"),
         cleanedData: signUpData,
       };
     } else if (!emailIsValid) {
       return {
-        message: "Email không hợp lệ",
+        message: t("toast.validateSignUpData.invalidEmail"),
         cleanedData: signUpData,
       };
     } else if (!passwordIsValid) {
       return {
-        message: "Mật khẩu không hợp lệ",
+        message: t("toast.validateSignUpData.invalidPassword"),
         cleanedData: signUpData,
       };
     } else if (!isCheckedPolicy) {
       return {
-        message: "Bạn cần đồng ý với điều khoản dịch vụ và chính sách bảo mật",
+        message: t("toast.validateSignUpData.termsAndPolicyNotAgreed"),
         cleanedData: signUpData,
       };
     }
@@ -132,7 +134,7 @@ const SignUpPage = () => {
     return { message: null, cleanedData: signUpData };
   };
 
-  const handleSignup = (e) => {
+  const handleSignUp = (e) => {
     e.preventDefault();
     const { message, cleanedData } = validateSignUpData(
       signUpData,
@@ -151,7 +153,7 @@ const SignUpPage = () => {
     } catch (error) {
       console.error("Sign up failed:", error);
       showToast({
-        message: error?.message || "Có lỗi xảy ra, vui lòng thử lại",
+        message: error?.message || t("toast.handleSignUp.error"),
         type: "error",
       });
     }
@@ -174,7 +176,8 @@ const SignUpPage = () => {
     } catch (error) {
       console.error("Resend verification code failed:", error);
       showToast({
-        message: error?.message || "Có lỗi xảy ra, vui lòng thử lại",
+        message:
+          error?.message || t("toast.resendVerificationCodeMutation.error"),
         type: "error",
       });
     }
@@ -185,7 +188,7 @@ const SignUpPage = () => {
     const trimmedVerificationCode = verificationCode.trim();
     if (!trimmedVerificationCode) {
       showToast({
-        message: "Tất cả các trường là bắt buộc",
+        message: t("validateSignUpData.emptyVerificationCode"),
         type: "error",
       });
       return;
@@ -200,7 +203,7 @@ const SignUpPage = () => {
     } catch (error) {
       console.error("Sign up verification failed:", error);
       showToast({
-        message: error?.message || "Có lỗi xảy ra, vui lòng thử lại",
+        message: error?.message || t("toast.handleSignUpVerification.error"),
         type: "error",
       });
     }
@@ -226,7 +229,7 @@ const SignUpPage = () => {
 
               <div className="w-full">
                 {/* arrow function need to pass event or else not working in onSubmit? */}
-                <form onSubmit={(e) => handleSignup(e)} action="">
+                <form onSubmit={(e) => handleSignUp(e)} action="">
                   <div className="space-y-4">
                     {/* <div>
                       <h2 className="text-xl font-semibold">
@@ -241,16 +244,18 @@ const SignUpPage = () => {
                       <div className="form-control w-full">
                         <div className="flex items-center justify-between">
                           <label className="label">
-                            <span className="label-text">Họ và tên</span>
+                            <span className="label-text">
+                              {t("leftSide.form.fullName.label")}
+                            </span>
                           </label>
                           <p className="text-xs opacity-70 mt-1">
-                            *Bạn sẽ không thể thay đổi họ và tên của mình
+                            *{t("leftSide.form.fullName.helperText")}
                           </p>
                         </div>
 
                         <input
                           type="text"
-                          placeholder="Nhập họ và tên"
+                          placeholder={t("leftSide.form.fullName.placeholder")}
                           className="input input-bordered w-full text-sm"
                           value={signUpData.fullName}
                           onChange={(e) =>
@@ -266,11 +271,13 @@ const SignUpPage = () => {
                       {/* EMAIL */}
                       <div className="form-control w-full">
                         <label className="label">
-                          <span className="label-text">Email</span>
+                          <span className="label-text">
+                            {t("leftSide.form.email.label")}
+                          </span>
                         </label>
                         <input
                           type="text"
-                          placeholder="email@example.com"
+                          placeholder={t("leftSide.form.email.placeholder")}
                           className="input input-bordered w-full text-sm"
                           value={signUpData.email}
                           onChange={(e) =>
@@ -285,13 +292,15 @@ const SignUpPage = () => {
                       {/* PASSWORD */}
                       <div className="form-control w-full">
                         <label className="label">
-                          <span className="label-text">Mật khẩu</span>
+                          <span className="label-text">
+                            {t("leftSide.form.password.label")}
+                          </span>
                         </label>
 
                         <CostumedPasswordInput
                           data={signUpData}
                           setData={setSignUpData}
-                          placeholder="********"
+                          placeholder={t("leftSide.form.password.placeholder")}
                         />
                       </div>
 
@@ -307,13 +316,13 @@ const SignUpPage = () => {
                             }
                           />
                           <span className="text-xs leading-tight">
-                            Tôi đồng ý với{" "}
+                            {t("leftSide.form.termsAndPolicy.label")}{" "}
                             <span className="text-primary hover:underline">
-                              điều khoản dịch vụ
+                              {t("leftSide.form.termsAndPolicy.terms")}
                             </span>{" "}
-                            và{" "}
+                            {t("leftSide.form.termsAndPolicy.and")}{" "}
                             <span className="text-primary hover:underline">
-                              chính sách bảo mật
+                              {t("leftSide.form.termsAndPolicy.privacyPolicy")}
                             </span>
                           </span>
                         </label>
@@ -329,22 +338,22 @@ const SignUpPage = () => {
                       {isSigningUp ? (
                         <>
                           <LoaderIcon className="animate-spin size-5" />
-                          Đang đăng ký...
+                          {t("leftSide.form.signUpButton.loadingText")}
                         </>
                       ) : (
-                        "Đăng ký"
+                        t("leftSide.form.signUpButton.text")
                       )}
                     </button>
 
                     {/* REDIRECT LOGIN */}
                     <div className="text-center !mt-6">
                       <p className="text-sm">
-                        Đã có tài khoản?{" "}
+                        {t("leftSide.prompt.alreadyHaveAccount.text")}{" "}
                         <Link
                           href="/signin"
                           className="text-primary hover:underline"
                         >
-                          Đăng nhập
+                          {t("leftSide.prompt.alreadyHaveAccount.linkText")}
                         </Link>
                       </p>
                     </div>
@@ -374,11 +383,11 @@ const SignUpPage = () => {
                 <div className="text-center space-y-3 mt-6">
                   <h2 className="text-xl font-semibold">
                     {/* {t("rightSide.title")} */}
-                    Tạo tài khoản
+                    {t("leftSide.hero.title")}
                   </h2>
                   <p className="opacity-70 text-sm">
                     {/* {t("rightSide.subtitle")} */}
-                    Tham gia Chatify và bắt đầu hành trình học ngôn ngữ của bạn!
+                    {t("leftSide.hero.subtitle")}
                   </p>
                 </div>
               </div>
@@ -396,21 +405,25 @@ const SignUpPage = () => {
                     />
                     <div>
                       <h2 className="text-xl font-semibold">
-                        Xác thực đăng ký
+                        {t("verificationStep.title")}
                       </h2>
                       <p className="text-sm opacity-70">
-                        Nhập mã xác thực đã gửi đến email của bạn
+                        {t("verificationStep.subtitle")}
                       </p>
                     </div>
                   </div>
                   <div className="space-y-3">
                     <div className="form-control w-full">
                       <label className="label">
-                        <span className="label-text">Mã xác thực</span>
+                        <span className="label-text">
+                          {t("verificationStep.form.verificationCode.label")}
+                        </span>
                       </label>
                       <input
                         type="text"
-                        placeholder="Nhập mã xác thực"
+                        placeholder={t(
+                          "verificationStep.form.verificationCode.placeholder"
+                        )}
                         className="input input-bordered w-full text-sm"
                         value={verificationCode}
                         onChange={(e) => setVerificationCode(e.target.value)}
@@ -424,7 +437,7 @@ const SignUpPage = () => {
                         }`}
                         onClick={handleResendVerificationCode}
                       >
-                        Gửi lại
+                        {t("verificationStep.form.resendCode.text")}
                       </p>
                     </div>
                   </div>
@@ -435,11 +448,11 @@ const SignUpPage = () => {
                     disabled={isVerifyingCode}
                   >
                     {!isVerifyingCode ? (
-                      "Xác thực"
+                      t("verificationStep.form.verifyButton.text")
                     ) : (
                       <>
                         <LoaderIcon className="animate-spin size-5" />
-                        "Đang xác thực..."
+                        {t("verificationStep.form.verifyButton.loadingText")}
                       </>
                     )}
                   </button>

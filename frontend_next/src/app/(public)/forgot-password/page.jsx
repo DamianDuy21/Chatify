@@ -1,19 +1,19 @@
 "use client";
 
-import { useMutation } from "@tanstack/react-query";
-import { ArrowLeft, LoaderIcon } from "lucide-react";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { resetPasswordAPI, resetPasswordVerificationAPI } from "@/lib/api";
-import { useTranslation } from "react-i18next";
-import { showToast } from "@/components/costumed/CostumedToast";
 import LocaleSwitcher from "@/components/buttons/LocaleSwitcher";
 import ThemesSelector from "@/components/buttons/ThemeSelector.jsx";
 import CostumedPasswordInput from "@/components/costumed/CostumedPasswordInput.jsx";
+import { showToast } from "@/components/costumed/CostumedToast";
+import { resetPasswordAPI, resetPasswordVerificationAPI } from "@/lib/api";
+import { useMutation } from "@tanstack/react-query";
+import { ArrowLeft, LoaderIcon } from "lucide-react";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 const ForgotPasswordPage = () => {
-  const { t } = useTranslation("forgotPasswordPage");
+  const t = useTranslations("ForgotPasswordPage");
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [email, setEmail] = useState("");
@@ -25,9 +25,7 @@ const ForgotPasswordPage = () => {
       mutationFn: resetPasswordAPI,
       onSuccess: (data) => {
         showToast({
-          message:
-            data?.message ||
-            "Vui lòng kiểm tra email của bạn để lấy mã xác minh",
+          message: data?.message || t("toast.resetPasswordMutation.success"),
           type: "success",
         });
         setStep(2);
@@ -35,7 +33,8 @@ const ForgotPasswordPage = () => {
       onError: (error) => {
         showToast({
           message:
-            error?.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại",
+            error?.response?.data?.message ||
+            t("toast.resetPasswordMutation.error"),
           type: "error",
         });
       },
@@ -48,7 +47,8 @@ const ForgotPasswordPage = () => {
     mutationFn: resetPasswordVerificationAPI,
     onSuccess: (data) => {
       showToast({
-        message: data?.message || "Đặt lại mật khẩu thành công!",
+        message:
+          data?.message || t("toast.resetPasswordVerificationMutation.success"),
         type: "success",
       });
       router.replace("/signin");
@@ -57,7 +57,8 @@ const ForgotPasswordPage = () => {
       console.error(error);
       showToast({
         message:
-          error?.response?.data?.message || "Có lỗi xảy ra, vui lòng thử lại",
+          error?.response?.data?.message ||
+          t("toast.resetPasswordVerificationMutation.error"),
         type: "error",
       });
     },
@@ -67,12 +68,12 @@ const ForgotPasswordPage = () => {
     const trimmedEmail = email.trim();
     if (!trimmedEmail) {
       return {
-        message: "Tất cả các trường là bắt buộc",
+        message: t("toast.validateResetPasswordData.allFieldsAreRequired"),
         type: "error",
       };
     } else if (!/\S+@\S+\.\S+/.test(trimmedEmail)) {
       return {
-        message: "Email không hợp lệ",
+        message: t("toast.validateResetPasswordData.invalidEmail"),
         type: "error",
       };
     }
@@ -95,7 +96,7 @@ const ForgotPasswordPage = () => {
     } catch (error) {
       console.error(error);
       showToast({
-        message: error?.message || "Có lỗi xảy ra, vui lòng thử lại",
+        message: error?.message || t("toast.handleResetPassword.error"),
         type: "error",
       });
     }
@@ -106,7 +107,9 @@ const ForgotPasswordPage = () => {
     const trimmedVerificationCode = verificationCode.trim();
     if (!trimmedNewPassword || !trimmedVerificationCode) {
       return {
-        message: "Tất cả các trường là bắt buộc",
+        message: t(
+          "toast.validateResetPasswordVerificationData.allFieldsAreRequired"
+        ),
         type: "error",
       };
     }
@@ -118,7 +121,9 @@ const ForgotPasswordPage = () => {
       /[!@#$%^&*(),.?":{}|<>]/.test(trimmedNewPassword);
     if (!passwordIsValid) {
       return {
-        message: "Mật khẩu không hợp lệ",
+        message: t(
+          "toast.validateResetPasswordVerificationData.invalidPassword"
+        ),
         type: "error",
       };
     }
@@ -147,7 +152,8 @@ const ForgotPasswordPage = () => {
     } catch (error) {
       console.error(error);
       showToast({
-        message: error?.message || "Có lỗi xảy ra, vui lòng thử lại",
+        message:
+          error?.message || t("toast.handleResetPasswordVerification.error"),
         type: "error",
       });
     }
@@ -166,20 +172,24 @@ const ForgotPasswordPage = () => {
                 <form onSubmit={(e) => handleResetPassword(e)} action="">
                   <div className="space-y-4">
                     <div>
-                      <h2 className="text-xl font-semibold">Quên mật khẩu</h2>
+                      <h2 className="text-xl font-semibold">
+                        {t("emailStep.title")}
+                      </h2>
                       <p className="text-sm opacity-70">
-                        Nhập email của bạn để nhận mã xác thực
+                        {t("emailStep.subtitle")}
                       </p>
                     </div>
                     <div className="space-y-3">
                       {/* EMAIL */}
                       <div className="form-control w-full">
                         <label className="label">
-                          <span className="label-text">Email</span>
+                          <span className="label-text">
+                            {t("emailStep.form.email.label")}
+                          </span>
                         </label>
                         <input
                           type="text"
-                          placeholder={"email@example.com"}
+                          placeholder={t("emailStep.form.email.placeholder")}
                           className="input input-bordered w-full text-sm"
                           value={email}
                           onChange={(e) => setEmail(e.target.value)}
@@ -194,11 +204,11 @@ const ForgotPasswordPage = () => {
                       disabled={isResettingPassword}
                     >
                       {!isResettingPassword ? (
-                        "Gửi mã"
+                        t("emailStep.form.sendButton.text")
                       ) : (
                         <>
                           <LoaderIcon className="animate-spin size-5" />
-                          Đang gửi...
+                          {t("emailStep.form.sendButton.loadingText")}
                         </>
                       )}
                     </button>
@@ -210,7 +220,7 @@ const ForgotPasswordPage = () => {
                           href="/signin"
                           className="text-primary hover:underline"
                         >
-                          Quay lại đăng nhập
+                          {t("emailStep.form.backButton.text")}
                         </Link>
                       </p>
                     </div>
@@ -235,10 +245,10 @@ const ForgotPasswordPage = () => {
                       />
                       <div>
                         <h2 className="text-xl font-semibold">
-                          Xác thực khôi phục mật khẩu
+                          {t("verificationStep.title")}
                         </h2>
                         <p className="text-sm opacity-70">
-                          Nhập mật khẩu mới và mã xác thực
+                          {t("verificationStep.subtitle")}
                         </p>
                       </div>
                     </div>
@@ -246,23 +256,31 @@ const ForgotPasswordPage = () => {
                       {/* NEW PASSWORD */}
                       <div className="form-control w-full">
                         <label className="label">
-                          <span className="label-text">Mật khẩu mới</span>
+                          <span className="label-text">
+                            {t("verificationStep.form.newPassword.label")}
+                          </span>
                         </label>
 
                         <CostumedPasswordInput
                           data={newPassword}
                           setData={setNewPassword}
-                          placeholder={"Nhập mật khẩu mới"}
+                          placeholder={t(
+                            "verificationStep.form.newPassword.placeholder"
+                          )}
                         />
                       </div>
                       {/* REST CODE */}
                       <div className="form-control w-full">
                         <label className="label">
-                          <span className="label-text">Mã xác thực</span>
+                          <span className="label-text">
+                            {t("verificationStep.form.verificationCode.label")}
+                          </span>
                         </label>
                         <input
                           type="text"
-                          placeholder={"Nhập mã xác thực"}
+                          placeholder={t(
+                            "verificationStep.form.verificationCode.placeholder"
+                          )}
                           className="input input-bordered w-full text-sm"
                           value={verificationCode}
                           onChange={(e) => setVerificationCode(e.target.value)}
@@ -272,7 +290,7 @@ const ForgotPasswordPage = () => {
                           className="text-sm text-primary hover:underline mt-2 text-end cursor-pointer"
                           onClick={handleResetPassword}
                         >
-                          Gửi lại
+                          {t("verificationStep.form.resendCode.text")}
                         </p>
                       </div>
                     </div>
@@ -283,11 +301,11 @@ const ForgotPasswordPage = () => {
                       disabled={isResetPasswordVerifying}
                     >
                       {!isResetPasswordVerifying ? (
-                        "Xác thực"
+                        t("verificationStep.form.verifyButton.text")
                       ) : (
                         <>
                           <LoaderIcon className="animate-spin size-5" />
-                          "Đang xác thực..."
+                          {t("verificationStep.form.verifyButton.loadingText")}
                         </>
                       )}
                     </button>

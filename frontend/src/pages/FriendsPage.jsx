@@ -177,7 +177,7 @@ const FriendsPage = () => {
       setTotalPages(data.pagination.totalPages);
     } catch (error) {
       showToast({
-        message: error?.message || "Failed to fetch friends",
+        message: error?.message || t("toast.fetchFriends.error"),
         type: "error",
       });
     } finally {
@@ -231,7 +231,7 @@ const FriendsPage = () => {
             <div className="flex items-start justify-between gap-4 mb-4 sm:mb-4">
               <div className="flex items-center gap-4">
                 <h2 className="text-2xl sm:text-2xl font-bold">
-                  {t("friendsList.title")}
+                  {t("friends.title")}
                 </h2>
                 {<CountBadge count={friendQuantity}></CountBadge>}
               </div>
@@ -266,13 +266,13 @@ const FriendsPage = () => {
               filterData.nativeLanguage === "" &&
               filterData.learningLanguage === "" ? (
                 <NoDataCommon
-                  title={"Chưa có bạn bè"}
-                  content={"Hãy gửi lời mời kết bạn để bắt đầu kết nối."}
+                  title={t("friends.noData.title")}
+                  content={t("friends.noData.subtitle")}
                 />
               ) : (
                 <NoDataCommon
-                  title={"Không tìm thấy bạn bè"}
-                  content={"Hãy thử điều chỉnh bộ lọc hoặc thêm bạn bè mới."}
+                  title={t("friends.noMatch.title")}
+                  content={t("friends.noMatch.subtitle")}
                 />
               )
             ) : (

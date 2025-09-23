@@ -1,7 +1,8 @@
 "use client";
+import { getFlagToLanguage, getUserLocaleClient } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import CostumedDebounceInput from "./CostumedDebounceInput";
-import { FLAG_TO_LANGUAGE } from "@/lib/constants";
 
 export default function CustomSelect({
   placeholder,
@@ -10,6 +11,8 @@ export default function CustomSelect({
   defaultValue = null,
   className = "",
 }) {
+  const NEXT_LOCALE = getUserLocaleClient() || "vi";
+  const t = useTranslations("Components.costumedSelect");
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState();
   const dropdownRef = useRef(null);
@@ -46,7 +49,7 @@ export default function CustomSelect({
         onClick={() => setOpen((prev) => !prev)}
         className="costumedSelect w-full justify-between flex items-center"
       >
-        {FLAG_TO_LANGUAGE[selected?.locale] || placeholder}
+        {getFlagToLanguage(selected?.locale, NEXT_LOCALE) || placeholder}
         <svg
           className={`h-4 w-4 transition-transform ${open ? "rotate-180" : ""}`}
           xmlns="http://www.w3.org/2000/svg"
@@ -74,13 +77,13 @@ export default function CustomSelect({
                 onChange={(value) => {
                   setDisplayOptions(
                     options.filter((opt) =>
-                      FLAG_TO_LANGUAGE[opt.locale]
+                      getFlagToLanguage(opt.locale, NEXT_LOCALE)
                         .toLowerCase()
                         .includes(value.toLowerCase())
                     )
                   );
                 }}
-                placeholder={"Tìm kiếm..."}
+                placeholder={t("search.placeholder")}
               />
             </div>
           )}
@@ -93,7 +96,7 @@ export default function CustomSelect({
                 className="block w-full text-left px-4 py-2 hover:bg-base-200 text-sm h-[48px] rounded-btn"
                 onClick={() => handleSelect("")}
               >
-                Hủy lựa chọn
+                {t("noneOption")}
               </button>
             </li>
 
@@ -105,7 +108,7 @@ export default function CustomSelect({
                     className="block w-full text-left px-4 py-2 hover:bg-base-200 text-sm h-[48px] rounded-btn"
                     onClick={() => handleSelect(opt)}
                   >
-                    {FLAG_TO_LANGUAGE[opt.locale]}
+                    {getFlagToLanguage(opt.locale, NEXT_LOCALE)}
                   </button>
                 </li>
               );

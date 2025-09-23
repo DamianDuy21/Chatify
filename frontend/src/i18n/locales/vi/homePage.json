@@ -1,23 +1,36 @@
 {
-  "recentConnections": {
-    "title": "Cuộc trò chuyện gần đây",
-    "subtitle": "Tiếp tục luyện tập ngôn ngữ mới với bạn bè của bạn",
-    "empty": {
-      "title": "Chưa có bạn bè",
-      "subtitle": "Hãy gửi lời mời kết bạn để bắt đầu kết nối."
-    },
-    "subButton": "Tới trò chuyện"
-  },
   "recommendedUsers": {
     "title": "Kết nối bạn mới",
-    "subtitle": "Kết nối với những người học ngôn ngữ khác để mở rộng mạng lưới của bạn",
-    "empty": {
+    "noData": {
       "title": "Chưa có người học mới",
       "subtitle": "Hãy thử lại sau hoặc mời bạn bè tham gia!"
+    },
+    "noMatch": {
+      "title": "Không có người học phù hợp",
+      "subtitle": "Hãy thử điều chỉnh tiêu chí tìm kiếm và thử lại."
     },
     "subButton": {
       "seeMore": "Xem thêm",
       "seeLess": "Thu gọn"
+    }
+  },
+  "outgoingFriendRequests": {
+    "title": "Lời mời kết bạn đã gửi",
+    "noData": {
+      "title": "Chưa có lời mời kết bạn nào đã gửi",
+      "subtitle": "Hãy gửi lời mời kết bạn đến người dùng khác để bắt đầu kết nối."
+    },
+    "subButton": {
+      "seeMore": "Xem thêm",
+      "seeLess": "Thu gọn"
+    }
+  },
+  "toast": {
+    "fetchRecommendedUsers": {
+      "error": "Không thể tải người dùng mới. Vui lòng thử lại."
+    },
+    "fetchOutgoingFriendRequests": {
+      "error": "Không thể tải lời mời kết bạn đã gửi. Vui lòng thử lại."
     }
   }
 }

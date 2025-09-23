@@ -1,4 +1,6 @@
 "use client";
+import { useAuthStore } from "@/stores/useAuthStore";
+import { useChatStore } from "@/stores/useChatStore";
 import {
   Badge,
   BellIcon,
@@ -7,20 +9,17 @@ import {
   MessageCircle,
   UsersRound,
 } from "lucide-react";
-import { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
-import { usePathname } from "next/navigation";
-import Link from "next/link";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
-import { useAuthStore } from "@/stores/useAuthStore";
-import { useChatStore } from "@/stores/useChatStore";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 
 const Sidebar = () => {
+  const t = useTranslations("Sidebar");
   const authUser = useAuthStore((s) => s.authUser);
   const conversations = useChatStore((s) => s.conversations);
   const isGettingConversations = useChatStore((s) => s.isGettingConversations);
-
-  // const { t } = useTranslation("sidebar");
 
   const pathname = usePathname();
   const currentPath = pathname || "/";
@@ -86,7 +85,7 @@ const Sidebar = () => {
           >
             <Badge className="!size-5 text-base-content opacity-70" />
             {!isProfilePage && !isChatPage && !isChangePasswordPage ? (
-              <span className="hidden lg:block">Khám phá</span>
+              <span className="hidden lg:block">{t("pages.home")}</span>
             ) : null}
           </Link>
           <Link
@@ -98,7 +97,7 @@ const Sidebar = () => {
             {/* <UsersRound /> */}
             <UsersRound className="size-5 text-base-content opacity-70" />
             {!isProfilePage && !isChatPage && !isChangePasswordPage ? (
-              <span className="hidden lg:block">Bạn bè</span>
+              <span className="hidden lg:block">{t("pages.friends")}</span>
             ) : null}
           </Link>
           <Link
@@ -109,7 +108,7 @@ const Sidebar = () => {
           >
             <MessageCircle className="size-5 text-base-content opacity-70" />
             {!isProfilePage && !isChatPage && !isChangePasswordPage ? (
-              <span className="hidden lg:block">Trò chuyện</span>
+              <span className="hidden lg:block">{t("pages.chats")}</span>
             ) : null}
             {isGettingConversations ? (
               <div className="absolute right-[2px] top-[2px] lg:right-[14px] lg:top-1/2 lg:transform lg:-translate-y-1/2">
@@ -133,7 +132,9 @@ const Sidebar = () => {
           >
             <BellIcon className="size-5 text-base-content opacity-70" />
             {!isProfilePage && !isChatPage && !isChangePasswordPage ? (
-              <span className="hidden lg:block">Thông báo</span>
+              <span className="hidden lg:block">
+                {t("pages.notifications")}
+              </span>
             ) : null}
             {/* <div className="absolute right-1 -top-0 lg:right-4 lg:top-1/2 lg:transform lg:-translate-y-1/2">
               <span className="size-2 rounded-full bg-primary inline-block opacity-100" />
@@ -168,7 +169,7 @@ const Sidebar = () => {
                 </p>
                 <p className="text-xs text-success flex items-center gap-1">
                   <span className="size-2 rounded-full bg-success inline-block" />
-                  Trực tuyến
+                  {t("user.status.online")}
                 </p>
               </div>
             ) : null}

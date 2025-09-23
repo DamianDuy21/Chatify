@@ -1,0 +1,6 @@
+{
+  "useLogout": {
+    "success": "Logged out successfully",
+    "error": "Failed to log out. Please try again."
+  }
+}

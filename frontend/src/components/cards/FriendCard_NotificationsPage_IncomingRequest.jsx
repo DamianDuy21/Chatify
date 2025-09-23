@@ -1,12 +1,13 @@
 import { useMutation } from "@tanstack/react-query";
 import { Check, LoaderIcon, MapPinIcon, X } from "lucide-react";
 import { useRef } from "react";
+import { useTranslation } from "react-i18next";
 import { acceptFriendRequestAPI, rejectFriendRequestAPI } from "../../lib/api";
-import { capitalize, getLocaleById } from "../../lib/utils";
+import { capitalize, getFlagToLanguage, getLocaleById } from "../../lib/utils";
 import CommonRoundedButton from "../buttons/CommonRoundedButton";
 import CostumedModal from "../costumed/CostumedModal";
 import { showToast } from "../costumed/CostumedToast";
-import { getFlagLanguage, getLanguageFlag } from "./FriendCard_Func";
+import { getLanguageFlag } from "./FriendCard_Func";
 
 const FriendCard_NotificationsPage_IncomingRequest = ({
   friend,
@@ -15,6 +16,12 @@ const FriendCard_NotificationsPage_IncomingRequest = ({
   onError,
 }) => {
   const closeRef = useRef(null);
+  const { i18n } = useTranslation();
+  const getUserLocaleClient = () => {
+    if (typeof window === "undefined") return "vi";
+    return i18n.language || "vi";
+  };
+  const userLocale = getUserLocaleClient();
   const { mutate: acceptFriendRequestMutation, isPending: isAccepting } =
     useMutation({
       mutationFn: acceptFriendRequestAPI,
@@ -92,14 +99,20 @@ const FriendCard_NotificationsPage_IncomingRequest = ({
             {getLanguageFlag(getLocaleById(friend.profile.nativeLanguage))}
             Native:{" "}
             {capitalize(
-              getFlagLanguage(getLocaleById(friend.profile.nativeLanguage))
+              getFlagToLanguage(
+                getLocaleById(friend.profile.nativeLanguage),
+                userLocale
+              )
             )}
           </span>
           <span className="badge badge-outline h-8 px-4 flex items-center gap-1 relative -top-[1px]">
             {getLanguageFlag(getLocaleById(friend.profile.learningLanguage))}
             Learning:{" "}
             {capitalize(
-              getFlagLanguage(getLocaleById(friend.profile.learningLanguage))
+              getFlagToLanguage(
+                getLocaleById(friend.profile.learningLanguage),
+                userLocale
+              )
             )}
           </span>
         </div>

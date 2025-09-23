@@ -1,5 +1,18 @@
 {
-  "friendsList": {
-    "title": "Danh sách bạn bè"
+  "friends": {
+    "title": "Danh sách bạn bè",
+    "noData": {
+      "title": "Chưa có bạn bè",
+      "subtitle": "Hãy gửi lời mời kết bạn để bắt đầu kết nối."
+    },
+    "noMatch": {
+      "title": "Không tìm thấy bạn bè phù hợp",
+      "subtitle": "Hãy thử điều chỉnh tiêu chí tìm kiếm và thử lại."
+    }
+  },
+  "toast": {
+    "fetchFriends": {
+      "error": "Lỗi khi tải danh sách bạn bè. Vui lòng thử lại sau."
+    }
   }
 }
