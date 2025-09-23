@@ -1,5 +1,5 @@
 import { useMutation } from "@tanstack/react-query";
-import { LoaderIcon, MapPinIcon, Pencil, ShuffleIcon } from "lucide-react";
+import { LoaderIcon, MapPinIcon, ShuffleIcon } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { useTranslation } from "react-i18next";
@@ -12,7 +12,6 @@ import LocaleSwitcher from "../components/buttons/LocaleSwitcher.jsx";
 import ThemesSelector from "../components/buttons/ThemeSelector.jsx";
 
 import { useNavigate } from "react-router";
-import CommonRoundedButton from "../components/buttons/CommonRoundedButton.jsx";
 import { useAuthStore } from "../stores/useAuthStore.js";
 import { useLanguageStore } from "../stores/useLanguageStore.js";
 
@@ -21,6 +20,7 @@ const OnboardingPage = () => {
   const navigate = useNavigate();
   const authUser = useAuthStore((s) => s.authUser);
   const setAuthUser = useAuthStore((s) => s.setAuthUser);
+  const getLanguages = useLanguageStore((s) => s.getLanguages);
 
   const languages = useLanguageStore((s) => s.languages);
 
@@ -126,6 +126,10 @@ const OnboardingPage = () => {
       });
     }
   };
+
+  useEffect(() => {
+    getLanguages();
+  }, [getLanguages]);
 
   useEffect(() => {
     setNativeLanguageSelection(languages);
