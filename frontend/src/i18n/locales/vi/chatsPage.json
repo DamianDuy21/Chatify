@@ -1,0 +1,40 @@
+{
+  "sidebar": {
+    "search": {
+      "placeholder": "Tìm kiếm"
+    },
+    "createGroupModal": {
+      "title": "Tạo nhóm",
+      "groupName": {
+        "label": "Tên nhóm",
+        "placeholder": "Nhập tên nhóm"
+      },
+      "selectFriends": {
+        "label": "Thành viên",
+        "selected": "đã chọn"
+      },
+      "button": {
+        "confirm": "Xác nhận"
+      }
+    },
+    "noMatch": {
+      "title": "Không có kết quả phù hợp",
+      "subtitle": "Hãy thử tìm kiếm với từ khóa khác"
+    }
+  },
+
+  "toast": {
+    "fetchFriends": {
+      "error": "Lỗi khi tải bạn bè. Vui lòng thử lại sau."
+    },
+    "createGroupMutation": {
+      "success": "Nhóm đã được tạo thành công!",
+      "error": "Lỗi khi tạo nhóm. Vui lòng thử lại sau."
+    },
+    "handleCreateGroup": {
+      "selectedFriendLengthMin": "Vui lòng chọn ít nhất 02 bạn bè để tạo nhóm.",
+      "selectedFriendLengthMax": "Số lượng thành viên trong nhóm không được vượt quá 20",
+      "emptyGroupName": "Vui lòng nhập tên nhóm"
+    }
+  }
+}

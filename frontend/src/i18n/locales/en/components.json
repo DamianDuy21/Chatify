@@ -75,5 +75,48 @@
         "error": "Lấy cuộc trò chuyện riêng tư thất bại. Vui lòng thử lại sau"
       }
     }
+  },
+  "notificationCard_notificationsPage": {
+    "status": {
+      "friend_request_accepted": "has accepted your friend request",
+      "add_to_group": "has added you to the group",
+      "delete_from_group": "has removed you from the group",
+      "delete_group": "has deleted the group",
+      "delete_private_conversation": "has deleted the private conversation with you"
+    },
+    "toast": {
+      "acceptNotificationMutation": {
+        "success": "Notification has been accepted",
+        "error": "Accepting notification failed. Please try again later"
+      },
+      "deleteNotificationMutation": {
+        "success": "Notification has been deleted",
+        "error": "Deleting notification failed. Please try again later"
+      }
+    }
+  },
+  "friendCard_NotificationsPage_IncomingRequest": {
+    "rejectFriendRequestModal": {
+      "title": "Reject Friend Request",
+      "subtitle": "Are you sure you want to reject the friend request from",
+      "button": {
+        "confirm": "Confirm",
+        "cancel": "Later"
+      }
+    },
+    "languages": {
+      "native": "Native",
+      "learning": "Learning"
+    },
+    "toast": {
+      "acceptFriendRequestMutation": {
+        "success": "Accepting friend request successful",
+        "error": "Accepting friend request failed. Please try again later"
+      },
+      "rejectFriendRequestMutation": {
+        "success": "Rejecting friend request successful",
+        "error": "Rejecting friend request failed. Please try again later"
+      }
+    }
   }
 }

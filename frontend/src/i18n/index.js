@@ -38,6 +38,12 @@ import viNotificationsPage from "./locales/vi/notificationsPage.json";
 import enComponents from "./locales/en/components.json";
 import viComponents from "./locales/vi/components.json";
 
+import enVideoCallPage from "./locales/en/videoCallPage.json";
+import viVideoCallPage from "./locales/vi/videoCallPage.json";
+
+import enChatsPage from "./locales/en/chatsPage.json";
+import viChatsPage from "./locales/vi/chatsPage.json";
+
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
@@ -56,6 +62,8 @@ i18n
         navbar: enNavbar,
         notificationsPage: enNotificationsPage,
         components: enComponents,
+        videoCallPage: enVideoCallPage,
+        chatsPage: enChatsPage,
       },
       vi: {
         loginPage: viLoginPage,
@@ -70,6 +78,8 @@ i18n
         navbar: viNavbar,
         notificationsPage: viNotificationsPage,
         components: viComponents,
+        videoCallPage: viVideoCallPage,
+        chatsPage: viChatsPage,
       },
     },
     fallbackLng: "en",
@@ -90,6 +100,8 @@ i18n
       "navbar",
       "notificationsPage",
       "components",
+      "videoCallPage",
+      "chatsPage",
     ],
     defaultNS: "loginPage",
     interpolation: {

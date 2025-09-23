@@ -3,7 +3,7 @@ import { Toaster } from "react-hot-toast";
 import { Navigate, Route, Routes } from "react-router";
 import CommonPageLoader from "./components/loaders/CommonPageLoader.jsx";
 import MainLayout from "./layouts/MainLayout.jsx";
-import CallPage from "./pages/CallPage.jsx";
+
 import ChangePasswordPage from "./pages/ChangePasswordPage.jsx";
 import ChatsPage from "./pages/ChatsPage.jsx";
 import ForgotPasswordPage from "./pages/ForgotPasswordPage.jsx";
@@ -14,6 +14,7 @@ import NotificationsPage from "./pages/NotificationsPage";
 import OnboardingPage from "./pages/OnboardingPage";
 import ProfilePage from "./pages/ProfilePage.jsx";
 import SignUpPage from "./pages/SignUpPage";
+import VideoCallPage from "./pages/VideoCallPage.jsx";
 import { useAuthStore } from "./stores/useAuthStore.js";
 import { useChatStore } from "./stores/useChatStore.js";
 import { useLanguageStore } from "./stores/useLanguageStore.js";
@@ -136,7 +137,7 @@ const App = () => {
             path="/video-call/:id"
             element={
               isAuthenticated && isOnboarded ? (
-                <CallPage />
+                <VideoCallPage />
               ) : (
                 <Navigate to={!isAuthenticated ? "/signin" : "/onboarding"} />
               )

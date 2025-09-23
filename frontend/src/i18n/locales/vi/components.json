@@ -75,5 +75,48 @@
         "error": "Lấy cuộc trò chuyện riêng tư thất bại. Vui lòng thử lại sau"
       }
     }
+  },
+  "notificationCard_notificationsPage": {
+    "status": {
+      "friend_request_accepted": "đã chấp nhận yêu cầu kết bạn",
+      "add_to_group": "đã thêm bạn vào nhóm",
+      "delete_from_group": "đã xóa bạn khỏi nhóm",
+      "delete_group": "đã xóa nhóm",
+      "delete_private_conversation": "đã xóa cuộc trò chuyện riêng tư với bạn"
+    },
+    "toast": {
+      "acceptNotificationMutation": {
+        "success": "Thông báo đã được chấp nhận",
+        "error": "Chấp nhận thông báo thất bại. Vui lòng thử lại sau"
+      },
+      "deleteNotificationMutation": {
+        "success": "Thông báo đã được xóa",
+        "error": "Xóa thông báo thất bại. Vui lòng thử lại sau"
+      }
+    }
+  },
+  "friendCard_NotificationsPage_IncomingRequest": {
+    "rejectFriendRequestModal": {
+      "title": "Từ chối yêu cầu kết bạn",
+      "subtitle": "Bạn có chắc chắn muốn từ chối yêu cầu kết bạn của",
+      "button": {
+        "confirm": "Xác nhận",
+        "cancel": "Để sau"
+      }
+    },
+    "languages": {
+      "native": "Mẹ đẻ",
+      "learning": "Đang học"
+    },
+    "toast": {
+      "acceptFriendRequestMutation": {
+        "success": "Chấp nhận yêu cầu kết bạn thành công",
+        "error": "Chấp nhận yêu cầu kết bạn thất bại. Vui lòng thử lại sau"
+      },
+      "rejectFriendRequestMutation": {
+        "success": "Từ chối yêu cầu kết bạn thành công",
+        "error": "Từ chối yêu cầu kết bạn thất bại. Vui lòng thử lại sau"
+      }
+    }
   }
 }

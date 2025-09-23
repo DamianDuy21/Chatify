@@ -25,8 +25,10 @@ import { isConversationFitFilter } from "@/lib/utils.js";
 import { useAuthStore } from "@/stores/useAuthStore.js";
 import { useChatStore } from "@/stores/useChatStore.js";
 import { useNotificationStore } from "@/stores/useNotificationStore.js";
+import { useTranslations } from "next-intl";
 
 const ChatsPage = () => {
+  const t = useTranslations("ChatsPage");
   const createGroup_NotificationStore = useNotificationStore(
     (s) => s.createGroup_NotificationStore
   );
@@ -105,7 +107,7 @@ const ChatsPage = () => {
       setFriends(data.users);
     } catch (error) {
       showToast({
-        message: error?.message || "Failed to fetch friends",
+        message: error?.message || t("toast.fetchFriends.error"),
         type: "error",
       });
     } finally {
@@ -132,7 +134,7 @@ const ChatsPage = () => {
         }
         if (closeRef.current) closeRef.current();
         showToast({
-          message: data?.message || "Group created successfully!",
+          message: data?.message || t("toast.createGroupMutation.success"),
           type: "success",
         });
         createGroup_NotificationStore({
@@ -144,7 +146,9 @@ const ChatsPage = () => {
       },
       onError: (error) => {
         showToast({
-          message: error?.response?.data?.message || "Failed to create group",
+          message:
+            error?.response?.data?.message ||
+            t("toast.createGroupMutation.error"),
           type: "error",
         });
       },
@@ -153,21 +157,21 @@ const ChatsPage = () => {
   const handleCreateGroup = () => {
     if (selectedFriendIds.length < 2) {
       showToast({
-        message: "Vui lòng chọn ít nhất 2 thành viên khác để tạo nhóm",
+        message: t("toast.handleCreateGroup.selectedFriendLengthMin"),
         type: "error",
       });
       return;
     }
     if (selectedFriendIds.length > 20) {
       showToast({
-        message: "Số lượng thành viên trong nhóm không được vượt quá 20",
+        message: t("toast.handleCreateGroup.selectedFriendLengthMax"),
         type: "error",
       });
       return;
     }
     if (groupName.trim().length === 0) {
       showToast({
-        message: "Vui lòng nhập tên nhóm",
+        message: t("toast.handleCreateGroup.emptyGroupName"),
         type: "error",
       });
       return;
@@ -281,7 +285,7 @@ const ChatsPage = () => {
               <CostumedDebounceInput
                 name="searchFriends"
                 defaultValue={conversationNameFilter}
-                placeholder={"Tìm kiếm..."}
+                placeholder={t("sidebar.search.placeholder")}
                 className={`input-sm ${
                   isOpenSearchFriendsInSmallScreen ? "!pr-9" : "!pr-9"
                 }`}
@@ -313,7 +317,7 @@ const ChatsPage = () => {
                     learningLanguage: "",
                   });
                 }}
-                title="Tạo nhóm"
+                title={t("sidebar.createGroupModal.title")}
               >
                 {({ close }) => {
                   closeRef.current = close;
@@ -329,13 +333,19 @@ const ChatsPage = () => {
                           <div className="form-control w-full">
                             <div className="flex items-center justify-between">
                               <label className="label">
-                                <span className="label-text">Tên nhóm</span>
+                                <span className="label-text">
+                                  {t(
+                                    "sidebar.createGroupModal.groupName.label"
+                                  )}
+                                </span>
                               </label>
                             </div>
 
                             <input
                               type="text"
-                              placeholder={"Nhập tên nhóm"}
+                              placeholder={t(
+                                "sidebar.createGroupModal.groupName.placeholder"
+                              )}
                               className="input input-bordered w-full text-sm"
                               value={groupName}
                               onChange={(e) => setGroupName(e.target.value)}
@@ -347,10 +357,17 @@ const ChatsPage = () => {
                           <div className="form-control w-full">
                             <div className="flex items-center justify-between">
                               <label className="label">
-                                <span className="label-text">Thành viên</span>
+                                <span className="label-text">
+                                  {t(
+                                    "sidebar.createGroupModal.selectFriends.label"
+                                  )}
+                                </span>
                               </label>
                               <span className="label-text-alt">
-                                {selectedFriendIds.length} đã chọn
+                                {selectedFriendIds.length}{" "}
+                                {t(
+                                  "sidebar.createGroupModal.selectFriends.selected"
+                                )}
                               </span>
                             </div>
 
@@ -379,7 +396,7 @@ const ChatsPage = () => {
                           {isCreatingGroup ? (
                             <LoaderIcon className="size-4 animate-spin" />
                           ) : null}
-                          Xác nhận
+                          {t("sidebar.createGroupModal.button.confirm")}
                         </button>
                       </div>
                     </div>
@@ -456,8 +473,8 @@ const ChatsPage = () => {
                 </div>
               ) : (
                 <NoDataCommon
-                  title={"Không có kết quả phù hợp"}
-                  content={"Thử tìm kiếm với từ khóa khác"}
+                  title={t("sidebar.noMatch.title")}
+                  content={t("sidebar.noMatch.subtitle")}
                   classNameTitle={"text-sm"}
                   classNameContent={"text-xs"}
                 />

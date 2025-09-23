@@ -7,6 +7,7 @@ import { useMutation } from "@tanstack/react-query";
 import { acceptNotificationAPI, deleteNotificationAPI } from "../../lib/api";
 import { showToast } from "../costumed/CostumedToast";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 
 const NotificationCard_NotificationsPage = ({
   notification,
@@ -15,14 +16,15 @@ const NotificationCard_NotificationsPage = ({
   onSuccessDelete,
   onError,
 }) => {
-  console.log("Rendering NotificationCard:", notification);
+  const t = useTranslations("Components.notificationCard_notificationsPage");
   const { mutate: acceptNotificationMutation, isPending: isAccepting } =
     useMutation({
       mutationFn: acceptNotificationAPI,
       onSuccess: (data) => {
         onSuccessAccept(data);
         showToast({
-          message: data?.message || "Notification accepted successfully!",
+          message:
+            data?.message || t("toast.acceptNotificationMutation.success"),
           type: "success",
         });
       },
@@ -30,7 +32,8 @@ const NotificationCard_NotificationsPage = ({
         onError();
         showToast({
           message:
-            error?.response?.data?.message || "Failed to accept notification",
+            error?.response?.data?.message ||
+            t("toast.acceptNotificationMutation.error"),
           type: "error",
         });
       },
@@ -42,7 +45,8 @@ const NotificationCard_NotificationsPage = ({
       onSuccess: (data) => {
         onSuccessDelete(data);
         showToast({
-          message: data?.message || "Notification deleted successfully!",
+          message:
+            data?.message || t("toast.deleteNotificationMutation.success"),
           type: "success",
         });
       },
@@ -50,7 +54,8 @@ const NotificationCard_NotificationsPage = ({
         onError();
         showToast({
           message:
-            error?.response?.data?.message || "Failed to delete notification",
+            error?.response?.data?.message ||
+            t("toast.deleteNotificationMutation.error"),
           type: "error",
         });
       },
@@ -75,21 +80,21 @@ const NotificationCard_NotificationsPage = ({
               <p className="text-sm mb-2">
                 {user?.fullName}{" "}
                 {notification.content === "friend_request_accepted"
-                  ? "đã chấp nhận lời mời kết bạn"
+                  ? t("status.friend_request_accepted")
                   : notification.content.startsWith("add_to_group-")
-                  ? `đã thêm bạn vào nhóm "${
+                  ? `${t("status.add_to_group")} "${
                       notification.content.split("add_to_group-")[1]
                     }"`
                   : notification.content.startsWith("delete_from_group-")
-                  ? `đã xóa bạn khỏi nhóm "${
+                  ? `${t("status.delete_from_group")} "${
                       notification.content.split("delete_from_group-")[1]
                     }"`
                   : notification.content.startsWith("delete_group-")
-                  ? `đã giải tán nhóm "${
+                  ? `${t("status.delete_group")} "${
                       notification.content.split("delete_group-")[1]
                     }"`
                   : notification.content === "delete_private_conversation"
-                  ? "đã xóa cuộc trò chuyện riêng tư với bạn"
+                  ? t("status.delete_private_conversation")
                   : ""}
               </p>
             )}

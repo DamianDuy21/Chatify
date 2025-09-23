@@ -81,30 +81,35 @@ export const getProfilePicUrl = (profilePic) => {
 };
 
 export function formatRelativeTime(createdAt) {
+  const NEXT_LOCALE = getUserLocaleClient() || "vi";
   const created = new Date(createdAt);
   const now = new Date();
   const diffMs = now - created;
 
   if (isNaN(created.getTime())) return "";
-  if (diffMs < 0) return "Vừa xong";
+  if (diffMs < 0) return NEXT_LOCALE === "vi" ? "Vừa xong" : "Just now";
 
   const sec = Math.floor(diffMs / 1000);
-  if (sec < 60) return "Vừa xong";
+  if (sec < 60) return NEXT_LOCALE === "vi" ? "Vừa xong" : "Just now";
 
   const min = Math.floor(sec / 60);
-  if (min < 60) return `${min} phút trước`;
+  if (min < 60)
+    return `${min} ${NEXT_LOCALE === "vi" ? "phút trước" : "minutes ago"}`;
 
   const hr = Math.floor(min / 60);
-  if (hr < 24) return `${hr} giờ trước`;
+  if (hr < 24)
+    return `${hr} ${NEXT_LOCALE === "vi" ? "giờ trước" : "hours ago"}`;
 
   const day = Math.floor(hr / 24);
-  if (day < 30) return `${day} ngày trước`;
+  if (day < 30)
+    return `${day} ${NEXT_LOCALE === "vi" ? "ngày trước" : "days ago"}`;
 
   const month = Math.floor(day / 30);
-  if (month < 12) return `${month} tháng trước`;
+  if (month < 12)
+    return `${month} ${NEXT_LOCALE === "vi" ? "tháng trước" : "months ago"}`;
 
   const year = Math.floor(day / 365);
-  return `${year} năm trước`;
+  return `${year} ${NEXT_LOCALE === "vi" ? "năm trước" : "years ago"}`;
 }
 
 export const toDownloadUrl = (url, filename) => {

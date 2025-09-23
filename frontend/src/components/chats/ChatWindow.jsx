@@ -39,13 +39,13 @@ import Conversation from "./Conversation";
 import TextEditor from "./TextEditor";
 
 import { StreamChat } from "stream-chat";
-import { useAuthStore } from "../../stores/useAuthStore.js";
-import CostumedGroupChatUpdateMemberRoleList from "../costumed/CostumedGroupChatUpdateMemberRoleList.jsx";
 import {
   formatRelativeTime,
   isConversationFitFilter,
 } from "../../lib/utils.js";
+import { useAuthStore } from "../../stores/useAuthStore.js";
 import { useNotificationStore } from "../../stores/useNotificationStore.js";
+import CostumedGroupChatUpdateMemberRoleList from "../costumed/CostumedGroupChatUpdateMemberRoleList.jsx";
 
 const STREAM_API_KEY = import.meta.env.VITE_STREAM_API_KEY;
 
@@ -67,6 +67,7 @@ const ChatWindow = () => {
   const [isLoadingChannel, setIsLoadingChannel] = useState(false);
 
   const handleClickVideoCallButton = () => {
+    if (!channel) initChat();
     if (channel) {
       const callUrl = `${window.location.origin}/video-call/${channel.id}`;
       window.open(callUrl, "_blank", "noopener,noreferrer");
@@ -622,7 +623,7 @@ const ChatWindow = () => {
 
   useEffect(() => {
     if (selectedConversation.conversation.type !== "chatbot") initChat();
-  }, [authUser.user._id]);
+  }, [authUser.user._id, videoCallToken?.data.token]);
 
   return (
     <>
@@ -876,7 +877,10 @@ const ChatWindow = () => {
                   )}
 
                   {selectedConversation.conversation.type !== "chatbot" && (
-                    <CommonRoundedButton onClick={handleClickVideoCallButton}>
+                    <CommonRoundedButton
+                      onClick={handleClickVideoCallButton}
+                      className={`${!channel ? "opacity-70" : ""}`}
+                    >
                       <Video className="size-4" />
                     </CommonRoundedButton>
                   )}
@@ -954,6 +958,7 @@ const ChatWindow = () => {
                         setIsOpenHeaderOptions(false);
                         handleClickVideoCallButton();
                       }}
+                      className={`${!channel ? "opacity-70" : ""}`}
                     >
                       <Video className="size-4" />
                     </CommonRoundedButton>

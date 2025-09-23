@@ -1,0 +1,40 @@
+{
+  "sidebar": {
+    "search": {
+      "placeholder": "Search"
+    },
+    "createGroupModal": {
+      "title": "Create Group",
+      "groupName": {
+        "label": "Group Name",
+        "placeholder": "Enter group name"
+      },
+      "selectFriends": {
+        "label": "Members",
+        "selected": "selected"
+      },
+      "button": {
+        "confirm": "Confirm"
+      }
+    },
+    "noMatch": {
+      "title": "No matching results",
+      "subtitle": "Please try searching with a different keyword"
+    }
+  },
+
+  "toast": {
+    "fetchFriends": {
+      "error": "Fetch friends failed. Please try again later."
+    },
+    "createGroupMutation": {
+      "success": "Group created successfully!",
+      "error": "Create group failed. Please try again later."
+    },
+    "handleCreateGroup": {
+      "selectedFriendLengthMin": "Please select at least 02 friends to create a group.",
+      "selectedFriendLengthMax": "The number of members in the group must not exceed 20",
+      "emptyGroupName": "Please enter a group name"
+    }
+  }
+}

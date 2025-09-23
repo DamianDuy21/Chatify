@@ -14,6 +14,7 @@ import CommonRoundedButton from "../buttons/CommonRoundedButton";
 import CostumedModal from "../costumed/CostumedModal";
 import { showToast } from "../costumed/CostumedToast";
 import { getLanguageFlag } from "./FriendCard_Func";
+import { useTranslations } from "next-intl";
 
 const FriendCard_NotificationsPage_IncomingRequest = ({
   friend,
@@ -21,6 +22,9 @@ const FriendCard_NotificationsPage_IncomingRequest = ({
   onSuccess,
   onError,
 }) => {
+  const t = useTranslations(
+    "Components.friendCard_NotificationsPage_IncomingRequest"
+  );
   const closeRef = useRef(null);
   const NEXT_LOCALE = getUserLocaleClient() || "vi";
   const { mutate: acceptFriendRequestMutation, isPending: isAccepting } =
@@ -28,7 +32,8 @@ const FriendCard_NotificationsPage_IncomingRequest = ({
       mutationFn: acceptFriendRequestAPI,
       onSuccess: async (data) => {
         showToast({
-          message: data?.message || "Friend request accepted successfully!",
+          message:
+            data?.message || t("toast.acceptFriendRequestMutation.success"),
           type: "success",
         });
         await onSuccess({ data: data, isRejected: false });
@@ -38,7 +43,8 @@ const FriendCard_NotificationsPage_IncomingRequest = ({
         console.log("Error accepting friend request:", error);
         showToast({
           message:
-            error?.response?.data?.message || "Failed to accept friend request",
+            error?.response?.data?.message ||
+            t("toast.acceptFriendRequestMutation.error"),
           type: "error",
         });
       },
@@ -51,7 +57,8 @@ const FriendCard_NotificationsPage_IncomingRequest = ({
         await onSuccess({ data: data, isRejected: true });
         if (closeRef.current) closeRef.current();
         showToast({
-          message: data?.message || "Friend request rejected successfully!",
+          message:
+            data?.message || t("toast.rejectFriendRequestMutation.success"),
           type: "success",
         });
       },
@@ -60,7 +67,8 @@ const FriendCard_NotificationsPage_IncomingRequest = ({
         onError();
         showToast({
           message:
-            error?.response?.data?.message || "Failed to reject friend request",
+            error?.response?.data?.message ||
+            t("toast.rejectFriendRequestMutation.error"),
           type: "error",
         });
       },
@@ -103,7 +111,7 @@ const FriendCard_NotificationsPage_IncomingRequest = ({
         <div className="flex flex-wrap gap-2">
           <span className="badge badge-secondary h-8 px-4 flex items-center gap-1 relative -top-[1px]">
             {getLanguageFlag(getLocaleById(friend.profile.nativeLanguage))}
-            Native:{" "}
+            {t("languages.native")}:{" "}
             {capitalize(
               getFlagToLanguage(
                 getLocaleById(friend.profile.nativeLanguage),
@@ -113,7 +121,7 @@ const FriendCard_NotificationsPage_IncomingRequest = ({
           </span>
           <span className="badge badge-outline h-8 px-4 flex items-center gap-1 relative -top-[1px]">
             {getLanguageFlag(getLocaleById(friend.profile.learningLanguage))}
-            Learning:{" "}
+            {t("languages.learning")}:{" "}
             {capitalize(
               getFlagToLanguage(
                 getLocaleById(friend.profile.learningLanguage),
@@ -152,16 +160,15 @@ const FriendCard_NotificationsPage_IncomingRequest = ({
               <X className="size-4" />
             </CommonRoundedButton>
           }
-          title="Thông báo"
+          title={t("rejectFriendRequestModal.title")}
         >
           {({ close }) => {
             closeRef.current = close;
             return (
               <div className={`${isRejecting ? "pointer-events-none" : ""}`}>
                 <div className={`pb-6 text-sm `}>
-                  Bạn có chắc muốn từ chối lời mời kết bạn của{" "}
-                  <span className="font-semibold">{friend.fullName}</span>{" "}
-                  không?
+                  {t("rejectFriendRequestModal.subtitle")}{" "}
+                  <span className="font-semibold">{friend.fullName}</span>?
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <button
@@ -170,7 +177,7 @@ const FriendCard_NotificationsPage_IncomingRequest = ({
                       close();
                     }}
                   >
-                    Để sau
+                    {t("rejectFriendRequestModal.button.cancel")}
                   </button>
                   <button
                     className="btn btn-primary w-full hover:btn-primary"
@@ -181,7 +188,7 @@ const FriendCard_NotificationsPage_IncomingRequest = ({
                     {isRejecting ? (
                       <LoaderIcon className="size-4 animate-spin" />
                     ) : null}
-                    Từ chối lời mời
+                    {t("rejectFriendRequestModal.button.confirm")}
                   </button>
                 </div>
               </div>

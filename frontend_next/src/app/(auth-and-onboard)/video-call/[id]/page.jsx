@@ -20,10 +20,12 @@ import { showToast } from "@/components/costumed/CostumedToast";
 import ScreenShareFullscreen from "@/components/chats/ScreenShareFullscreen";
 import CommonPageLoader from "@/components/loaders/CommonPageLoader";
 import { useParams, useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 const STREAM_API_KEY = process.env.NEXT_PUBLIC_STREAM_API_KEY;
 
 const CallPage = () => {
+  const t = useTranslations("VideoCallPage");
   const { id: videoCallId } = useParams();
   const [client, setClient] = useState(null);
   const [call, setCall] = useState(null);
@@ -64,7 +66,7 @@ const CallPage = () => {
       } catch (error) {
         console.error("Error joining call:", error);
         showToast({
-          message: error?.response?.data?.message || "Failed to join the call",
+          message: error?.response?.data?.message || t("initCall.error"),
           type: "error",
         });
       } finally {
@@ -94,7 +96,7 @@ const CallPage = () => {
         </div>
       ) : (
         <div className="flex-1 flex items-center justify-center">
-          Không thể khởi tạo cuộc gọi. Vui lòng làm mới hoặc thử lại sau.
+          {t("initCall.error")}
         </div>
       )}
     </div>
