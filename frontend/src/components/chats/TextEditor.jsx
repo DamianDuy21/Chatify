@@ -5,6 +5,7 @@ import { useChatStore } from "../../stores/useChatStore";
 import CommonRoundedButton from "../buttons/CommonRoundedButton";
 import CostumedEmojiPicker from "../costumed/CostumedEmojiPicker";
 import CostumedModal from "../costumed/CostumedModal";
+import { useTranslation } from "react-i18next";
 
 const TextEditor = ({
   text,
@@ -13,6 +14,7 @@ const TextEditor = ({
   pendingFile,
   setPendingFile,
 }) => {
+  const { t } = useTranslation("components", { keyPrefix: "textEditor" });
   const selectedConversation = useChatStore((s) => s.selectedConversation);
   const sendMessage = useChatStore((s) => s.sendMessage);
   const sendMessageChatbot = useChatStore((s) => s.sendMessageChatbot);
@@ -318,7 +320,7 @@ const TextEditor = ({
             onChange={(e) => setText(e.target.value)}
             onKeyDown={handleKeyDown}
             type="text"
-            placeholder="Type a message..."
+            placeholder={t("placeholder")}
             className="input input-bordered w-full text-sm"
             maxLength={1000}
           />

@@ -1,10 +1,11 @@
 "use client";
+import CostumedEmojiPicker from "@/components/costumed/CostumedEmojiPicker";
 import { File, Forward, LoaderIcon, Smile, X } from "lucide-react";
+import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef } from "react";
 import { formatFileSize, getFileExtension } from "../../lib/utils";
 import { useChatStore } from "../../stores/useChatStore";
 import CommonRoundedButton from "../buttons/CommonRoundedButton";
-import CostumedEmojiPicker from "@/components/costumed/CostumedEmojiPicker";
 import CostumedModal from "../costumed/CostumedModal";
 
 const TextEditor = ({
@@ -14,6 +15,7 @@ const TextEditor = ({
   pendingFile,
   setPendingFile,
 }) => {
+  const t = useTranslations("Components.textEditor");
   const selectedConversation = useChatStore((s) => s.selectedConversation);
   const sendMessage = useChatStore((s) => s.sendMessage);
   const sendMessageChatbot = useChatStore((s) => s.sendMessageChatbot);
@@ -152,7 +154,7 @@ const TextEditor = ({
     fn();
 
     setText("");
-    // focus lại ô nhập
+    // focus the input
     inputRef.current?.focus();
   }, [
     isSendingMessage,
@@ -319,7 +321,7 @@ const TextEditor = ({
             onChange={(e) => setText(e.target.value)}
             onKeyDown={handleKeyDown}
             type="text"
-            placeholder="Type a message..."
+            placeholder={t("placeholder")}
             className="input input-bordered w-full text-sm"
             maxLength={1000}
           />

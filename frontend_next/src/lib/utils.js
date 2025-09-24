@@ -191,6 +191,7 @@ export const formatISOToParts = (iso, timeZone = "Asia/Bangkok") => {
 };
 
 export const getFlagToLanguage = (locale, next_locale) => {
+  if (!locale) return null;
   const map = {
     vi: {
       gb: "Tiếng Anh",

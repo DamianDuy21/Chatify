@@ -6,8 +6,10 @@ import { showToast } from "../costumed/CostumedToast";
 import { LoaderIcon } from "lucide-react";
 import { isConversationFitFilter } from "../../lib/utils";
 import { useAuthStore } from "../../stores/useAuthStore";
+import { useTranslation } from "react-i18next";
 
 const NoChatSelected = ({ hasFriends }) => {
+  const { t } = useTranslation("components", { keyPrefix: "noChatSelected" });
   const { theme } = useThemeStore();
   const authUser = useAuthStore((s) => s.authUser);
 
@@ -63,8 +65,7 @@ const NoChatSelected = ({ hasFriends }) => {
       console.log("Error:", err);
       showToast({
         message:
-          err?.response?.data?.message ||
-          "Failed to create chatbot conversation. Please try again.",
+          err?.response?.data?.message || t("toast.handleGetChatbot.error"),
         type: "error",
       });
       return;
@@ -81,12 +82,10 @@ const NoChatSelected = ({ hasFriends }) => {
       />
       <div className="text-center">
         <h3 className="font-semibold mb-2">
-          {hasFriends
-            ? "Hãy chọn một cuộc trò chuyện để bắt đầu."
-            : "Bạn chưa có kết nối nào."}
+          {hasFriends ? t("hasFriends.true") : t("hasFriends.false")}
         </h3>
         <p className="text-base-content text-sm">
-          Hoặc bạn có thể thử trò chuyện với{" "}
+          {t("chatbot.try")}{" "}
           {isGettingChatbot ? (
             <LoaderIcon className="size-4 animate-spin text-primary inline-block relative -top-[1.5px] -right-[2px]"></LoaderIcon>
           ) : (
@@ -104,7 +103,7 @@ const NoChatSelected = ({ hasFriends }) => {
                 }
               }}
             >
-              Chatbot
+              {t("chatbot.name")}
             </span>
           )}
         </p>

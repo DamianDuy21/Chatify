@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import FriendCard_FriendSelectInModal from "../cards/FriendCard_FriendSelectInModal";
 import CostumedDebounceInput from "./CostumedDebounceInput";
+import { useTranslation } from "react-i18next";
 
 const CostumedGroupChatUpdateMemberRoleList = ({
   friends = [],
@@ -8,6 +9,9 @@ const CostumedGroupChatUpdateMemberRoleList = ({
   selectedFriends = [],
   onSelected = () => {},
 }) => {
+  const { t } = useTranslation("components", {
+    keyPrefix: "costumedGroupChatUpdateMemberRoleList",
+  });
   const [searchValue, setSearchValue] = useState("");
   const [displayedFriends, setDisplayedFriends] = useState(friends);
 
@@ -31,7 +35,7 @@ const CostumedGroupChatUpdateMemberRoleList = ({
           onChange={(value) => {
             setSearchValue(value);
           }}
-          placeholder={"Tìm kiếm thành viên"}
+          placeholder={t("search.placeholder")}
         />
       </div>
 

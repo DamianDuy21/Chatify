@@ -4,8 +4,12 @@ import FriendCard_GroupChatMemberList from "../cards/FriendCard_GroupChatMemberL
 import CostumedDebounceInput from "./CostumedDebounceInput";
 import { useChatStore } from "../../stores/useChatStore";
 import { useNotificationStore } from "../../stores/useNotificationStore";
+import { useTranslation } from "react-i18next";
 
 const CostumedGroupChatMemberList = ({ friends = [] }) => {
+  const { t } = useTranslation("components", {
+    keyPrefix: "costumedGroupChatMemberList",
+  });
   const authUser = useAuthStore((s) => s.authUser);
 
   const sendFriendRequest_NotificationStore = useNotificationStore(
@@ -126,7 +130,7 @@ const CostumedGroupChatMemberList = ({ friends = [] }) => {
           onChange={(value) => {
             setSearchValue(value);
           }}
-          placeholder={"Tìm kiếm bạn bè"}
+          placeholder={t("search.placeholder")}
         />
       </div>
 

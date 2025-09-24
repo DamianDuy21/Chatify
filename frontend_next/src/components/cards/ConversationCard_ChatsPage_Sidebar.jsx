@@ -1,4 +1,5 @@
 "use client";
+import { useTranslations } from "next-intl";
 import { useAuthStore } from "../../stores/useAuthStore";
 import { useChatStore } from "../../stores/useChatStore";
 import CostumedAvatarGroupChat from "@/components/costumed/CostumedAvatarGroupChat";
@@ -18,6 +19,7 @@ const ConversationCard_ChatsPage_Sidebar = ({
   const userPresenceList = useAuthStore((s) => s.userPresenceList);
   const authUser = useAuthStore((s) => s.authUser);
 
+  const t = useTranslations("Components.conversationCard_ChatsPage_Sidebar");
   return (
     <div
       className={`h-16 ${
@@ -94,14 +96,14 @@ const ConversationCard_ChatsPage_Sidebar = ({
                 ? conversation?.conversation?.lastMessage?.sender?.fullName
                   ? conversation?.conversation?.lastMessage?.sender?._id ===
                     authUser?.user?._id
-                    ? "Bạn: "
+                    ? `${t("lastMessage.sender.you")}: `
                     : `${conversation.conversation.lastMessage.sender.fullName}: `
-                  : "Chatbot: "
+                  : `${t("lastMessage.sender.chatbot")}: `
                 : null}
             </span>
 
             {conversation?.conversation?.lastMessage?.message?.content ||
-              "Bắt đầu trò chuyện ngay"}
+              t("lastMessage.noData")}
           </p>
         </div>
       </div>

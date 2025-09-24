@@ -1,4 +1,5 @@
 import { getLocaleById } from "../../lib/utils";
+import { useAuthStore } from "../../stores/useAuthStore";
 import { getLanguageFlag } from "./FriendCard_Func";
 
 const FriendCard_FriendSelectInModal = ({
@@ -6,6 +7,7 @@ const FriendCard_FriendSelectInModal = ({
   isSelected = false,
   onSelected = () => {},
 }) => {
+  const userPresenceList = useAuthStore((s) => s.userPresenceList);
   return (
     <div
       className={`h-16 
@@ -33,9 +35,13 @@ const FriendCard_FriendSelectInModal = ({
             </div>
           </div>
 
-          <div className="absolute left-8 -bottom-0">
-            <span className="size-2 rounded-full bg-success inline-block" />
-          </div>
+          {userPresenceList.find(
+            (u) => u.userId === friend?._id && u.online
+          ) && (
+            <div className="absolute left-8 -bottom-0">
+              <span className="size-2 rounded-full bg-success inline-block" />
+            </div>
+          )}
 
           <div className={``}>
             <p className="font-semibold text-sm">{friend?.fullName}</p>

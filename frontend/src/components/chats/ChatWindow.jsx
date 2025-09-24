@@ -46,10 +46,12 @@ import {
 import { useAuthStore } from "../../stores/useAuthStore.js";
 import { useNotificationStore } from "../../stores/useNotificationStore.js";
 import CostumedGroupChatUpdateMemberRoleList from "../costumed/CostumedGroupChatUpdateMemberRoleList.jsx";
+import { useTranslation } from "react-i18next";
 
 const STREAM_API_KEY = import.meta.env.VITE_STREAM_API_KEY;
 
 const ChatWindow = () => {
+  const { t } = useTranslation("components", { keyPrefix: "chatWindow" });
   const deleteConversation_NotificationStore = useNotificationStore(
     (s) => s.deleteConversation_NotificationStore
   );
@@ -234,7 +236,7 @@ const ChatWindow = () => {
 
       if (closeAddMemberRef.current) closeAddMemberRef.current();
       showToast({
-        message: data?.message || "Friend request cancelled successfully!",
+        message: data?.message || t("toast.addMembersToGroupMutation.success"),
         type: "success",
       });
     },
@@ -242,7 +244,8 @@ const ChatWindow = () => {
       console.log("Cancel friend request error:", error);
       showToast({
         message:
-          error?.response?.data?.message || "Failed to cancel friend request",
+          error?.response?.data?.message ||
+          t("toast.addMembersToGroupMutation.error"),
         type: "error",
       });
     },
@@ -278,7 +281,7 @@ const ChatWindow = () => {
         });
       }
       showToast({
-        message: data?.message || "Cập nhật cài đặt nhóm thành công!",
+        message: data?.message || t("toast.updateChatSettingsMutation.success"),
         type: "success",
       });
     },
@@ -286,7 +289,8 @@ const ChatWindow = () => {
       console.log("Error updating chat settings:", error);
       showToast({
         message:
-          error?.response?.data?.message || "Failed to update chat settings",
+          error?.response?.data?.message ||
+          t("toast.updateChatSettingsMutation.error"),
         type: "error",
       });
     },
@@ -330,14 +334,16 @@ const ChatWindow = () => {
         });
 
         showToast({
-          message: data?.message || "Left group successfully!",
+          message: data?.message || t("toast.leaveGroupMutation.success"),
           type: "success",
         });
       },
       onError: (error) => {
         console.log("Cancel friend request error:", error);
         showToast({
-          message: error?.response?.data?.message || "Failed to leave group",
+          message:
+            error?.response?.data?.message ||
+            t("toast.leaveGroupMutation.error"),
           type: "error",
         });
       },
@@ -350,7 +356,6 @@ const ChatWindow = () => {
   } = useMutation({
     mutationFn: deleteConversationAPI,
     onSuccess: (data) => {
-      console.log("Deleted conversation:", data);
       setConversations(
         conversations.filter(
           (conversation) =>
@@ -381,7 +386,7 @@ const ChatWindow = () => {
       });
 
       showToast({
-        message: data?.message || "Delete conversation successfully!",
+        message: data?.message || t("toast.deleteConversationMutation.success"),
         type: "success",
       });
     },
@@ -389,7 +394,8 @@ const ChatWindow = () => {
       console.log("Cancel friend request error:", error);
       showToast({
         message:
-          error?.response?.data?.message || "Failed to delete conversation",
+          error?.response?.data?.message ||
+          t("toast.deleteConversationMutation.error"),
         type: "error",
       });
     },
@@ -414,7 +420,7 @@ const ChatWindow = () => {
       selectedConversation?.users.length > 1
     ) {
       showToast({
-        message: "Vui lòng chọn trưởng nhóm mới",
+        message: t("toast.handleLeaveGroup.emptyNewKeyMember"),
         type: "error",
       });
       return;
@@ -433,7 +439,7 @@ const ChatWindow = () => {
     } catch (error) {
       console.error(error);
       showToast({
-        message: "Có lỗi xảy ra khi rời nhóm, vui lòng thử lại",
+        message: t("toast.handleLeaveGroup.error"),
         type: "error",
       });
     }
@@ -449,7 +455,7 @@ const ChatWindow = () => {
   const handleAddMembersToGroup = () => {
     if (selectedFriendIds.length === 0) {
       showToast({
-        message: "Vui lòng chọn ít nhất 1 bạn bè để thêm vào nhóm",
+        message: t("toast.handleAddMembersToGroup.emptyMembers"),
         type: "error",
       });
       return;
@@ -490,7 +496,7 @@ const ChatWindow = () => {
       setTotalPages(data.pagination.totalPages);
     } catch (error) {
       showToast({
-        message: error?.message || "Failed to fetch friends",
+        message: error?.message || t("toast.fetchFriends.error"),
         type: "error",
       });
     } finally {
@@ -613,7 +619,7 @@ const ChatWindow = () => {
     } catch (error) {
       console.error("Error initializing chat:", error);
       showToast({
-        message: error?.message || "Error initializing chat",
+        message: error?.message || t("toast.initChat.error"),
         type: "error",
       });
     } finally {
@@ -669,7 +675,7 @@ const ChatWindow = () => {
                     ) ? (
                       <p className="text-xs text-success flex items-center gap-1">
                         <span className="size-2 rounded-full bg-success inline-block" />
-                        Online
+                        {t("status.online")}
                       </p>
                     ) : (
                       <>
@@ -703,9 +709,9 @@ const ChatWindow = () => {
                   </>
                 ) : (
                   <>
-                    <p className="text-xs text-success flex items-center gap-1 opacity-70 line-clamp-1">
+                    <p className="text-xs text-success flex items-center gap-1 line-clamp-1">
                       <span className="size-2 rounded-full bg-success inline-block" />
-                      Sẵn sàng trò chuyện cùng bạn
+                      {t("status.chatbot")}
                     </p>
                   </>
                 )}
@@ -756,7 +762,7 @@ const ChatWindow = () => {
                         onClose={() => {
                           setIsOpenModalMemberList(false);
                         }}
-                        title="Thành viên nhóm"
+                        title={t("memberListModal.title")}
                       >
                         {({ close }) => {
                           closeMemberListRef.current = close;
@@ -771,8 +777,8 @@ const ChatWindow = () => {
                                       </span>
                                     </label>
                                     <span className="label-text-alt">
-                                      {selectedConversation.users.length} thành
-                                      viên
+                                      {selectedConversation.users.length}{" "}
+                                      {t("memberListModal.quantity")}
                                     </span>
                                   </div>
 
@@ -813,7 +819,7 @@ const ChatWindow = () => {
                               learningLanguage: "",
                             });
                           }}
-                          title="Thêm thành viên"
+                          title={t("addMemberModal.title")}
                         >
                           {({ close }) => {
                             closeAddMemberRef.current = close;
@@ -832,11 +838,16 @@ const ChatWindow = () => {
                                       <div className="flex items-center justify-between">
                                         <label className="label">
                                           <span className="label-text">
-                                            Bạn bè
+                                            {t(
+                                              "addMemberModal.selectFriends.label"
+                                            )}
                                           </span>
                                         </label>
                                         <span className="label-text-alt">
-                                          {selectedFriendIds.length} đã chọn
+                                          {selectedFriendIds.length}{" "}
+                                          {t(
+                                            "addMemberModal.selectFriends.selected"
+                                          )}
                                         </span>
                                       </div>
 
@@ -865,7 +876,7 @@ const ChatWindow = () => {
                                     {isAddingMembersToGroup ? (
                                       <LoaderIcon className="size-4 animate-spin" />
                                     ) : null}
-                                    Xác nhận
+                                    {t("addMemberModal.button.confirm")}
                                   </button>
                                 </div>
                               </div>
@@ -927,7 +938,7 @@ const ChatWindow = () => {
                 </CommonRoundedButton>
 
                 <div
-                  className={`absolute top-12 -right-4 p-4 z-10 border border-primary/25 bg-base-200 rounded-card ${
+                  className={`absolute top-12 -right-4 p-4 z-[10] border border-primary/25 bg-base-200 rounded-card ${
                     isOpenHeaderOptions ? "" : "hidden"
                   }`}
                 >
@@ -953,15 +964,19 @@ const ChatWindow = () => {
                     >
                       <AppWindow className="size-4" />
                     </CommonRoundedButton>
-                    <CommonRoundedButton
-                      onClick={() => {
-                        setIsOpenHeaderOptions(false);
-                        handleClickVideoCallButton();
-                      }}
-                      className={`${!channel ? "opacity-70" : ""}`}
-                    >
-                      <Video className="size-4" />
-                    </CommonRoundedButton>
+
+                    {selectedConversation.conversation.type !== "chatbot" && (
+                      <CommonRoundedButton
+                        onClick={() => {
+                          setIsOpenHeaderOptions(false);
+                          handleClickVideoCallButton();
+                        }}
+                        className={`${!channel ? "opacity-70" : ""}`}
+                      >
+                        <Video className="size-4" />
+                      </CommonRoundedButton>
+                    )}
+
                     {selectedConversation.conversation.type == "group" && (
                       <>
                         {authUser?.user?._id ==
@@ -992,7 +1007,7 @@ const ChatWindow = () => {
                                 learningLanguage: "",
                               });
                             }}
-                            title="Thêm thành viên"
+                            title={t("addMemberModal.title")}
                           >
                             {({ close }) => {
                               closeAddMemberRef.current = close;
@@ -1011,11 +1026,16 @@ const ChatWindow = () => {
                                         <div className="flex items-center justify-between">
                                           <label className="label">
                                             <span className="label-text">
-                                              Bạn bè
+                                              {t(
+                                                "addMemberModal.selectFriends.label"
+                                              )}
                                             </span>
                                           </label>
                                           <span className="label-text-alt">
-                                            {selectedFriendIds.length} đã chọn
+                                            {selectedFriendIds.length}{" "}
+                                            {t(
+                                              "addMemberModal.selectFriends.selected"
+                                            )}
                                           </span>
                                         </div>
 
@@ -1044,7 +1064,7 @@ const ChatWindow = () => {
                                       {isAddingMembersToGroup ? (
                                         <LoaderIcon className="size-4 animate-spin" />
                                       ) : null}
-                                      Xác nhận
+                                      {t("addMemberModal.button.confirm")}
                                     </button>
                                   </div>
                                 </div>
@@ -1071,7 +1091,7 @@ const ChatWindow = () => {
                           onClose={() => {
                             setIsOpenModalMemberList(false);
                           }}
-                          title="Thành viên nhóm"
+                          title={t("memberListModal.title")}
                         >
                           {({ close }) => {
                             closeMemberListRef.current = close;
@@ -1090,7 +1110,7 @@ const ChatWindow = () => {
                                       </label>
                                       <span className="label-text-alt">
                                         {selectedConversation.users.length}{" "}
-                                        thành viên
+                                        {t("memberListModal.quantity")}
                                       </span>
                                     </div>
 
@@ -1139,13 +1159,13 @@ const ChatWindow = () => {
         {/* Utils Panel */}
         {isOpenUtils && (
           <div
-            className={`absolute top-0 right-0 lg:relative lg:flex lg:flex-col w-64 z-50 bg-base-100`}
+            className={`absolute top-0 right-0 lg:relative lg:flex lg:flex-col w-64 z-[1] bg-base-100`}
           >
             <div className="border-l border-base-300">
               <div className="h-16 px-4 py-4 border-b border-base-300">
                 <div className="flex flex-col items-center justify-center h-full w-full">
                   <span className="font-semibold text-sm">
-                    Thông tin cuộc trò chuyện
+                    {t("utils.title")}
                   </span>
                 </div>
               </div>
@@ -1173,7 +1193,9 @@ const ChatWindow = () => {
                     <div className="flex justify-between items-center w-full">
                       <div className="flex items-center gap-2">
                         {/* <Settings className="size-4" /> */}
-                        <span className="text-sm font-semibold">Cài đặt</span>
+                        <span className="text-sm font-semibold">
+                          {t("utils.settings.title")}
+                        </span>
                       </div>
 
                       {useUtils.isOpenSettings ? (
@@ -1192,7 +1214,9 @@ const ChatWindow = () => {
                       <div className="h-16 border-base-300 flex items-center justify-between px-4 border-b">
                         <div className="flex gap-2 items-center">
                           <BellIcon className="size-4" />
-                          <span className="text-sm">Thông báo</span>
+                          <span className="text-sm">
+                            {t("utils.settings.getNotifications.label")}
+                          </span>
                         </div>
 
                         <div className="flex gap-2">
@@ -1243,7 +1267,9 @@ const ChatWindow = () => {
                       <div className="h-16 border-base-300 flex items-center justify-between px-4 border-b">
                         <div className="flex gap-2 items-center">
                           <Pin className="size-4" />
-                          <span className="text-sm">Ghim</span>
+                          <span className="text-sm">
+                            {t("utils.settings.isPinned.label")}
+                          </span>
                         </div>
 
                         <div className="flex gap-2">
@@ -1291,9 +1317,13 @@ const ChatWindow = () => {
                       </div>
 
                       <div className="p-4 border-b border-base-300">
-                        <div className="text-sm mb-2">Ngôn ngữ phiên dịch</div>
+                        <div className="text-sm mb-2">
+                          {t("utils.settings.translatedTo.label")}
+                        </div>
                         <CostumedSelect
-                          placeholder={"Ngôn ngữ phiên dịch"}
+                          placeholder={t(
+                            "utils.settings.translatedTo.placeholder"
+                          )}
                           options={languageSelection}
                           onSelect={(option) =>
                             // setUserSettings((prev) => ({
@@ -1308,14 +1338,19 @@ const ChatWindow = () => {
                           defaultValue={languageSelection.find(
                             (lang) => lang._id === userSettings.translatedTo
                           )}
+                          isDeselectAble={false}
                         />
                       </div>
                       {selectedConversation?.conversation?.type ===
                         "chatbot" && (
                         <div className="p-4 border-b border-base-300">
-                          <div className="text-sm mb-2">Ngôn ngữ Chatbot</div>
+                          <div className="text-sm mb-2">
+                            {t("utils.settings.chatbotLanguage.label")}
+                          </div>
                           <CostumedSelect
-                            placeholder={"Ngôn ngữ Chatbot"}
+                            placeholder={t(
+                              "utils.settings.chatbotLanguage.placeholder"
+                            )}
                             options={languageSelection}
                             onSelect={(option) =>
                               handleUpdateChatSettings({
@@ -1326,6 +1361,7 @@ const ChatWindow = () => {
                             defaultValue={languageSelection.find(
                               (lang) => lang._id === userSettings.language
                             )}
+                            isDeselectAble={false}
                           />
                         </div>
                       )}
@@ -1353,7 +1389,7 @@ const ChatWindow = () => {
                       <div className="flex items-center gap-2">
                         {/* <Settings className="size-4" /> */}
                         <span className="text-sm font-semibold">
-                          Ảnh / Video
+                          {t("utils.settings.imageVideo.label")}
                         </span>
                       </div>
 
@@ -1425,7 +1461,9 @@ const ChatWindow = () => {
                     <div className="flex justify-between items-center w-full">
                       <div className="flex items-center gap-2">
                         {/* <Settings className="size-4" /> */}
-                        <span className="text-sm font-semibold">Files</span>
+                        <span className="text-sm font-semibold">
+                          {t("utils.settings.file.label")}
+                        </span>
                       </div>
 
                       {/* {useUtils.isOpenImagesVideos ? (
@@ -1489,11 +1527,11 @@ const ChatWindow = () => {
                     trigger={
                       <div className="">
                         <div className="btn btn-outlined w-full hover:btn-error">
-                          Xóa cuộc trò chuyện
+                          {t("utils.settings.button.deleteConversation")}
                         </div>
                       </div>
                     }
-                    title="Xóa cuộc trò chuyện"
+                    title={t("deleteConversationModal.title")}
                   >
                     {({ close }) => {
                       closeDeleteChatRef.current = close;
@@ -1502,26 +1540,32 @@ const ChatWindow = () => {
                           {selectedConversation?.conversation?.type ===
                           "group" ? (
                             <div className="pb-6 text-sm">
-                              Bạn có chắc muốn xóa cuộc trò chuyện nhóm{" "}
+                              {t("deleteConversationModal.subtitle.group")}{" "}
                               <span className="font-semibold">
                                 {selectedConversation?.conversation?.name}
-                              </span>{" "}
-                              không?
+                              </span>
+                              ?
                             </div>
                           ) : selectedConversation?.conversation?.type ===
                             "private" ? (
                             <div className="pb-6 text-sm">
-                              Bạn có chắc muốn xóa cuộc trò chuyện với{" "}
+                              {t("deleteConversationModal.subtitle.private")}{" "}
                               <span className="font-semibold">
                                 {selectedConversation?.users[0]?.user?.fullName}
-                              </span>{" "}
-                              không?
+                              </span>
+                              ?
                             </div>
                           ) : (
                             <div className="pb-6 text-sm">
-                              Bạn có chắc muốn xóa cuộc trò chuyện với{" "}
-                              <span className="font-semibold">Chatbot</span>{" "}
-                              không?
+                              {t(
+                                "deleteConversationModal.subtitle.chatbot.label"
+                              )}{" "}
+                              <span className="font-semibold">
+                                {t(
+                                  "deleteConversationModal.subtitle.chatbot.name"
+                                )}
+                              </span>
+                              ?
                             </div>
                           )}
 
@@ -1532,7 +1576,7 @@ const ChatWindow = () => {
                                 close();
                               }}
                             >
-                              Để sau
+                              {t("deleteConversationModal.button.cancel")}
                             </button>
                             <button
                               className="btn btn-primary w-full hover:btn-primary"
@@ -1541,7 +1585,9 @@ const ChatWindow = () => {
                               {isDeletingConversation ? (
                                 <LoaderIcon className="size-4 animate-spin" />
                               ) : (
-                                <> Xác nhận</>
+                                <>
+                                  {t("deleteConversationModal.button.confirm")}
+                                </>
                               )}
                             </button>
                           </div>
@@ -1560,11 +1606,11 @@ const ChatWindow = () => {
                         trigger={
                           <div className="">
                             <div className="btn btn-outlined w-full hover:btn-error">
-                              Rời khỏi cuộc trò chuyện
+                              {t("utils.settings.button.leaveGroup")}
                             </div>
                           </div>
                         }
-                        title="Rời khỏi cuộc trò chuyện"
+                        title={t("leaveGroupModal.title")}
                         onOpen={() => {
                           setSelectedFriendIds([]);
                         }}
@@ -1577,7 +1623,9 @@ const ChatWindow = () => {
                           return (
                             <div>
                               <div className="pb-6 text-sm">
-                                Bạn cần chọn trưởng nhóm mới cho{" "}
+                                {t(
+                                  "leaveGroupModal.subtitle.isKeyMember.true.label"
+                                )}{" "}
                                 <span className="font-semibold">
                                   {/* {selectedConversation?.conversation?.type ==
                                   "private"
@@ -1586,7 +1634,11 @@ const ChatWindow = () => {
                                     :  */}
                                   {selectedConversation?.conversation?.name}
                                 </span>{" "}
-                                ({selectedConversation.users.length} thành viên)
+                                ({selectedConversation.users.length}{" "}
+                                {t(
+                                  "leaveGroupModal.subtitle.isKeyMember.true.quantity"
+                                )}
+                                )
                               </div>
                               <div className={`pb-6 text-sm`}>
                                 <div className="space-y-3 -mt-2">
@@ -1612,7 +1664,9 @@ const ChatWindow = () => {
                                     close();
                                   }}
                                 >
-                                  Để sau
+                                  {t(
+                                    "leaveGroupModal.button.isKeyMember.true.cancel"
+                                  )}
                                 </button>
                                 <button
                                   className={`btn btn-primary w-full hover:btn-primary  ${
@@ -1623,7 +1677,11 @@ const ChatWindow = () => {
                                   {isLeavingGroup ? (
                                     <LoaderIcon className="size-4 animate-spin" />
                                   ) : (
-                                    <> Xác nhận và rời khỏi nhóm</>
+                                    <>
+                                      {t(
+                                        "leaveGroupModal.button.isKeyMember.true.confirm"
+                                      )}
+                                    </>
                                   )}
                                 </button>
                               </div>
@@ -1638,11 +1696,11 @@ const ChatWindow = () => {
                         trigger={
                           <div className="">
                             <div className="btn btn-outlined w-full hover:btn-error">
-                              Rời khỏi cuộc trò chuyện
+                              {t("utils.settings.button.leaveGroup")}
                             </div>
                           </div>
                         }
-                        title="Thông báo"
+                        title={t("leaveGroupModal.title")}
                       >
                         {({ close }) => {
                           closeLeaveChatRef.current = close;
@@ -1651,11 +1709,13 @@ const ChatWindow = () => {
                               {selectedConversation?.conversation?.type ===
                               "group" ? (
                                 <div className="pb-6 text-sm">
-                                  Bạn có chắc muốn rời khỏi cuộc trò chuyện nhóm{" "}
+                                  {t(
+                                    "leaveGroupModal.subtitle.isKeyMember.false"
+                                  )}{" "}
                                   <span className="font-semibold">
                                     {selectedConversation?.conversation?.name}
-                                  </span>{" "}
-                                  không?
+                                  </span>
+                                  ?
                                 </div>
                               ) : // selectedConversation?.conversation?.type ===
                               //   "private" ? (
@@ -1678,7 +1738,9 @@ const ChatWindow = () => {
                                     close();
                                   }}
                                 >
-                                  Để sau
+                                  {t(
+                                    "leaveGroupModal.button.isKeyMember.false.cancel"
+                                  )}
                                 </button>
                                 <button
                                   className="btn btn-primary w-full hover:btn-primary"
@@ -1687,7 +1749,12 @@ const ChatWindow = () => {
                                   {isLeavingGroup ? (
                                     <LoaderIcon className="size-4 animate-spin" />
                                   ) : (
-                                    <> Xác nhận</>
+                                    <>
+                                      {" "}
+                                      {t(
+                                        "leaveGroupModal.button.isKeyMember.false.confirm"
+                                      )}
+                                    </>
                                   )}
                                 </button>
                               </div>

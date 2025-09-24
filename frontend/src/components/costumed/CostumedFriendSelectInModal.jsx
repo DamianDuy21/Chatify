@@ -1,6 +1,7 @@
 import { LoaderIcon } from "lucide-react";
 import FriendCard_FriendSelectInModal from "../cards/FriendCard_FriendSelectInModal";
 import CostumedDebounceInput from "./CostumedDebounceInput";
+import { useTranslation } from "react-i18next";
 
 const CostumedFriendSelectInModal = ({
   isLoadingGetFriends = false,
@@ -9,6 +10,9 @@ const CostumedFriendSelectInModal = ({
   onSelected = () => {},
   onFiltered = () => {},
 }) => {
+  const { t } = useTranslation("components", {
+    keyPrefix: "costumedFriendSelectInModal",
+  });
   return (
     <div className="flex flex-col gap-2">
       <div className={`bg-base-100 z-99`}>
@@ -17,7 +21,7 @@ const CostumedFriendSelectInModal = ({
           onChange={(value) => {
             onFiltered(value);
           }}
-          placeholder={"Tìm kiếm bạn bè..."}
+          placeholder={t("search.placeholder")}
         />
       </div>
 
@@ -42,7 +46,7 @@ const CostumedFriendSelectInModal = ({
           )}
           {friends.length === 0 && !isLoadingGetFriends && (
             <div className="flex items-center justify-center w-full mt-4">
-              Không tìm thấy bạn bè
+              {t("noMatch")}
             </div>
           )}
         </>

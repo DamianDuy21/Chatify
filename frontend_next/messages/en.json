@@ -24,6 +24,22 @@
       },
       "noneOption": "Deselect option"
     },
+    "costumedFriendSelectInModal": {
+      "search": {
+        "placeholder": "Search friends"
+      },
+      "noMatch": "No friends match"
+    },
+    "costumedGroupChatMemberList": {
+      "search": {
+        "placeholder": "Search members"
+      }
+    },
+    "costumedGroupChatUpdateMemberRoleList": {
+      "search": {
+        "placeholder": "Search members"
+      }
+    },
     "recommendedUserCard_HomePage": {
       "languages": {
         "native": "Native",
@@ -73,7 +89,7 @@
           "error": "Unfriend failed. Please try again later"
         },
         "handleGetPrivateConversation": {
-          "error": "Lấy cuộc trò chuyện riêng tư thất bại. Vui lòng thử lại sau"
+          "error": "Get private conversation failed. Please try again later"
         }
       }
     },
@@ -119,6 +135,154 @@
           "error": "Rejecting friend request failed. Please try again later"
         }
       }
+    },
+    "conversationCard_ChatsPage_Sidebar": {
+      "lastMessage": {
+        "sender": {
+          "you": "You",
+          "chatbot": "Chatbot"
+        },
+        "noData": "Start a conversation now"
+      }
+    },
+    "noChatSelected": {
+      "hasFriends": {
+        "true": "Select a conversation to start messaging",
+        "false": "You have no connections. Find friends to start messaging"
+      },
+      "chatbot": {
+        "name": "Chatbot",
+        "try": "Or try chatting with our"
+      },
+      "toast": {
+        "handleGetChatbot": {
+          "error": "Failed to get chatbot. Please try again later."
+        }
+      }
+    },
+    "chatWindow": {
+      "status": {
+        "online": "Online",
+        "offline": "Offline",
+        "chatbot": "Ready to chat"
+      },
+      "memberListModal": {
+        "title": "Group Members",
+        "quantity": "members"
+      },
+      "addMemberModal": {
+        "title": "Add Members",
+        "selectFriends": {
+          "label": "Friends",
+          "selected": "selected"
+        },
+        "button": {
+          "confirm": "Confirm"
+        }
+      },
+      "utils": {
+        "title": "Conversation information",
+        "settings": {
+          "title": "Settings",
+          "getNotifications": {
+            "label": "Notifications"
+          },
+          "isPinned": {
+            "label": "Pinned"
+          },
+          "translatedTo": {
+            "label": "Translate language",
+            "placeholder": "Select language"
+          },
+          "chatbotLanguage": {
+            "label": "Chatbot language",
+            "placeholder": "Select language"
+          },
+          "imageVideo": {
+            "label": "Images / Videos"
+          },
+          "file": {
+            "label": "Files"
+          },
+          "button": {
+            "deleteConversation": "Delete Conversation",
+            "leaveGroup": "Leave Group"
+          }
+        }
+      },
+      "deleteConversationModal": {
+        "title": "Delete Conversation",
+        "subtitle": {
+          "group": "Are you sure you want to delete group conversation",
+          "private": "Are you sure you want to delete private conversation with",
+          "chatbot": {
+            "label": "Are you sure you want to delete the conversation with",
+            "name": "Chatbot"
+          }
+        },
+        "button": {
+          "confirm": "Confirm",
+          "cancel": "Later"
+        }
+      },
+      "leaveGroupModal": {
+        "title": "Leave Group",
+        "subtitle": {
+          "isKeyMember": {
+            "true": {
+              "label": "Please select a new key member for",
+              "quantity": "members"
+            },
+            "false": "Are you sure you want to leave group"
+          }
+        },
+        "button": {
+          "isKeyMember": {
+            "true": {
+              "confirm": "Confirm and Leave",
+              "cancel": "Later"
+            },
+            "false": {
+              "confirm": "Confirm",
+              "cancel": "Later"
+            }
+          }
+        }
+      },
+      "toast": {
+        "addMembersToGroupMutation": {
+          "success": "Members added successfully",
+          "error": "Failed to add members. Please try again later"
+        },
+        "updateChatSettingsMutation": {
+          "success": "Chat settings updated successfully",
+          "error": "Failed to update chat settings. Please try again later"
+        },
+        "leaveGroupMutation": {
+          "success": "Left group successfully",
+          "error": "Failed to leave group. Please try again later"
+        },
+        "deleteConversationMutation": {
+          "success": "Conversation deleted successfully",
+          "error": "Failed to delete conversation. Please try again later"
+        },
+        "handleLeaveGroup": {
+          "emptyNewKeyMember": "Please select a new key member",
+          "error": "Failed to leave group. Please try again later"
+        },
+        "handleAddMembersToGroup": {
+          "emptyMembers": "Please select members to add"
+        },
+        "fetchFriends": {
+          "error": "Failed to fetch friends. Please try again later"
+        },
+        "initChat": {
+          "error": "Failed to initialize chat. Please try again later"
+        }
+      }
+    },
+    "textEditor": {
+      "placeholder": "Type a message"
     }
   },
   "SignInPage": {

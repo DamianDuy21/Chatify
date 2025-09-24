@@ -22,7 +22,7 @@ const CostumedModal = ({ trigger, title, children, onOpen, onClose }) => {
     <>
       {triggerWithHandler}
       {isOpen && (
-        <div className="modal modal-open fixed inset-0 flex items-center justify-center z-50 bg-opacity-40 !m-0">
+        <div className="modal modal-open fixed inset-0 flex items-center justify-center !z-[999999999] bg-opacity-40 !m-0">
           <div className="modal-box relative bg-base-100 !rounded-btn">
             <button
               className="btn btn-sm btn-circle rounded-card btn-ghost absolute right-4 top-4 z-[99]"

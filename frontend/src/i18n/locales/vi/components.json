@@ -23,6 +23,22 @@
     },
     "noneOption": "Hủy lựa chọn"
   },
+  "costumedFriendSelectInModal": {
+    "search": {
+      "placeholder": "Tìm kiếm bạn bè"
+    },
+    "noMatch": "Không tìm thấy bạn bè"
+  },
+  "costumedGroupChatMemberList": {
+    "search": {
+      "placeholder": "Tìm kiếm thành viên"
+    }
+  },
+  "costumedGroupChatUpdateMemberRoleList": {
+    "search": {
+      "placeholder": "Tìm kiếm thành viên"
+    }
+  },
   "recommendedUserCard_HomePage": {
     "languages": {
       "native": "Mẹ đẻ",
@@ -118,5 +134,153 @@
         "error": "Từ chối yêu cầu kết bạn thất bại. Vui lòng thử lại sau"
       }
     }
+  },
+  "conversationCard_ChatsPage_Sidebar": {
+    "lastMessage": {
+      "sender": {
+        "you": "Bạn",
+        "chatbot": "Chatbot"
+      },
+      "noData": "Bắt đầu trò chuyện ngay"
+    }
+  },
+  "noChatSelected": {
+    "hasFriends": {
+      "true": "Hãy chọn một cuộc trò chuyện để bắt đầu",
+      "false": "Bạn chưa có bạn bè, hãy kết bạn để bắt đầu trò chuyện"
+    },
+    "chatbot": {
+      "name": "Chatbot",
+      "try": "Hoặc thử trò chuyện với"
+    },
+    "toast": {
+      "handleGetChatbot": {
+        "error": "Lấy chatbot thất bại. Vui lòng thử lại sau"
+      }
+    }
+  },
+  "chatWindow": {
+    "status": {
+      "online": "Trực tuyến",
+      "offline": "Ngoại tuyến",
+      "chatbot": "Sẵn sàng trò chuyện"
+    },
+    "memberListModal": {
+      "title": "Thành viên nhóm",
+      "quantity": "thành viên"
+    },
+    "addMemberModal": {
+      "title": "Thêm thành viên",
+      "selectFriends": {
+        "label": "Bạn bè",
+        "selected": "đã chọn"
+      },
+      "button": {
+        "confirm": "Xác nhận"
+      }
+    },
+    "utils": {
+      "title": "Thông tin cuộc trò chuyện",
+      "settings": {
+        "title": "Cài đặt",
+        "getNotifications": {
+          "label": "Thông báo"
+        },
+        "isPinned": {
+          "label": "Ghim"
+        },
+        "translatedTo": {
+          "label": "Ngôn ngữ phiên dịch",
+          "placeholder": "Chọn ngôn ngữ"
+        },
+        "chatbotLanguage": {
+          "label": "Ngôn ngữ Chatbot",
+          "placeholder": "Chọn ngôn ngữ"
+        },
+        "imageVideo": {
+          "label": "Ảnh / Video"
+        },
+        "file": {
+          "label": "Tệp tin"
+        },
+        "button": {
+          "deleteConversation": "Xóa cuộc trò chuyện",
+          "leaveGroup": "Rời nhóm"
+        }
+      }
+    },
+    "deleteConversationModal": {
+      "title": "Xóa cuộc trò chuyện",
+      "subtitle": {
+        "group": "Bạn có chắc chắn muốn xóa cuộc trò chuyện nhóm",
+        "private": "Bạn có chắc chắn muốn xóa cuộc trò chuyện riêng tư với",
+        "chatbot": {
+          "label": "Bạn có chắc chắn muốn xóa cuộc trò chuyện với",
+          "name": "Chatbot"
+        }
+      },
+      "button": {
+        "confirm": "Xác nhận",
+        "cancel": "Để sau"
+      }
+    },
+    "leaveGroupModal": {
+      "title": "Rời nhóm",
+      "subtitle": {
+        "isKeyMember": {
+          "true": {
+            "label": "Vui lòng chọn một trưởng nhóm mới cho",
+            "quantity": "thành viên"
+          },
+          "false": "Bạn có chắc chắn muốn rời nhóm không"
+        }
+      },
+      "button": {
+        "isKeyMember": {
+          "true": {
+            "confirm": "Xác nhận và rời khỏi",
+            "cancel": "Để sau"
+          },
+          "false": {
+            "confirm": "Xác nhận",
+            "cancel": "Để sau"
+          }
+        }
+      }
+    },
+    "toast": {
+      "addMembersToGroupMutation": {
+        "success": "Thêm thành viên thành công",
+        "error": "Thêm thành viên thất bại. Vui lòng thử lại sau"
+      },
+      "updateChatSettingsMutation": {
+        "success": "Cài đặt trò chuyện đã được cập nhật",
+        "error": "Cập nhật cài đặt trò chuyện thất bại. Vui lòng thử lại sau"
+      },
+      "leaveGroupMutation": {
+        "success": "Rời nhóm thành công",
+        "error": "Rời nhóm thất bại. Vui lòng thử lại sau"
+      },
+      "deleteConversationMutation": {
+        "success": "Xóa cuộc trò chuyện thành công",
+        "error": "Xóa cuộc trò chuyện thất bại. Vui lòng thử lại sau"
+      },
+      "handleLeaveGroup": {
+        "emptyNewKeyMember": "Vui lòng chọn một trưởng nhóm mới",
+        "error": "Rời nhóm thất bại. Vui lòng thử lại sau"
+      },
+      "handleAddMembersToGroup": {
+        "emptyMembers": "Vui lòng chọn thành viên để thêm"
+      },
+      "fetchFriends": {
+        "error": "Lấy danh sách bạn bè thất bại. Vui lòng thử lại sau"
+      },
+      "initChat": {
+        "error": "Khởi tạo trò chuyện thất bại. Vui lòng thử lại sau"
+      }
+    }
+  },
+  "textEditor": {
+    "placeholder": "Nhập tin nhắn"
   }
 }

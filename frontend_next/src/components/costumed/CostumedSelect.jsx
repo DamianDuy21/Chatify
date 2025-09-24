@@ -10,6 +10,7 @@ export default function CostumedSelect({
   onSelect,
   defaultValue = null,
   className = "",
+  isDeselectAble = true,
 }) {
   const NEXT_LOCALE = getUserLocaleClient() || "vi";
   const t = useTranslations("Components.costumedSelect");
@@ -49,7 +50,9 @@ export default function CostumedSelect({
         onClick={() => setOpen((prev) => !prev)}
         className="costumedSelect w-full justify-between flex items-center"
       >
-        {selected?.name[NEXT_LOCALE] || placeholder}
+        {selected && selected?.name[NEXT_LOCALE]
+          ? selected.name[NEXT_LOCALE]
+          : placeholder}
         <svg
           className={`h-4 w-4 transition-transform ${open ? "rotate-180" : ""}`}
           xmlns="http://www.w3.org/2000/svg"
@@ -90,15 +93,17 @@ export default function CostumedSelect({
           <ul
             className={`flex flex-col gap-1 w-full overflow-y-scroll max-h-[100px] ${className}`}
           >
-            <li key={"none-option"} className="">
-              <button
-                type="button"
-                className="block w-full text-left px-4 py-2 hover:bg-base-200 text-sm h-[48px] rounded-btn"
-                onClick={() => handleSelect("")}
-              >
-                {t("noneOption")}
-              </button>
-            </li>
+            {isDeselectAble && (
+              <li key={"none-option"} className="">
+                <button
+                  type="button"
+                  className="block w-full text-left px-4 py-2 hover:bg-base-200 text-sm h-[48px] rounded-btn"
+                  onClick={() => handleSelect("")}
+                >
+                  {t("noneOption")}
+                </button>
+              </li>
+            )}
 
             {displayOptions.map((opt, idx) => {
               return (

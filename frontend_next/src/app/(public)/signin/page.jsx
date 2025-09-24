@@ -83,9 +83,12 @@ const SignInPage = () => {
                   <div className="space-y-3">
                     {/* EMAIL */}
                     <div className="form-control w-full">
-                      <span className="label-text">
-                        {t("leftSide.form.email.label")}
-                      </span>
+                      <label className="label">
+                        <span className="label-text">
+                          {t("leftSide.form.email.label")}
+                        </span>
+                      </label>
+
                       <input
                         type="text"
                         placeholder={t("leftSide.form.email.placeholder")}
