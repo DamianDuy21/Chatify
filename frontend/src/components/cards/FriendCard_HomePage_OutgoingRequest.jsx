@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { LoaderIcon, MapPinIcon, Undo2 } from "lucide-react";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { cancelFriendRequestAPI } from "../../lib/api";
 import { capitalize, getFlagToLanguage, getLocaleById } from "../../lib/utils";
@@ -24,7 +24,8 @@ const FriendCard_HomePage_OutgoingRequest = ({
     return i18n.language || "vi";
   };
   const userLocale = getUserLocaleClient();
-  const closeRef = useRef(null);
+  const [isOpenCancelRequestModal, setIsOpenCancelRequestModal] =
+    useState(false);
   const {
     mutate: cancelFriendRequestMutation,
     isPending: isCancellingFriendRequest,
@@ -32,7 +33,7 @@ const FriendCard_HomePage_OutgoingRequest = ({
     mutationFn: cancelFriendRequestAPI,
     onSuccess: (data) => {
       onSuccess(data);
-      if (closeRef.current) closeRef.current();
+      setIsOpenCancelRequestModal(false);
       showToast({
         message:
           data?.message || t("toast.cancelFriendRequestMutation.success"),
@@ -100,58 +101,60 @@ const FriendCard_HomePage_OutgoingRequest = ({
           </span>
         </div>
 
-        <CostumedModal
-          trigger={
-            <CommonRoundedButton
-              className={`absolute top-2 right-4 ${
-                isCancellingFriendRequest
-                  ? "pointer-events-none opacity-70"
-                  : ""
+        <CommonRoundedButton
+          className={`absolute top-2 right-4 ${
+            isCancellingFriendRequest ? "pointer-events-none opacity-70" : ""
+          }`}
+          onClick={() => {
+            setIsOpenCancelRequestModal(true);
+          }}
+        >
+          <Undo2 className="size-4" />
+        </CommonRoundedButton>
+      </div>
+
+      {/* CANCEL FRIEND REQUEST MODAL */}
+      <CostumedModal
+        open={isOpenCancelRequestModal}
+        onClose={() => setIsOpenCancelRequestModal(false)}
+        title={t("cancelRequestModal.title")}
+      >
+        {({ close }) => {
+          return (
+            <div
+              className={`${
+                isCancellingFriendRequest ? "pointer-events-none" : ""
               }`}
             >
-              <Undo2 className="size-4" />
-            </CommonRoundedButton>
-          }
-          title={t("cancelRequestModal.title")}
-        >
-          {({ close }) => {
-            closeRef.current = close;
-            return (
-              <div
-                className={`${
-                  isCancellingFriendRequest ? "pointer-events-none" : ""
-                }`}
-              >
-                <div className={`pb-6 text-sm `}>
-                  {t("cancelRequestModal.subtitle")}{" "}
-                  <span className="font-semibold">{friend.fullName}</span>?
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <button
-                    className="btn btn-outlined w-full"
-                    onClick={() => {
-                      close();
-                    }}
-                  >
-                    {t("cancelRequestModal.button.cancel")}
-                  </button>
-                  <button
-                    className="btn btn-primary w-full hover:btn-primary"
-                    onClick={() => {
-                      cancelFriendRequestMutation(request._id);
-                    }}
-                  >
-                    {isCancellingFriendRequest ? (
-                      <LoaderIcon className="size-4 animate-spin" />
-                    ) : null}
-                    {t("cancelRequestModal.button.confirm")}
-                  </button>
-                </div>
+              <div className={`pb-6 text-sm `}>
+                {t("cancelRequestModal.subtitle")}{" "}
+                <span className="font-semibold">{friend.fullName}</span>?
               </div>
-            );
-          }}
-        </CostumedModal>
-      </div>
+              <div className="grid grid-cols-2 gap-4">
+                <button
+                  className="btn btn-outlined w-full"
+                  onClick={() => {
+                    setIsOpenCancelRequestModal(false);
+                  }}
+                >
+                  {t("cancelRequestModal.button.cancel")}
+                </button>
+                <button
+                  className="btn btn-primary w-full hover:btn-primary"
+                  onClick={() => {
+                    cancelFriendRequestMutation(request._id);
+                  }}
+                >
+                  {isCancellingFriendRequest ? (
+                    <LoaderIcon className="size-4 animate-spin" />
+                  ) : null}
+                  {t("cancelRequestModal.button.confirm")}
+                </button>
+              </div>
+            </div>
+          );
+        }}
+      </CostumedModal>
     </div>
   );
 };

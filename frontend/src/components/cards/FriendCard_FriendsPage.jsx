@@ -1,6 +1,6 @@
 import { useMutation } from "@tanstack/react-query";
 import { LoaderIcon, X } from "lucide-react";
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router";
 import {
@@ -35,18 +35,20 @@ const FriendCard_v2_FriendsPage = ({
   };
   const userLocale = getUserLocaleClient();
   const [isLoading, setIsLoading] = useState(false);
+  const [isOpenDeleteFriendModal, setIsOpenDeleteFriendModal] = useState(false);
+
   const navigate = useNavigate();
   const setSelectedConversation = useChatStore(
     (s) => s.setSelectedConversation
   );
   const conversations = useChatStore((s) => s.conversations);
   const setConversations = useChatStore((s) => s.setConversations);
-  const closeRef = useRef(null);
+
   const { mutate: deleteFriendMutation, isPending: isDeleting } = useMutation({
     mutationFn: deleteFriendAPI,
     onSuccess: (data) => {
       onSuccess(data);
-      if (closeRef.current) closeRef.current();
+      setIsOpenDeleteFriendModal(false);
       showToast({
         message: data?.message || "Friend deleted successfully!",
         type: "success",
@@ -169,56 +171,62 @@ const FriendCard_v2_FriendsPage = ({
           className={"absolute top-2 right-14"}
         ></CountAndMessageBadge>
 
-        <CostumedModal
-          trigger={
-            <CommonRoundedButton
-              className={`absolute top-2 right-4 ${
-                isDeleting ? "pointer-events-none opacity-70" : ""
-              }`}
-            >
-              <X className="size-4" />
-            </CommonRoundedButton>
-          }
-          title={t("deleteFriendModal.title")}
-        >
-          {({ close }) => {
-            closeRef.current = close;
-            return (
-              <div>
-                <div
-                  className={`pb-6 text-sm ${
-                    isDeleting ? "pointer-events-none" : ""
-                  }`}
-                >
-                  {t("deleteFriendModal.subtitle")}{" "}
-                  <span className="font-semibold">{friend.fullName}</span>?
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <button
-                    className="btn btn-outlined w-full"
-                    onClick={() => {
-                      close();
-                    }}
-                  >
-                    {t("deleteFriendModal.button.cancel")}
-                  </button>
-                  <button
-                    className="btn btn-primary w-full hover:btn-primary"
-                    onClick={() => {
-                      deleteFriendMutation(friend._id);
-                    }}
-                  >
-                    {isDeleting ? (
-                      <LoaderIcon className="size-4 animate-spin" />
-                    ) : null}
-                    {t("deleteFriendModal.button.confirm")}
-                  </button>
-                </div>
-              </div>
-            );
+        <CommonRoundedButton
+          className={`absolute top-2 right-4 ${
+            isDeleting ? "pointer-events-none opacity-70" : ""
+          }`}
+          onClick={() => {
+            setIsOpenDeleteFriendModal(true);
           }}
-        </CostumedModal>
+        >
+          <X className="size-4" />
+        </CommonRoundedButton>
       </div>
+
+      {/* DELETE FRIEND MODAL */}
+      <CostumedModal
+        open={isOpenDeleteFriendModal}
+        onClose={() => {
+          setIsOpenDeleteFriendModal(false);
+        }}
+        title={t("deleteFriendModal.title")}
+      >
+        {({ close }) => {
+          return (
+            <div>
+              <div
+                className={`pb-6 text-sm ${
+                  isDeleting ? "pointer-events-none" : ""
+                }`}
+              >
+                {t("deleteFriendModal.subtitle")}{" "}
+                <span className="font-semibold">{friend.fullName}</span>?
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <button
+                  className="btn btn-outlined w-full"
+                  onClick={() => {
+                    setIsOpenDeleteFriendModal(false);
+                  }}
+                >
+                  {t("deleteFriendModal.button.cancel")}
+                </button>
+                <button
+                  className="btn btn-primary w-full hover:btn-primary"
+                  onClick={() => {
+                    deleteFriendMutation(friend._id);
+                  }}
+                >
+                  {isDeleting ? (
+                    <LoaderIcon className="size-4 animate-spin" />
+                  ) : null}
+                  {t("deleteFriendModal.button.confirm")}
+                </button>
+              </div>
+            </div>
+          );
+        }}
+      </CostumedModal>
     </div>
   );
 };

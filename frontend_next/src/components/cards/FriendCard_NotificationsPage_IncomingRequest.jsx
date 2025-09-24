@@ -2,7 +2,7 @@
 import { useMutation } from "@tanstack/react-query";
 import { Check, LoaderIcon, MapPinIcon, X } from "lucide-react";
 import Image from "next/image";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { acceptFriendRequestAPI, rejectFriendRequestAPI } from "../../lib/api";
 import {
   capitalize,
@@ -25,7 +25,9 @@ const FriendCard_NotificationsPage_IncomingRequest = ({
   const t = useTranslations(
     "Components.friendCard_NotificationsPage_IncomingRequest"
   );
-  const closeRef = useRef(null);
+
+  const [isOpenRejectRequestModal, setIsOpenRejectRequestModal] =
+    useState(false);
   const NEXT_LOCALE = getUserLocaleClient() || "vi";
   const { mutate: acceptFriendRequestMutation, isPending: isAccepting } =
     useMutation({
@@ -55,7 +57,7 @@ const FriendCard_NotificationsPage_IncomingRequest = ({
       mutationFn: rejectFriendRequestAPI,
       onSuccess: async (data) => {
         await onSuccess({ data: data, isRejected: true });
-        if (closeRef.current) closeRef.current();
+        setIsOpenRejectRequestModal(false);
         showToast({
           message:
             data?.message || t("toast.rejectFriendRequestMutation.success"),
@@ -147,55 +149,59 @@ const FriendCard_NotificationsPage_IncomingRequest = ({
           )}
         </CommonRoundedButton>
 
-        <CostumedModal
-          trigger={
-            <CommonRoundedButton
-              className={`absolute top-2 right-4 ${
-                isRejecting ? "pointer-events-none opacity-70" : ""
-              }`}
-              onClick={(e) => {
-                e.stopPropagation();
-              }}
-            >
-              <X className="size-4" />
-            </CommonRoundedButton>
-          }
-          title={t("rejectFriendRequestModal.title")}
-        >
-          {({ close }) => {
-            closeRef.current = close;
-            return (
-              <div className={`${isRejecting ? "pointer-events-none" : ""}`}>
-                <div className={`pb-6 text-sm `}>
-                  {t("rejectFriendRequestModal.subtitle")}{" "}
-                  <span className="font-semibold">{friend.fullName}</span>?
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <button
-                    className="btn btn-outlined w-full"
-                    onClick={() => {
-                      close();
-                    }}
-                  >
-                    {t("rejectFriendRequestModal.button.cancel")}
-                  </button>
-                  <button
-                    className="btn btn-primary w-full hover:btn-primary"
-                    onClick={() => {
-                      rejectFriendRequestMutation(request._id);
-                    }}
-                  >
-                    {isRejecting ? (
-                      <LoaderIcon className="size-4 animate-spin" />
-                    ) : null}
-                    {t("rejectFriendRequestModal.button.confirm")}
-                  </button>
-                </div>
-              </div>
-            );
+        <CommonRoundedButton
+          className={`absolute top-2 right-4 ${
+            isRejecting ? "pointer-events-none opacity-70" : ""
+          }`}
+          onClick={(e) => {
+            setIsOpenRejectRequestModal(true);
+            e.stopPropagation();
           }}
-        </CostumedModal>
+        >
+          <X className="size-4" />
+        </CommonRoundedButton>
       </div>
+
+      {/* REJECT FRIEND REQUEST MODAL */}
+      <CostumedModal
+        open={isOpenRejectRequestModal}
+        onClose={() => {
+          setIsOpenRejectRequestModal(false);
+        }}
+        title={t("rejectFriendRequestModal.title")}
+      >
+        {({ close }) => {
+          return (
+            <div className={`${isRejecting ? "pointer-events-none" : ""}`}>
+              <div className={`pb-6 text-sm `}>
+                {t("rejectFriendRequestModal.subtitle")}{" "}
+                <span className="font-semibold">{friend.fullName}</span>?
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <button
+                  className="btn btn-outlined w-full"
+                  onClick={() => {
+                    setIsOpenRejectRequestModal(false);
+                  }}
+                >
+                  {t("rejectFriendRequestModal.button.cancel")}
+                </button>
+                <button
+                  className="btn btn-primary w-full hover:btn-primary"
+                  onClick={() => {
+                    rejectFriendRequestMutation(request._id);
+                  }}
+                >
+                  {isRejecting ? (
+                    <LoaderIcon className="size-4 animate-spin" />
+                  ) : null}
+                  {t("rejectFriendRequestModal.button.confirm")}
+                </button>
+              </div>
+            </div>
+          );
+        }}
+      </CostumedModal>
     </div>
   );
 };

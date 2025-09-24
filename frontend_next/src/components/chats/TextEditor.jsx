@@ -174,7 +174,7 @@ const TextEditor = ({
         pendingFile.length > 0 ? "h-[192px]" : "h-20"
       }`}
     >
-      {pendingFile.length > 0 && (
+      {/* {pendingFile.length > 0 && (
         <div className="flex-1 !overflow-x-scroll ml-[88px] mr-[56px] max-w-[calc(100vw-256px)] lg:max-w-[calc(100vw-432px)] flex items-end relative">
           {pendingFile.map((item, index) => (
             <div key={index} className={`${index !== 0 ? "ml-2" : ""}`}>
@@ -276,7 +276,7 @@ const TextEditor = ({
           ))}
           <div ref={lastFileInputRef} className="" />
         </div>
-      )}
+      )} */}
 
       <div
         className={`flex items-center justify-between gap-4 ${

@@ -64,7 +64,6 @@ const ChatsPage = () => {
   const [isLoadingByMoreConversations, setIsLoadingByMoreConversations] =
     useState(false);
 
-  const closeRef = useRef(null);
   const didMountRef = useRef(false);
 
   const [
@@ -131,7 +130,14 @@ const ChatsPage = () => {
             totalConversationQuantityUnderFilter + 1
           );
         }
-        if (closeRef.current) closeRef.current();
+        setIsOpenModalCreateGroup(false);
+        setGroupName("");
+        setSelectedFriendIds([]);
+        setFilterData({
+          fullName: "",
+          nativeLanguage: "",
+          learningLanguage: "",
+        });
         showToast({
           message: data?.message || t("toast.createGroupMutation.success"),
           type: "success",
@@ -297,109 +303,13 @@ const ChatsPage = () => {
                   isGettingConversations && !isLoadingByMoreConversations
                 }
               />
-              <CostumedModal
-                trigger={
-                  <CommonRoundedButton>
-                    <Plus className="size-4" />
-                  </CommonRoundedButton>
-                }
-                onOpen={() => {
+              <CommonRoundedButton
+                onClick={() => {
                   setIsOpenModalCreateGroup(true);
                 }}
-                onClose={() => {
-                  setIsOpenModalCreateGroup(false);
-                  setGroupName("");
-                  setSelectedFriendIds([]);
-                  setFilterData({
-                    fullName: "",
-                    nativeLanguage: "",
-                    learningLanguage: "",
-                  });
-                }}
-                title={t("sidebar.createGroupModal.title")}
               >
-                {({ close }) => {
-                  closeRef.current = close;
-                  return (
-                    <div>
-                      <div
-                        className={`pb-6 text-sm ${
-                          isCreatingGroup ? "pointer-events-none" : ""
-                        }`}
-                      >
-                        <div className="space-y-3 -mt-2">
-                          {/* GROUP NAME */}
-                          <div className="form-control w-full">
-                            <div className="flex items-center justify-between">
-                              <label className="label">
-                                <span className="label-text">
-                                  {t(
-                                    "sidebar.createGroupModal.groupName.label"
-                                  )}
-                                </span>
-                              </label>
-                            </div>
-
-                            <input
-                              type="text"
-                              placeholder={t(
-                                "sidebar.createGroupModal.groupName.placeholder"
-                              )}
-                              className="input input-bordered w-full text-sm"
-                              value={groupName}
-                              onChange={(e) => setGroupName(e.target.value)}
-                              maxLength={50}
-                            />
-                          </div>
-
-                          {/* GROUP MEMBERS */}
-                          <div className="form-control w-full">
-                            <div className="flex items-center justify-between">
-                              <label className="label">
-                                {t(
-                                  "sidebar.createGroupModal.selectFriends.label"
-                                )}
-                              </label>
-                              <span className="label-text-alt">
-                                {selectedFriendIds.length}{" "}
-                                {t(
-                                  "sidebar.createGroupModal.selectFriends.selected"
-                                )}
-                              </span>
-                            </div>
-
-                            <CostumedFriendSelectInModal
-                              isLoadingGetFriends={isLoadingGetFriends}
-                              friends={friends}
-                              selectedFriends={selectedFriendIds}
-                              onSelected={handleSelectedFriend}
-                              onFiltered={(value) => {
-                                setFilterData((prev) => ({
-                                  ...prev,
-                                  fullName: value,
-                                }));
-                              }}
-                            />
-                          </div>
-                        </div>
-                      </div>
-                      <div className="">
-                        <button
-                          className="btn btn-primary w-full hover:btn-primary"
-                          onClick={() => {
-                            handleCreateGroup();
-                          }}
-                        >
-                          {isCreatingGroup ? (
-                            <LoaderIcon className="size-4 animate-spin" />
-                          ) : null}
-                          {t("sidebar.createGroupModal.button.confirm")}
-                        </button>
-                      </div>
-                    </div>
-                  );
-                }}
-              </CostumedModal>
+                <Plus className="size-4" />
+              </CommonRoundedButton>
             </div>
             {!isOpenSearchFriendsInSmallScreen ? (
               <CommonRoundedButton
@@ -496,6 +406,97 @@ const ChatsPage = () => {
           )}
         </div>
       </div>
+
+      {/* MODAL CREATE GROUP */}
+      <CostumedModal
+        open={isOpenModalCreateGroup}
+        onClose={() => {
+          setIsOpenModalCreateGroup(false);
+          setGroupName("");
+          setSelectedFriendIds([]);
+          setFilterData({
+            fullName: "",
+            nativeLanguage: "",
+            learningLanguage: "",
+          });
+        }}
+        title={t("sidebar.createGroupModal.title")}
+      >
+        {({ close }) => {
+          return (
+            <div>
+              <div
+                className={`pb-6 text-sm ${
+                  isCreatingGroup ? "pointer-events-none" : ""
+                }`}
+              >
+                <div className="space-y-3 -mt-2">
+                  {/* GROUP NAME */}
+                  <div className="form-control w-full">
+                    <div className="flex items-center justify-between">
+                      <label className="label">
+                        <span className="label-text">
+                          {t("sidebar.createGroupModal.groupName.label")}
+                        </span>
+                      </label>
+                    </div>
+
+                    <input
+                      type="text"
+                      placeholder={t(
+                        "sidebar.createGroupModal.groupName.placeholder"
+                      )}
+                      className="input input-bordered w-full text-sm"
+                      value={groupName}
+                      onChange={(e) => setGroupName(e.target.value)}
+                      maxLength={50}
+                    />
+                  </div>
+
+                  {/* GROUP MEMBERS */}
+                  <div className="form-control w-full">
+                    <div className="flex items-center justify-between">
+                      <label className="label">
+                        {t("sidebar.createGroupModal.selectFriends.label")}
+                      </label>
+                      <span className="label-text-alt">
+                        {selectedFriendIds.length}{" "}
+                        {t("sidebar.createGroupModal.selectFriends.selected")}
+                      </span>
+                    </div>
+
+                    <CostumedFriendSelectInModal
+                      isLoadingGetFriends={isLoadingGetFriends}
+                      friends={friends}
+                      selectedFriends={selectedFriendIds}
+                      onSelected={handleSelectedFriend}
+                      onFiltered={(value) => {
+                        setFilterData((prev) => ({
+                          ...prev,
+                          fullName: value,
+                        }));
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="">
+                <button
+                  className="btn btn-primary w-full hover:btn-primary"
+                  onClick={() => {
+                    handleCreateGroup();
+                  }}
+                >
+                  {isCreatingGroup ? (
+                    <LoaderIcon className="size-4 animate-spin" />
+                  ) : null}
+                  {t("sidebar.createGroupModal.button.confirm")}
+                </button>
+              </div>
+            </div>
+          );
+        }}
+      </CostumedModal>
     </>
   );
 };

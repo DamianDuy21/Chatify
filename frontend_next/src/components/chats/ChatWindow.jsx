@@ -16,8 +16,7 @@ import {
   X,
 } from "lucide-react";
 
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { useEffect, useRef, useState } from "react";
+import CostumedGroupChatUpdateMemberRoleList from "@/components/costumed/CostumedGroupChatUpdateMemberRoleList.jsx";
 import {
   addMembersToGroupAPI,
   deleteConversationAPI,
@@ -27,8 +26,18 @@ import {
   markAllMessagesAsSeenAPI,
   updateConversationSettingsAPI,
 } from "@/lib/api.js";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
+import { StreamChat } from "stream-chat";
+import {
+  formatRelativeTime,
+  isConversationFitFilter,
+} from "../../lib/utils.js";
+import { useAuthStore } from "../../stores/useAuthStore.js";
 import { useChatStore } from "../../stores/useChatStore";
 import { useLanguageStore } from "../../stores/useLanguageStore.js";
+import { useNotificationStore } from "../../stores/useNotificationStore.js";
 import CommonRoundedButton from "../buttons/CommonRoundedButton";
 import CostumedAvatarGroupChat from "../costumed/CostumedAvatarGroupChat.jsx";
 import CostumedFriendSelectInModal from "../costumed/CostumedFriendSelectInModal.jsx";
@@ -38,15 +47,6 @@ import CostumedSelect from "../costumed/CostumedSelect.jsx";
 import { showToast } from "../costumed/CostumedToast.jsx";
 import Conversation from "./Conversation";
 import TextEditor from "./TextEditor";
-import { StreamChat } from "stream-chat";
-import { useAuthStore } from "../../stores/useAuthStore.js";
-import CostumedGroupChatUpdateMemberRoleList from "@/components/costumed/CostumedGroupChatUpdateMemberRoleList.jsx";
-import {
-  formatRelativeTime,
-  isConversationFitFilter,
-} from "../../lib/utils.js";
-import { useNotificationStore } from "../../stores/useNotificationStore.js";
-import { useTranslations } from "next-intl";
 
 const STREAM_API_KEY = process.env.NEXT_PUBLIC_STREAM_API_KEY;
 
@@ -102,13 +102,6 @@ const ChatWindow = () => {
   const setConversations = useChatStore((s) => s.setConversations);
   const languages = useLanguageStore((s) => s.languages);
 
-  // const closeDeleteHistoryRef = useRef();
-  const closeDeleteChatRef = useRef();
-  const closeLeaveChatRef = useRef();
-  const closeMemberListRef = useRef();
-  const closeAddMemberRef = useRef();
-  const closeLeaveGroupRef = useRef(null);
-
   const [isOpenUtils, setIsOpenUtils] = useState(false);
   const [useUtils, setUseUtils] = useState({
     isOpenSettings: false,
@@ -156,6 +149,9 @@ const ChatWindow = () => {
 
   const [isOpenModalAddMember, setIsOpenModalAddMember] = useState(false);
   const [isOpenModalMemberList, setIsOpenModalMemberList] = useState(false);
+  const [isOpenModalDeleteConversation, setIsOpenModalDeleteConversation] =
+    useState(false);
+  const [isOpenModalLeaveGroup, setIsOpenModalLeaveGroup] = useState(false);
 
   const [friends, setFriends] = useState([]);
   const [isLoadingGetFriends, setIsLoadingGetFriends] = useState(false);
@@ -171,7 +167,17 @@ const ChatWindow = () => {
     learningLanguage: "",
   });
 
-  // add member to group chat
+  const [iAmKeyMember, setIAmKeyMember] = useState(false);
+
+  useEffect(() => {
+    const myId = authUser?.user?._id;
+    const keyMemberId = selectedConversation?.users.find((u) => u.isKeyMember)
+      ?.user?._id;
+    const iAmKeyMember = String(myId) == String(keyMemberId);
+    setIAmKeyMember(iAmKeyMember);
+  }, [selectedConversation, authUser?.user?._id]);
+
+  // add member to group chat / leave group chat
   const [selectedFriendIds, setSelectedFriendIds] = useState([]);
 
   const { data: videoCallToken } = useQuery({
@@ -234,11 +240,12 @@ const ChatWindow = () => {
         user: authUser.user,
       });
 
-      if (closeAddMemberRef.current) closeAddMemberRef.current();
       showToast({
         message: data?.message || t("toast.addMembersToGroupMutation.success"),
         type: "success",
       });
+      setIsOpenModalAddMember(false);
+      setSelectedFriendIds([]);
     },
     onError: (error) => {
       console.log("Add members to group error:", error);
@@ -320,7 +327,6 @@ const ChatWindow = () => {
             totalConversationQuantityUnderFilter - 1
           );
         }
-        if (closeLeaveGroupRef.current) closeLeaveGroupRef.current();
 
         leaveGroup_NotificationStore({
           userIds: [authUser.user._id],
@@ -337,6 +343,9 @@ const ChatWindow = () => {
           message: data?.message || t("toast.leaveGroupMutation.success"),
           type: "success",
         });
+
+        setIsOpenModalLeaveGroup(false);
+        setSelectedFriendIds([]);
       },
       onError: (error) => {
         console.log("Cancel friend request error:", error);
@@ -410,10 +419,7 @@ const ChatWindow = () => {
   const handleLeaveGroup = async () => {
     const conversationId = selectedConversation?.conversation?._id;
     if (!conversationId) return;
-    const myId = authUser?.user?._id;
-    const keyMemberId = selectedConversation?.users.find((u) => u.isKeyMember)
-      ?.user?._id;
-    const iAmKeyMember = String(myId) == String(keyMemberId);
+
     if (
       iAmKeyMember &&
       (!selectedFriendIds?.length || !selectedFriendIds[0]) &&
@@ -744,145 +750,34 @@ const ChatWindow = () => {
                 <div className="flex gap-2">
                   {selectedConversation.conversation.type == "group" && (
                     <>
-                      <CostumedModal
-                        trigger={
-                          <CommonRoundedButton
-                            className={`${
-                              isOpenModalMemberList
-                                ? "btn-secondary"
-                                : "btn-primary"
-                            }`}
-                          >
-                            <UsersRound className="size-4" />
-                          </CommonRoundedButton>
-                        }
-                        onOpen={() => {
+                      <CommonRoundedButton
+                        className={`${
+                          isOpenModalMemberList
+                            ? "btn-secondary"
+                            : "btn-primary"
+                        }`}
+                        onClick={() => {
                           setIsOpenModalMemberList(true);
                         }}
-                        onClose={() => {
-                          setIsOpenModalMemberList(false);
-                        }}
-                        title={t("memberListModal.title")}
                       >
-                        {({ close }) => {
-                          closeMemberListRef.current = close;
-                          return (
-                            <div className={`pb-0 text-sm`}>
-                              <div className="space-y-3 -mt-2">
-                                <div className="form-control w-full">
-                                  <div className="flex items-center justify-between">
-                                    <label className="label">
-                                      <span className="label-text">
-                                        {selectedConversation.conversation.name}
-                                      </span>
-                                    </label>
-                                    <span className="label-text-alt">
-                                      {selectedConversation.users.length}{" "}
-                                      {t("memberListModal.quantity")}
-                                    </span>
-                                  </div>
-
-                                  <CostumedGroupChatMemberList
-                                    friends={selectedConversation.users}
-                                  ></CostumedGroupChatMemberList>
-                                </div>
-                              </div>
-                            </div>
-                          );
-                        }}
-                      </CostumedModal>
+                        <UsersRound className="size-4" />
+                      </CommonRoundedButton>
 
                       {authUser?.user?._id ==
                         selectedConversation?.users?.find((u) => u.isKeyMember)
                           ?.user?._id && (
-                        <CostumedModal
-                          trigger={
-                            <CommonRoundedButton
-                              className={`${
-                                isOpenModalAddMember
-                                  ? "btn-secondary"
-                                  : "btn-primary"
-                              }`}
-                            >
-                              <UserRoundPlus className="size-4" />
-                            </CommonRoundedButton>
-                          }
-                          onOpen={() => {
+                        <CommonRoundedButton
+                          className={`${
+                            isOpenModalAddMember
+                              ? "btn-secondary"
+                              : "btn-primary"
+                          }`}
+                          onClick={() => {
                             setIsOpenModalAddMember(true);
                           }}
-                          onClose={() => {
-                            setIsOpenModalAddMember(false);
-                            setSelectedFriendIds([]);
-                            setFilterData({
-                              fullName: "",
-                              nativeLanguage: "",
-                              learningLanguage: "",
-                            });
-                          }}
-                          title={t("addMemberModal.title")}
                         >
-                          {({ close }) => {
-                            closeAddMemberRef.current = close;
-                            return (
-                              <div>
-                                <div
-                                  className={`pb-6 text-sm ${
-                                    isAddingMembersToGroup
-                                      ? "pointer-events-none"
-                                      : ""
-                                  }`}
-                                >
-                                  <div className="space-y-3 -mt-2">
-                                    {/* GROUP MEMBERS */}
-                                    <div className="form-control w-full">
-                                      <div className="flex items-center justify-between">
-                                        <label className="label">
-                                          <span className="label-text">
-                                            {t(
-                                              "addMemberModal.selectFriends.label"
-                                            )}
-                                          </span>
-                                        </label>
-                                        <span className="label-text-alt">
-                                          {selectedFriendIds.length}{" "}
-                                          {t(
-                                            "addMemberModal.selectFriends.selected"
-                                          )}
-                                        </span>
-                                      </div>
-
-                                      <CostumedFriendSelectInModal
-                                        isLoadingGetFriends={
-                                          isLoadingGetFriends
-                                        }
-                                        friends={friends}
-                                        selectedFriends={selectedFriendIds}
-                                        onSelected={handleSelectedFriend}
-                                        onFiltered={(value) => {
-                                          setFilterData((prev) => ({
-                                            ...prev,
-                                            fullName: value,
-                                          }));
-                                        }}
-                                      />
-                                    </div>
-                                  </div>
-                                </div>
-                                <div className="">
-                                  <button
-                                    className="btn btn-primary w-full hover:btn-primary"
-                                    onClick={handleAddMembersToGroup}
-                                  >
-                                    {isAddingMembersToGroup ? (
-                                      <LoaderIcon className="size-4 animate-spin" />
-                                    ) : null}
-                                    {t("addMemberModal.button.confirm")}
-                                  </button>
-                                </div>
-                              </div>
-                            );
-                          }}
-                        </CostumedModal>
+                          <UserRoundPlus className="size-4" />
+                        </CommonRoundedButton>
                       )}
                     </>
                   )}
@@ -983,146 +878,33 @@ const ChatWindow = () => {
                           selectedConversation?.users?.find(
                             (u) => u.isKeyMember
                           )?.user?._id && (
-                          <CostumedModal
-                            trigger={
-                              <CommonRoundedButton
-                                className={`${
-                                  isOpenModalAddMember
-                                    ? "btn-secondary"
-                                    : "btn-primary"
-                                }`}
-                              >
-                                <UserRoundPlus className="size-4" />
-                              </CommonRoundedButton>
-                            }
-                            onOpen={() => {
+                          <CommonRoundedButton
+                            className={`${
+                              isOpenModalAddMember
+                                ? "btn-secondary"
+                                : "btn-primary"
+                            }`}
+                            onClick={() => {
+                              setIsOpenHeaderOptions(false);
                               setIsOpenModalAddMember(true);
                             }}
-                            onClose={() => {
-                              setIsOpenModalAddMember(false);
-                              setSelectedFriendIds([]);
-                              setFilterData({
-                                fullName: "",
-                                nativeLanguage: "",
-                                learningLanguage: "",
-                              });
-                            }}
-                            title={t("addMemberModal.title")}
                           >
-                            {({ close }) => {
-                              closeAddMemberRef.current = close;
-                              return (
-                                <div>
-                                  <div
-                                    className={`pb-6 text-sm ${
-                                      isAddingMembersToGroup
-                                        ? "pointer-events-none"
-                                        : ""
-                                    }`}
-                                  >
-                                    <div className="space-y-3 -mt-2">
-                                      {/* GROUP MEMBERS */}
-                                      <div className="form-control w-full">
-                                        <div className="flex items-center justify-between">
-                                          <label className="label">
-                                            <span className="label-text">
-                                              {t(
-                                                "addMemberModal.selectFriends.label"
-                                              )}
-                                            </span>
-                                          </label>
-                                          <span className="label-text-alt">
-                                            {selectedFriendIds.length}{" "}
-                                            {t(
-                                              "addMemberModal.selectFriends.selected"
-                                            )}
-                                          </span>
-                                        </div>
-
-                                        <CostumedFriendSelectInModal
-                                          isLoadingGetFriends={
-                                            isLoadingGetFriends
-                                          }
-                                          friends={friends}
-                                          selectedFriends={selectedFriendIds}
-                                          onSelected={handleSelectedFriend}
-                                          onFiltered={(value) => {
-                                            setFilterData((prev) => ({
-                                              ...prev,
-                                              fullName: value,
-                                            }));
-                                          }}
-                                        />
-                                      </div>
-                                    </div>
-                                  </div>
-                                  <div className="">
-                                    <button
-                                      className="btn btn-primary w-full hover:btn-primary"
-                                      onClick={handleAddMembersToGroup}
-                                    >
-                                      {isAddingMembersToGroup ? (
-                                        <LoaderIcon className="size-4 animate-spin" />
-                                      ) : null}
-                                      {t("addMemberModal.button.confirm")}
-                                    </button>
-                                  </div>
-                                </div>
-                              );
-                            }}
-                          </CostumedModal>
+                            <UserRoundPlus className="size-4" />
+                          </CommonRoundedButton>
                         )}
-
-                        <CostumedModal
-                          trigger={
-                            <CommonRoundedButton
-                              className={`${
-                                isOpenModalMemberList
-                                  ? "btn-secondary"
-                                  : "btn-primary"
-                              }`}
-                            >
-                              <UsersRound className="size-4" />
-                            </CommonRoundedButton>
-                          }
-                          onOpen={() => {
+                        <CommonRoundedButton
+                          className={`${
+                            isOpenModalMemberList
+                              ? "btn-secondary"
+                              : "btn-primary"
+                          }`}
+                          onClick={() => {
+                            setIsOpenHeaderOptions(false);
                             setIsOpenModalMemberList(true);
                           }}
-                          onClose={() => {
-                            setIsOpenModalMemberList(false);
-                          }}
-                          title={t("memberListModal.title")}
                         >
-                          {({ close }) => {
-                            closeMemberListRef.current = close;
-                            return (
-                              <div className={`pb-0 text-sm`}>
-                                <div className="space-y-3 -mt-2">
-                                  <div className="form-control w-full">
-                                    <div className="flex items-center justify-between">
-                                      <label className="label">
-                                        <span className="label-text">
-                                          {
-                                            selectedConversation.conversation
-                                              .name
-                                          }
-                                        </span>
-                                      </label>
-                                      <span className="label-text-alt">
-                                        {selectedConversation.users.length}{" "}
-                                        {t("memberListModal.quantity")}
-                                      </span>
-                                    </div>
-
-                                    <CostumedGroupChatMemberList
-                                      friends={selectedConversation.users}
-                                    ></CostumedGroupChatMemberList>
-                                  </div>
-                                </div>
-                              </div>
-                            );
-                          }}
-                        </CostumedModal>
+                          <UsersRound className="size-4" />
+                        </CommonRoundedButton>
                       </>
                     )}
                   </div>
@@ -1523,252 +1305,327 @@ const ChatWindow = () => {
                     ?.user._id &&
                   selectedConversation?.conversation.type === "group") ||
                   selectedConversation?.conversation.type !== "group") && (
-                  <CostumedModal
-                    trigger={
-                      <div className="">
-                        <div className="btn btn-outlined w-full hover:btn-error">
-                          {t("utils.settings.button.deleteConversation")}
-                        </div>
-                      </div>
-                    }
-                    title={t("deleteConversationModal.title")}
-                  >
-                    {({ close }) => {
-                      closeDeleteChatRef.current = close;
-                      return (
-                        <div>
-                          {selectedConversation?.conversation?.type ===
-                          "group" ? (
-                            <div className="pb-6 text-sm">
-                              {t("deleteConversationModal.subtitle.group")}{" "}
-                              <span className="font-semibold">
-                                {selectedConversation?.conversation?.name}
-                              </span>
-                              ?
-                            </div>
-                          ) : selectedConversation?.conversation?.type ===
-                            "private" ? (
-                            <div className="pb-6 text-sm">
-                              {t("deleteConversationModal.subtitle.private")}{" "}
-                              <span className="font-semibold">
-                                {selectedConversation?.users[0]?.user?.fullName}
-                              </span>
-                              ?
-                            </div>
-                          ) : (
-                            <div className="pb-6 text-sm">
-                              {t(
-                                "deleteConversationModal.subtitle.chatbot.label"
-                              )}{" "}
-                              <span className="font-semibold">
-                                {t(
-                                  "deleteConversationModal.subtitle.chatbot.name"
-                                )}
-                              </span>
-                              ?
-                            </div>
-                          )}
-
-                          <div className="grid grid-cols-2 gap-4">
-                            <button
-                              className="btn btn-outlined w-full"
-                              onClick={() => {
-                                close();
-                              }}
-                            >
-                              {t("deleteConversationModal.button.cancel")}
-                            </button>
-                            <button
-                              className="btn btn-primary w-full hover:btn-primary"
-                              onClick={handleDeleteConversation}
-                            >
-                              {isDeletingConversation ? (
-                                <LoaderIcon className="size-4 animate-spin" />
-                              ) : (
-                                <>
-                                  {t("deleteConversationModal.button.confirm")}
-                                </>
-                              )}
-                            </button>
-                          </div>
-                        </div>
-                      );
+                  <div
+                    className="btn btn-outlined w-full hover:btn-error"
+                    onClick={() => {
+                      setIsOpenModalDeleteConversation(true);
                     }}
-                  </CostumedModal>
+                  >
+                    {t("utils.settings.button.deleteConversation")}
+                  </div>
                 )}
 
                 {selectedConversation?.conversation?.type === "group" &&
-                  (authUser?.user._id ===
-                    selectedConversation?.users.find((user) => user.isKeyMember)
-                      ?.user._id && selectedConversation?.users.length > 1 ? (
+                  selectedConversation?.users.length > 1 && (
                     <>
-                      <CostumedModal
-                        trigger={
-                          <div className="">
-                            <div className="btn btn-outlined w-full hover:btn-error">
-                              {t("utils.settings.button.leaveGroup")}
-                            </div>
-                          </div>
-                        }
-                        title={t("leaveGroupModal.title")}
-                        onOpen={() => {
-                          setSelectedFriendIds([]);
-                        }}
-                        onClose={() => {
-                          setSelectedFriendIds([]);
+                      <div
+                        className="btn btn-outlined w-full hover:btn-error"
+                        onClick={() => {
+                          setIsOpenModalLeaveGroup(true);
                         }}
                       >
-                        {({ close }) => {
-                          closeLeaveChatRef.current = close;
-                          return (
-                            <div>
-                              <div className="pb-6 text-sm">
-                                {t(
-                                  "leaveGroupModal.subtitle.isKeyMember.true.label"
-                                )}{" "}
-                                <span className="font-semibold">
-                                  {/* {selectedConversation?.conversation?.type ==
-                                  "private"
-                                    ? selectedConversation?.users[0]?.user
-                                        ?.fullName
-                                    :  */}
-                                  {selectedConversation?.conversation?.name}
-                                </span>{" "}
-                                ({selectedConversation.users.length}{" "}
-                                {t(
-                                  "leaveGroupModal.subtitle.isKeyMember.true.quantity"
-                                )}
-                                )
-                              </div>
-                              <div className={`pb-6 text-sm`}>
-                                <div className="space-y-3 -mt-2">
-                                  <div className="form-control w-full">
-                                    <CostumedGroupChatUpdateMemberRoleList
-                                      friends={selectedConversation.users.filter(
-                                        (user) =>
-                                          user.user._id !== authUser?.user?._id
-                                      )}
-                                      isLeaving={isLeavingGroup}
-                                      selectedFriends={selectedFriendIds}
-                                      onSelected={
-                                        handleSelectedFriendLeaveGroup
-                                      }
-                                    ></CostumedGroupChatUpdateMemberRoleList>
-                                  </div>
-                                </div>
-                              </div>
-                              <div className="grid grid-cols-2 gap-4">
-                                <button
-                                  className="btn btn-outlined w-full"
-                                  onClick={() => {
-                                    close();
-                                  }}
-                                >
-                                  {t(
-                                    "leaveGroupModal.button.isKeyMember.true.cancel"
-                                  )}
-                                </button>
-                                <button
-                                  className={`btn btn-primary w-full hover:btn-primary  ${
-                                    isLeavingGroup ? "pointer-events-none" : ""
-                                  }`}
-                                  onClick={handleLeaveGroup}
-                                >
-                                  {isLeavingGroup ? (
-                                    <LoaderIcon className="size-4 animate-spin" />
-                                  ) : (
-                                    <>
-                                      {t(
-                                        "leaveGroupModal.button.isKeyMember.true.confirm"
-                                      )}
-                                    </>
-                                  )}
-                                </button>
-                              </div>
-                            </div>
-                          );
-                        }}
-                      </CostumedModal>
+                        {t("utils.settings.button.leaveGroup")}
+                      </div>
                     </>
-                  ) : (
-                    <>
-                      <CostumedModal
-                        trigger={
-                          <div className="">
-                            <div className="btn btn-outlined w-full hover:btn-error">
-                              {t("utils.settings.button.leaveGroup")}
-                            </div>
-                          </div>
-                        }
-                        title={t("leaveGroupModal.title")}
-                      >
-                        {({ close }) => {
-                          closeLeaveChatRef.current = close;
-                          return (
-                            <div>
-                              {selectedConversation?.conversation?.type ===
-                              "group" ? (
-                                <div className="pb-6 text-sm">
-                                  {t(
-                                    "leaveGroupModal.subtitle.isKeyMember.false"
-                                  )}{" "}
-                                  <span className="font-semibold">
-                                    {selectedConversation?.conversation?.name}
-                                  </span>
-                                  ?
-                                </div>
-                              ) : // selectedConversation?.conversation?.type ===
-                              //   "private" ? (
-                              //   <div className="pb-6 text-sm">
-                              //     Bạn có chắc muốn rời khỏi cuộc trò chuyện với{" "}
-                              //     <span className="font-semibold">
-                              //       {
-                              //         selectedConversation?.users[0]?.user
-                              //           ?.fullName
-                              //       }
-                              //     </span>{" "}
-                              //     không?
-                              //   </div>
-                              // ) :
-                              null}
-                              <div className="grid grid-cols-2 gap-4">
-                                <button
-                                  className="btn btn-outlined w-full"
-                                  onClick={() => {
-                                    close();
-                                  }}
-                                >
-                                  {t(
-                                    "leaveGroupModal.button.isKeyMember.false.cancel"
-                                  )}
-                                </button>
-                                <button
-                                  className="btn btn-primary w-full hover:btn-primary"
-                                  onClick={handleLeaveGroup}
-                                >
-                                  {isLeavingGroup ? (
-                                    <LoaderIcon className="size-4 animate-spin" />
-                                  ) : (
-                                    <>
-                                      {" "}
-                                      {t(
-                                        "leaveGroupModal.button.isKeyMember.false.confirm"
-                                      )}
-                                    </>
-                                  )}
-                                </button>
-                              </div>
-                            </div>
-                          );
-                        }}
-                      </CostumedModal>
-                    </>
-                  ))}
+                  )}
               </div>
             </div>
           </div>
         )}
       </div>
+
+      {/* MEMBER LIST MODAL */}
+      <CostumedModal
+        open={isOpenModalMemberList}
+        onClose={() => {
+          setIsOpenModalMemberList(false);
+        }}
+        title={t("memberListModal.title")}
+      >
+        {({ close }) => {
+          return (
+            <div className={`pb-0 text-sm`}>
+              <div className="space-y-3 -mt-2">
+                <div className="form-control w-full">
+                  <div className="flex items-center justify-between">
+                    <label className="label">
+                      <span className="label-text">
+                        {selectedConversation.conversation.name}
+                      </span>
+                    </label>
+                    <span className="label-text-alt">
+                      {selectedConversation.users.length}{" "}
+                      {t("memberListModal.quantity")}
+                    </span>
+                  </div>
+
+                  <CostumedGroupChatMemberList
+                    friends={selectedConversation.users}
+                  ></CostumedGroupChatMemberList>
+                </div>
+              </div>
+            </div>
+          );
+        }}
+      </CostumedModal>
+
+      {/* ADD MEMBERS MODAL */}
+      <CostumedModal
+        open={isOpenModalAddMember}
+        onClose={() => {
+          setIsOpenModalAddMember(false);
+          setSelectedFriendIds([]);
+          setFilterData({
+            fullName: "",
+            nativeLanguage: "",
+            learningLanguage: "",
+          });
+        }}
+        title={t("addMemberModal.title")}
+      >
+        {({ close }) => {
+          return (
+            <div>
+              <div
+                className={`pb-6 text-sm ${
+                  isAddingMembersToGroup ? "pointer-events-none" : ""
+                }`}
+              >
+                <div className="space-y-3 -mt-2">
+                  {/* GROUP MEMBERS */}
+                  <div className="form-control w-full">
+                    <div className="flex items-center justify-between">
+                      <label className="label">
+                        <span className="label-text">
+                          {t("addMemberModal.selectFriends.label")}
+                        </span>
+                      </label>
+                      <span className="label-text-alt">
+                        {selectedFriendIds.length}{" "}
+                        {t("addMemberModal.selectFriends.selected")}
+                      </span>
+                    </div>
+
+                    <CostumedFriendSelectInModal
+                      isLoadingGetFriends={isLoadingGetFriends}
+                      friends={friends}
+                      selectedFriends={selectedFriendIds}
+                      onSelected={handleSelectedFriend}
+                      onFiltered={(value) => {
+                        setFilterData((prev) => ({
+                          ...prev,
+                          fullName: value,
+                        }));
+                      }}
+                    />
+                  </div>
+                </div>
+              </div>
+              <div className="">
+                <button
+                  className="btn btn-primary w-full hover:btn-primary"
+                  onClick={handleAddMembersToGroup}
+                >
+                  {isAddingMembersToGroup ? (
+                    <LoaderIcon className="size-4 animate-spin" />
+                  ) : null}
+                  {t("addMemberModal.button.confirm")}
+                </button>
+              </div>
+            </div>
+          );
+        }}
+      </CostumedModal>
+
+      {/* DELETE CONVERSATION MODAL */}
+      <CostumedModal
+        open={isOpenModalDeleteConversation}
+        onClose={() => {
+          setIsOpenModalDeleteConversation(false);
+        }}
+        title={t("deleteConversationModal.title")}
+      >
+        {({ close }) => {
+          return (
+            <div>
+              {selectedConversation?.conversation?.type === "group" ? (
+                <div className="pb-6 text-sm">
+                  {t("deleteConversationModal.subtitle.group")}{" "}
+                  <span className="font-semibold">
+                    {selectedConversation?.conversation?.name}
+                  </span>
+                  ?
+                </div>
+              ) : selectedConversation?.conversation?.type === "private" ? (
+                <div className="pb-6 text-sm">
+                  {t("deleteConversationModal.subtitle.private")}{" "}
+                  <span className="font-semibold">
+                    {selectedConversation?.users[0]?.user?.fullName}
+                  </span>
+                  ?
+                </div>
+              ) : (
+                <div className="pb-6 text-sm">
+                  {t("deleteConversationModal.subtitle.chatbot.label")}{" "}
+                  <span className="font-semibold">
+                    {t("deleteConversationModal.subtitle.chatbot.name")}
+                  </span>
+                  ?
+                </div>
+              )}
+
+              <div className="grid grid-cols-2 gap-4">
+                <button
+                  className="btn btn-outlined w-full"
+                  onClick={() => {
+                    setIsOpenModalDeleteConversation(false);
+                  }}
+                >
+                  {t("deleteConversationModal.button.cancel")}
+                </button>
+                <button
+                  className="btn btn-primary w-full hover:btn-primary"
+                  onClick={handleDeleteConversation}
+                >
+                  {isDeletingConversation ? (
+                    <LoaderIcon className="size-4 animate-spin" />
+                  ) : (
+                    <>{t("deleteConversationModal.button.confirm")}</>
+                  )}
+                </button>
+              </div>
+            </div>
+          );
+        }}
+      </CostumedModal>
+
+      {/* LEAVE GROUP MODAL KEY MEMBER */}
+      <CostumedModal
+        open={isOpenModalLeaveGroup && iAmKeyMember}
+        onClose={() => {
+          setIsOpenModalLeaveGroup(false);
+          setSelectedFriendIds([]);
+        }}
+        title={t("leaveGroupModal.title")}
+      >
+        {({ close }) => {
+          return (
+            <div>
+              <div className="pb-6 text-sm">
+                {t("leaveGroupModal.subtitle.isKeyMember.true.label")}{" "}
+                <span className="font-semibold">
+                  {/* {selectedConversation?.conversation?.type ==
+                                  "private"
+                                    ? selectedConversation?.users[0]?.user
+                                        ?.fullName
+                                    :  */}
+                  {selectedConversation?.conversation?.name}
+                </span>{" "}
+                ({selectedConversation.users.length}{" "}
+                {t("leaveGroupModal.subtitle.isKeyMember.true.quantity")})
+              </div>
+              <div className={`pb-6 text-sm`}>
+                <div className="space-y-3 -mt-2">
+                  <div className="form-control w-full">
+                    <CostumedGroupChatUpdateMemberRoleList
+                      friends={selectedConversation.users.filter(
+                        (user) => user.user._id !== authUser?.user?._id
+                      )}
+                      isLeaving={isLeavingGroup}
+                      selectedFriends={selectedFriendIds}
+                      onSelected={handleSelectedFriendLeaveGroup}
+                    ></CostumedGroupChatUpdateMemberRoleList>
+                  </div>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-4">
+                <button
+                  className="btn btn-outlined w-full"
+                  onClick={() => {
+                    setIsOpenModalLeaveGroup(false);
+                    setSelectedFriendIds([]);
+                  }}
+                >
+                  {t("leaveGroupModal.button.isKeyMember.true.cancel")}
+                </button>
+                <button
+                  className={`btn btn-primary w-full hover:btn-primary  ${
+                    isLeavingGroup ? "pointer-events-none" : ""
+                  }`}
+                  onClick={handleLeaveGroup}
+                >
+                  {isLeavingGroup ? (
+                    <LoaderIcon className="size-4 animate-spin" />
+                  ) : (
+                    <>{t("leaveGroupModal.button.isKeyMember.true.confirm")}</>
+                  )}
+                </button>
+              </div>
+            </div>
+          );
+        }}
+      </CostumedModal>
+
+      {/* LEAVE GROUP MODAL */}
+      <CostumedModal
+        open={isOpenModalLeaveGroup && !iAmKeyMember}
+        onClose={() => {
+          setIsOpenModalLeaveGroup(false);
+        }}
+        title={t("leaveGroupModal.title")}
+      >
+        {({ close }) => {
+          return (
+            <div>
+              {selectedConversation?.conversation?.type === "group" ? (
+                <div className="pb-6 text-sm">
+                  {t("leaveGroupModal.subtitle.isKeyMember.false")}{" "}
+                  <span className="font-semibold">
+                    {selectedConversation?.conversation?.name}
+                  </span>
+                  ?
+                </div>
+              ) : // selectedConversation?.conversation?.type ===
+              //   "private" ? (
+              //   <div className="pb-6 text-sm">
+              //     Bạn có chắc muốn rời khỏi cuộc trò chuyện với{" "}
+              //     <span className="font-semibold">
+              //       {
+              //         selectedConversation?.users[0]?.user
+              //           ?.fullName
+              //       }
+              //     </span>{" "}
+              //     không?
+              //   </div>
+              // ) :
+              null}
+              <div className="grid grid-cols-2 gap-4">
+                <button
+                  className="btn btn-outlined w-full"
+                  onClick={() => {
+                    setIsOpenModalLeaveGroup(false);
+                  }}
+                >
+                  {t("leaveGroupModal.button.isKeyMember.false.cancel")}
+                </button>
+                <button
+                  className="btn btn-primary w-full hover:btn-primary"
+                  onClick={handleLeaveGroup}
+                >
+                  {isLeavingGroup ? (
+                    <LoaderIcon className="size-4 animate-spin" />
+                  ) : (
+                    <>
+                      {" "}
+                      {t("leaveGroupModal.button.isKeyMember.false.confirm")}
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          );
+        }}
+      </CostumedModal>
     </>
   );
 };
