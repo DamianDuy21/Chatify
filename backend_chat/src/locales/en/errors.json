@@ -1,0 +1,55 @@
+{
+  "middleware": {
+    "unauthorized": {
+      "emptyToken": "No permission to access - Token is missing.",
+      "invalidToken": "No permission to access - Token is invalid.",
+      "userNotFound": "No permission to access - User not found.",
+      "accessDenied": "No permission to access - Access denied."
+    }
+  },
+  "chatRoute": {
+    "createGroup": {
+      "validation": {
+        "allFieldsRequired": "All fields are required."
+      },
+      "error": "Failed to create group chat. Please try again later."
+    },
+    "addMembersToGroup": {
+      "validation": {
+        "invalidMemberData": "Invalid member data.",
+        "groupNotFound": "Group chat not found.",
+        "alreadyMember": "One or more users are already members of the group."
+      },
+      "error": "Failed to add members to group chat. Please try again later."
+    },
+    "updateConversationSettings": {
+      "validation": {
+        "settingsNotFound": "Settings not found."
+      },
+      "error": "Failed to update conversation settings. Please try again later."
+    },
+    "leaveGroup": {
+      "validation": {
+        "invalidMemberData": "Invalid member data.",
+        "groupNotFound": "Group chat not found.",
+        "notMember": "You are not a member of this group.",
+        "newKeyMemberRequired": "A new admin must be assigned before you leave the group.",
+        "newKeyMemberNotYourself": "You cannot assign yourself as the new admin.",
+        "newKeyMemberNotInGroup": "The new admin must be a member of the group."
+      },
+      "error": "Failed to leave the group. Please try again later."
+    },
+    "deleteConversation": {
+      "validation": {
+        "invalidMemberData": "Invalid member data.",
+        "conversationNotFound": "Conversation not found."
+      },
+      "error": "Failed to delete the conversation. Please try again later."
+    }
+  },
+  "openaiRoute": {
+    "createChatBot": {
+      "error": "Failed to create Chatbot. Please try again later."
+    }
+  }
+}

@@ -39,15 +39,8 @@ const LoginPage = () => {
       });
       return;
     }
-    try {
-      loginMutation(cleanedLoginData);
-    } catch (error) {
-      console.error(error);
-      showToast({
-        message: error?.message || t("toast.handleLogin.error"),
-        type: "error",
-      });
-    }
+
+    loginMutation(cleanedLoginData);
   };
 
   Cookies.remove("jwt");

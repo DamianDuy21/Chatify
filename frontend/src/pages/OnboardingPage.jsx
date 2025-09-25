@@ -111,20 +111,13 @@ const OnboardingPage = () => {
       });
       return;
     }
-    try {
-      const payload = {
-        ...onboardingData,
-        profilePic,
-      };
 
-      await onboardingMutation(payload);
-    } catch (error) {
-      console.error("Onboarding failed:", error);
-      showToast({
-        message: error?.message || t("toast.handleSubmit.error"),
-        type: "error",
-      });
-    }
+    const payload = {
+      ...onboardingData,
+      profilePic,
+    };
+
+    await onboardingMutation(payload);
   };
 
   useEffect(() => {

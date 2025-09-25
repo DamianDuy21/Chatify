@@ -26,7 +26,7 @@ const RecommendedUserCard_HomePage = ({ user, onSuccess, onError }) => {
     onSuccess: (data) => {
       onSuccess(data);
       showToast({
-        message: data?.message || "Friend request sent successfully!",
+        message: data?.message || t("toast.sendFriendRequestMutation.success"),
         type: "success",
       });
     },
@@ -35,7 +35,8 @@ const RecommendedUserCard_HomePage = ({ user, onSuccess, onError }) => {
       console.log("Error sending friend request:", error);
       showToast({
         message:
-          error?.response?.data?.message || "Failed to send friend request",
+          error?.response?.data?.message ||
+          t("toast.sendFriendRequestMutation.error"),
         type: "error",
       });
     },

@@ -16,7 +16,10 @@ export const signup = async (req, res) => {
 
   try {
     if (!email || !password || !fullName) {
-      return res.status(400).json({ message: "Tất cả các trường là bắt buộc" });
+      return res.status(400).json({
+        locale: req.i18n.language,
+        message: req.t("errors:authRoute.signUp.validation.allFieldsRequired"),
+      });
     }
 
     // validate password
@@ -25,9 +28,10 @@ export const signup = async (req, res) => {
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res
-        .status(400)
-        .json({ message: "Email đã tồn tại, vui lòng sử dụng email khác" });
+      return res.status(400).json({
+        locale: req.i18n.language,
+        message: req.t("errors:authRoute.signUp.validation.userAlreadyExists"),
+      });
     }
 
     // Bọc trong transaction để đồng bộ
@@ -98,7 +102,7 @@ export const signup = async (req, res) => {
 
       // 5) Không tạo User ngay bây giờ. Chờ verify OTP xong mới tạo.
       return res.status(201).json({
-        message: "Vui lòng kiểm tra email để lấy mã xác thực",
+        message: "",
         data: {
           email: email,
           expiresAt: expireAt,
@@ -112,7 +116,11 @@ export const signup = async (req, res) => {
     }
   } catch (error) {
     console.log("Error in signup controller", error);
-    res.status(500).json({ success: false, message: "Lỗi máy chủ nội bộ" });
+    res.status(500).json({
+      success: false,
+      locale: req.i18n.language,
+      message: req.t("errors:authRoute.signUp.error"),
+    });
   }
 };
 
@@ -120,7 +128,12 @@ export const verifySignUpOtp = async (req, res) => {
   try {
     const { email, fullName, password, code } = req.body;
     if (!email || !fullName || !password || !code) {
-      return res.status(400).json({ message: "Tất cả các trường là bắt buộc" });
+      return res.status(400).json({
+        locale: req.i18n.language,
+        message: req.t(
+          "errors:authRoute.verifySignUpOtp.validation.allFieldsRequired"
+        ),
+      });
     }
     // Lấy pendingAccount mới nhất còn pending của email này
     const pa = await PendingAccount.findOne({
@@ -130,9 +143,12 @@ export const verifySignUpOtp = async (req, res) => {
     }).sort({ createdAt: -1 });
 
     if (!pa) {
-      return res
-        .status(400)
-        .json({ message: "Không tìm thấy tài khoản đang chờ xác thực" });
+      return res.status(400).json({
+        locale: req.i18n.language,
+        message: req.t(
+          "errors:authRoute.verifySignUpOtp.validation.emailNotFound"
+        ),
+      });
     }
     // Lấy OTP signup mới nhất còn pending & còn hạn
     const otp = await OTP.findOne({
@@ -143,15 +159,21 @@ export const verifySignUpOtp = async (req, res) => {
     }).sort({ createdAt: -1 });
 
     if (!otp) {
-      return res
-        .status(400)
-        .json({ message: "Mã xác thực không hợp lệ hoặc đã hết hạn" });
+      return res.status(400).json({
+        locale: req.i18n.language,
+        message: req.t(
+          "errors:authRoute.verifySignUpOtp.validation.invalidToken"
+        ),
+      });
     }
 
     if (otp.code !== code) {
-      return res
-        .status(400)
-        .json({ message: "Mã xác thực không hợp lệ hoặc đã hết hạn" });
+      return res.status(400).json({
+        locale: req.i18n.language,
+        message: req.t(
+          "errors:authRoute.verifySignUpOtp.validation.invalidToken"
+        ),
+      });
     }
 
     const session = await mongoose.startSession();
@@ -201,7 +223,13 @@ export const verifySignUpOtp = async (req, res) => {
     }
   } catch (error) {
     console.log("Error in verify signup OTP controller", error);
-    res.status(500).json({ success: false, message: "Lỗi máy chủ nội bộ" });
+    res
+      .status(500)
+      .json({
+        success: false,
+        locale: req.i18n.language,
+        message: req.t("errors:authRoute.verifySignUpOtp.error"),
+      });
   }
 };
 
@@ -278,12 +306,22 @@ export const resetPassword = async (req, res) => {
     const { email } = req.body;
 
     if (!email) {
-      return res.status(400).json({ message: "Tất cả các trường là bắt buộc" });
+      return res.status(400).json({
+        locale: req.i18n.language,
+        message: req.t(
+          "errors:authRoute.resetPassword.validation.allFieldsRequired"
+        ),
+      });
     }
 
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(404).json({ message: "Người dùng không tồn tại" });
+      return res.status(404).json({
+        locale: req.i18n.language,
+        message: req.t(
+          "errors:authRoute.resetPassword.validation.userNotFound"
+        ),
+      });
     }
 
     // Bọc trong transaction để đồng bộ
@@ -326,7 +364,7 @@ export const resetPassword = async (req, res) => {
       // 5) Không tạo User ngay bây giờ. Chờ verify OTP xong mới tạo.
       return res.status(201).json({
         success: true,
-        message: "Vui lòng kiểm tra email để lấy mã xác thực",
+        message: "",
         data: {
           email: email,
           expiresAt: expireAt,
@@ -339,7 +377,11 @@ export const resetPassword = async (req, res) => {
     }
   } catch (error) {
     console.log("Error in reset password controller", error);
-    res.status(500).json({ success: false, message: "Lỗi máy chủ nội bộ" });
+    res.status(500).json({
+      success: false,
+      locale: req.i18n.language,
+      message: req.t("errors:authRoute.resetPassword.error"),
+    });
   }
 };
 
@@ -348,15 +390,25 @@ export const verifyResetPasswordOtp = async (req, res) => {
     const { email, newPassword, code } = req.body;
 
     if (!newPassword || !code) {
-      return res.status(400).json({ message: "Tất cả các trường là bắt buộc" });
+      return res.status(400).json({
+        locale: req.i18n.language,
+        message: req.t(
+          "errors:authRoute.verifyResetPasswordOtp.validation.allFieldsRequired"
+        ),
+      });
     }
 
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(404).json({ message: "Người dùng không tồn tại" });
+      return res.status(404).json({
+        locale: req.i18n.language,
+        message: req.t(
+          "errors:authRoute.verifyResetPasswordOtp.validation.userNotFound"
+        ),
+      });
     }
 
-    // Lấy OTP signup mới nhất còn pending & còn hạn
+    // Lấy OTP mới nhất còn pending & còn hạn
     const otp = await OTP.findOne({
       userId: user._id,
       type: "forgot_password",
@@ -365,15 +417,21 @@ export const verifyResetPasswordOtp = async (req, res) => {
     }).sort({ createdAt: -1 });
 
     if (!otp) {
-      return res
-        .status(400)
-        .json({ message: "Mã xác thực không hợp lệ hoặc đã hết hạn" });
+      return res.status(400).json({
+        locale: req.i18n.language,
+        message: req.t(
+          "errors:authRoute.verifyResetPasswordOtp.validation.invalidToken"
+        ),
+      });
     }
 
     if (otp.code !== code) {
-      return res
-        .status(400)
-        .json({ message: "Mã xác thực không hợp lệ hoặc đã hết hạn" });
+      return res.status(400).json({
+        locale: req.i18n.language,
+        message: req.t(
+          "errors:authRoute.verifyResetPasswordOtp.validation.invalidToken"
+        ),
+      });
     }
 
     // Nếu OTP hợp lệ, cho phép người dùng đặt lại mật khẩu
@@ -396,16 +454,24 @@ export const verifyResetPasswordOtp = async (req, res) => {
       res.status(200).json({
         success: true,
         data: {},
-        message: "Đặt lại mật khẩu thành công",
+        message: "",
       });
     } catch (error) {
       await session.abortTransaction();
       console.log("Error in verify reset password OTP controller", error);
-      res.status(500).json({ success: false, message: "Lỗi máy chủ nội bộ" });
+      res.status(500).json({
+        success: false,
+        locale: req.i18n.language,
+        message: req.t("errors:authRoute.verifyResetPasswordOtp.error"),
+      });
     }
   } catch (error) {
     console.log("Error in verify reset password OTP controller", error);
-    res.status(500).json({ success: false, message: "Lỗi máy chủ nội bộ" });
+    res.status(500).json({
+      success: false,
+      locale: req.i18n.language,
+      message: req.t("errors:authRoute.verifyResetPasswordOtp.error"),
+    });
   }
 };
 
@@ -423,7 +489,8 @@ export const onboard = async (req, res) => {
       !profilePic
     ) {
       return res.status(400).json({
-        message: "Tất cả các trường là bắt buộc",
+        locale: req.i18n.language,
+        message: req.t("errors:authRoute.onboard.validation.allFieldsRequired"),
       });
     }
 
@@ -498,7 +565,11 @@ export const onboard = async (req, res) => {
     });
   } catch (error) {
     console.log("Error in onboarding controller", error);
-    res.status(500).json({ success: false, message: "Lỗi máy chủ nội bộ" });
+    res.status(500).json({
+      success: false,
+      locale: req.i18n.language,
+      message: req.t("errors:authRoute.onboard.error"),
+    });
   }
 };
 

@@ -44,6 +44,12 @@
       "languages": {
         "native": "Native",
         "learning": "Learning"
+      },
+      "toast": {
+        "sendFriendRequestMutation": {
+          "success": "Friend request sent successfully",
+          "error": "Failed to send friend request. Please try again later"
+        }
       }
     },
     "friendCard_HomePage_OutgoingRequest": {
@@ -283,6 +289,18 @@
     },
     "textEditor": {
       "placeholder": "Type a message"
+    },
+    "friendCard_GroupChatMemberList": {
+      "toast": {
+        "sendFriendRequestMutation": {
+          "success": "Friend request sent successfully",
+          "error": "Failed to send friend request. Please try again later"
+        },
+        "deleteMemberFromGroupMutation": {
+          "success": "Member removed from group successfully",
+          "error": "Failed to remove member from group. Please try again later"
+        }
+      }
     }
   },
   "SignInPage": {
@@ -331,12 +349,12 @@
     "toast": {
       "useLogin": {
         "success": "Sign in successful!",
-        "error": "Sign in failed. Please try again."
+        "error": "Sign in failed. Please try again later."
       },
       "handleLogin": {
         "allFieldsAreRequired": "All fields are required.",
         "termsAndPolicyNotAgreed": "You must agree to the terms of service and privacy policy.",
-        "error": "Sign in failed. Please try again."
+        "error": "Sign in failed. Please try again later."
       }
     }
   },
@@ -403,15 +421,15 @@
     "toast": {
       "signUpMutation": {
         "success": "Sign up successful! Please check your email to verify your account.",
-        "error": "Sign up failed. Please try again."
+        "error": "Sign up failed. Please try again later."
       },
       "signUpVerificationMutation": {
         "success": "Verification successful! You can log in now.",
-        "error": "Verification failed. Please try again."
+        "error": "Verification failed. Please try again later."
       },
       "resendVerificationCodeMutation": {
         "success": "Verification code has been resent. Please check your email.",
-        "error": "Failed to resend verification code. Please try again."
+        "error": "Failed to resend verification code. Please try again later."
       },
       "validateSignUpData": {
         "allFieldsAreRequired": "All fields are required.",
@@ -421,14 +439,14 @@
         "termsAndPolicyNotAgreed": "You must agree to the terms of service and privacy policy."
       },
       "handleSignUp": {
-        "error": "Sign up failed. Please try again."
+        "error": "Sign up failed. Please try again later."
       },
       "handleResendVerificationCode": {
-        "error": "Failed to resend verification code. Please try again."
+        "error": "Failed to resend verification code. Please try again later."
       },
       "handleSignUpVerification": {
         "emptyVerificationCode": "Please enter the verification code.",
-        "error": "Verification failed. Please try again."
+        "error": "Verification failed. Please try again later."
       }
     }
   },
@@ -475,18 +493,18 @@
     "toast": {
       "resetPasswordMutation": {
         "success": "A verification code has been sent to your email",
-        "error": "Failed to send verification code. Please try again."
+        "error": "Failed to send verification code. Please try again later."
       },
       "resetPasswordVerificationMutation": {
         "success": "Password has been successfully reset",
-        "error": "Failed to reset password. Please try again."
+        "error": "Failed to reset password. Please try again later."
       },
       "validateResetPasswordData": {
         "allFieldsAreRequired": "All fields are required",
         "invalidEmail": "Invalid email address"
       },
       "handleResetPassword": {
-        "error": "Failed to send verification code. Please try again."
+        "error": "Failed to send verification code. Please try again later."
       },
 
       "validateResetPasswordVerificationData": {
@@ -494,7 +512,7 @@
         "invalidPassword": "Password must be at least 8 characters long and include uppercase, lowercase, number, and special character."
       },
       "handleResetPasswordVerification": {
-        "error": "Failed to reset password. Please try again."
+        "error": "Failed to reset password. Please try again later."
       }
     }
   },
@@ -539,15 +557,15 @@
         "success": "Fetched learning languages list successfully!"
       },
       "onboardingMutation": {
-        "error": "Unable to save profile. Please try again.",
+        "error": "Unable to save profile. Please try again later.",
         "success": "Welcome to Chatify!"
       },
       "handleRandomAvatar": {
-        "error": "Unable to generate random avatar. Please try again.",
+        "error": "Unable to generate random avatar. Please try again later.",
         "success": "Generated random avatar successfully!"
       },
       "handleSubmit": {
-        "error": "Unable to save profile. Please try again.",
+        "error": "Unable to save profile. Please try again later.",
         "success": "Saved profile successfully!"
       },
       "validateOnboardingData": {
@@ -596,18 +614,18 @@
     "toast": {
       "updateProfileMutation": {
         "success": "Profile updated successfully!",
-        "error": "Profile update failed. Please try again."
+        "error": "Profile update failed. Please try again later."
       },
       "validateProfileData": {
         "missingLanguages": "Please select languages",
         "allFieldsRequired": "All fields are required"
       },
       "handleRandomAvatar": {
-        "error": "Unable to generate random avatar. Please try again.",
+        "error": "Unable to generate random avatar. Please try again later.",
         "success": "Generated random avatar successfully!"
       },
       "handleSubmit": {
-        "error": "Unable to save profile. Please try again.",
+        "error": "Unable to save profile. Please try again later.",
         "success": "Updated profile successfully!"
       }
     }
@@ -654,32 +672,32 @@
     "toast": {
       "changePasswordVerificationMutation": {
         "success": "Password changed successfully",
-        "error": "An error occurred while verifying the code. Please try again."
+        "error": "An error occurred while verifying the code. Please try again later."
       },
       "validateChangePasswordVerification": {
         "allFieldsRequired": "All fields are required",
         "invalidVerificationCode": "Invalid verification code"
       },
       "handleChangePasswordVerification": {
-        "error": "An error occurred while verifying the code. Please try again."
+        "error": "An error occurred while verifying the code. Please try again later."
       },
       "changePasswordMutation": {
         "success": "A verification code has been sent to your email",
-        "error": "An error occurred while sending the verification code. Please try again."
+        "error": "An error occurred while sending the verification code. Please try again later."
       },
 
       "validateChangePassword": {
         "allFieldsRequired": "All fields are required"
       },
       "handleChangePassword": {
-        "error": "An error occurred while sending the verification code. Please try again."
+        "error": "An error occurred while sending the verification code. Please try again later."
       }
     }
   },
   "Navbar": {
     "useLogout": {
       "success": "Logged out successfully",
-      "error": "Failed to log out. Please try again."
+      "error": "Failed to log out. Please try again later."
     }
   },
   "Sidebar": {
@@ -724,10 +742,10 @@
     },
     "toast": {
       "fetchRecommendedUsers": {
-        "error": "Could not load new learners. Please try again."
+        "error": "Failed to fetch recommended users. Please try again later."
       },
       "fetchOutgoingFriendRequests": {
-        "error": "Could not load sent friend requests. Please try again."
+        "error": "Failed to fetch outgoing friend requests. Please try again later."
       }
     }
   },
@@ -745,7 +763,7 @@
     },
     "toast": {
       "fetchFriends": {
-        "error": "Error fetching friends list. Please try again later."
+        "error": "Error fetching friends. Please try again later."
       }
     }
   },
@@ -774,10 +792,10 @@
     },
     "toast": {
       "fetchNotifications": {
-        "error": "Failed to load notifications. Please try again."
+        "error": "Failed to load notifications. Please try again later."
       },
       "fetchIncomingFriendRequests": {
-        "error": "Failed to load friend requests. Please try again."
+        "error": "Failed to load friend requests. Please try again later."
       }
     }
   },
@@ -813,7 +831,7 @@
 
     "toast": {
       "fetchFriends": {
-        "error": "Fetch friends failed. Please try again later."
+        "error": "Failed to fetch friends. Please try again later."
       },
       "createGroupMutation": {
         "success": "Group created successfully!",

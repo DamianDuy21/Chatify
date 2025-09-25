@@ -116,30 +116,23 @@ const ProfilePage = () => {
       });
       return;
     }
-    try {
-      await updateProfileMutation({
-        ...onboardingData,
-        profilePic,
-      });
 
-      await setAuthUser({
-        ...authUser,
-        user: {
-          ...authUser.user,
-          profile: {
-            ...authUser.user.profile,
-            ...onboardingData,
-            profilePic,
-          },
+    await updateProfileMutation({
+      ...onboardingData,
+      profilePic,
+    });
+
+    await setAuthUser({
+      ...authUser,
+      user: {
+        ...authUser.user,
+        profile: {
+          ...authUser.user.profile,
+          ...onboardingData,
+          profilePic,
         },
-      });
-    } catch (error) {
-      console.error("Onboarding failed:", error);
-      showToast({
-        message: error.message || t("toast.handleSubmit.error"),
-        type: "error",
-      });
-    }
+      },
+    });
   };
 
   useEffect(() => {

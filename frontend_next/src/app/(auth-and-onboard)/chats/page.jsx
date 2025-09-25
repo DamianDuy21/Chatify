@@ -105,8 +105,10 @@ const ChatsPage = () => {
       const { data } = await getFriendsAPI(args);
       setFriends(data.users);
     } catch (error) {
+      console.error("Error fetching friends:", error);
       showToast({
-        message: error?.message || t("toast.fetchFriends.error"),
+        message:
+          error?.response?.data?.message || t("toast.fetchFriends.error"),
         type: "error",
       });
     } finally {

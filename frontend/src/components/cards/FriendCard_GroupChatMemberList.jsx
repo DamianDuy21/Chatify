@@ -13,6 +13,7 @@ import CommonRoundedButton from "../buttons/CommonRoundedButton";
 import { showToast } from "../costumed/CostumedToast";
 import { getLanguageFlag } from "./FriendCard_Func";
 import { useChatStore } from "../../stores/useChatStore";
+import { useTranslation } from "react-i18next";
 
 const FriendCard_GroupChatMemberList = ({
   friend = null,
@@ -20,6 +21,9 @@ const FriendCard_GroupChatMemberList = ({
   onSuccessSendFriendRequest = () => {},
   onSuccessDeleteMember = () => {},
 }) => {
+  const { t } = useTranslation("components", {
+    keyPrefix: "friendCard_GroupChatMemberList",
+  });
   const authUser = useAuthStore((s) => s.authUser);
   const userPresenceList = useAuthStore((s) => s.userPresenceList);
 
@@ -41,14 +45,15 @@ const FriendCard_GroupChatMemberList = ({
     onSuccess: (data) => {
       onSuccessSendFriendRequest(data);
       showToast({
-        message: data?.message || "Friend request sent successfully!",
+        message: data?.message || t("toast.sendFriendRequestMutation.success"),
         type: "success",
       });
     },
     onError: (error) => {
       showToast({
         message:
-          error?.response?.data?.message || "Failed to send friend request",
+          error?.response?.data?.message ||
+          t("toast.sendFriendRequestMutation.error"),
         type: "error",
       });
     },
@@ -62,7 +67,8 @@ const FriendCard_GroupChatMemberList = ({
     onSuccess: (data) => {
       onSuccessDeleteMember(data);
       showToast({
-        message: data?.message || "Friend request cancelled successfully!",
+        message:
+          data?.message || t("toast.deleteMemberFromGroupMutation.success"),
         type: "success",
       });
     },
@@ -71,7 +77,7 @@ const FriendCard_GroupChatMemberList = ({
       showToast({
         message:
           error?.response?.data?.message ||
-          "Failed delete friend group request",
+          t("toast.deleteMemberFromGroupMutation.error"),
         type: "error",
       });
     },

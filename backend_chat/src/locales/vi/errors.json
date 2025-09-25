@@ -1,0 +1,55 @@
+{
+  "middleware": {
+    "unauthorized": {
+      "emptyToken": "Không có quyền truy cập - Không có mã xác thực.",
+      "invalidToken": "Không có quyền truy cập - Mã xác thực không hợp lệ.",
+      "userNotFound": "Không có quyền truy cập - Không tìm thấy người dùng.",
+      "accessDenied": "Không có quyền truy cập - Truy cập bị từ chối."
+    }
+  },
+  "chatRoute": {
+    "createGroup": {
+      "validation": {
+        "allFieldsRequired": "Tất cả các trường đều bắt buộc."
+      },
+      "error": "Tạo nhóm trò chuyện không thành công. Vui lòng thử lại sau."
+    },
+    "addMembersToGroup": {
+      "validation": {
+        "invalidMemberData": "Dữ liệu thành viên không hợp lệ.",
+        "groupNotFound": "Không tìm thấy nhóm trò chuyện.",
+        "alreadyMember": "Một hoặc nhiều người dùng đã là thành viên của nhóm."
+      },
+      "error": "Thêm thành viên vào nhóm trò chuyện không thành công. Vui lòng thử lại sau."
+    },
+    "updateConversationSettings": {
+      "validation": {
+        "settingsNotFound": "Không tìm thấy cài đặt."
+      },
+      "error": "Cập nhật cài đặt cuộc trò chuyện không thành công. Vui lòng thử lại sau."
+    },
+    "leaveGroup": {
+      "validation": {
+        "invalidMemberData": "Dữ liệu thành viên không hợp lệ.",
+        "groupNotFound": "Không tìm thấy nhóm trò chuyện.",
+        "notMember": "Bạn không phải là thành viên của nhóm này.",
+        "newKeyMemberRequired": "Một trưởng nhóm mới phải được chỉ định trước khi bạn rời khỏi nhóm.",
+        "newKeyMemberNotYourself": "Bạn không thể chỉ định chính mình làm trưởng nhóm mới.",
+        "newKeyMemberNotInGroup": "Trưởng nhóm mới phải là thành viên của nhóm."
+      },
+      "error": "Rời khỏi nhóm không thành công. Vui lòng thử lại sau."
+    },
+    "deleteConversation": {
+      "validation": {
+        "invalidMemberData": "Dữ liệu thành viên không hợp lệ.",
+        "conversationNotFound": "Không tìm thấy cuộc trò chuyện."
+      },
+      "error": "Xóa cuộc trò chuyện không thành công. Vui lòng thử lại sau."
+    }
+  },
+  "openaiRoute": {
+    "createChatBot": {
+      "error": "Tạo Chatbot không thành công. Vui lòng thử lại sau."
+    }
+  }
+}

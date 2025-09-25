@@ -1,0 +1,121 @@
+{
+  "middleware": {
+    "unauthorized": {
+      "emptyToken": "No permission to access - Token is missing.",
+      "invalidToken": "No permission to access - Token is invalid.",
+      "userNotFound": "No permission to access - User not found.",
+      "accessDenied": "No permission to access - Access denied."
+    }
+  },
+  "authRoute": {
+    "onboard": {
+      "validation": {
+        "allFieldsRequired": "All fields are required."
+      },
+      "error": "An error occurred during onboarding. Please try again later."
+    },
+    "resetPassword": {
+      "validation": {
+        "allFieldsRequired": "All fields are required.",
+        "userNotFound": "User not found."
+      },
+      "error": "An error occurred while sending the verification code. Please try again later."
+    },
+    "verifyResetPasswordOtp": {
+      "validation": {
+        "allFieldsRequired": "All fields are required.",
+        "userNotFound": "User not found.",
+        "invalidToken": "Invalid verification code."
+      },
+      "error": "An error occurred while verifying the code. Please try again later."
+    },
+    "signUp": {
+      "validation": {
+        "allFieldsRequired": "All fields are required.",
+        "userAlreadyExists": "User already exists with this email."
+      },
+      "error": "An error occurred during sign up. Please try again later."
+    },
+    "verifySignUpOtp": {
+      "validation": {
+        "allFieldsRequired": "All fields are required.",
+        "emailNotFound": "Email not found.",
+        "invalidToken": "Invalid verification code."
+      },
+      "error": "An error occurred while verifying the code. Please try again later."
+    }
+  },
+  "userRoute": {
+    "getRecommendedUsers": {
+      "error": "Failed to fetch recommended users. Please try again later."
+    },
+    "getOutgoingFriendRequests": {
+      "error": "Failed to fetch outgoing friend requests. Please try again later."
+    },
+    "changePassword": {
+      "validation": {
+        "allFieldsRequired": "All fields are required.",
+        "userNotFound": "User not found.",
+        "incorrectCurrentPassword": "Incorrect current password."
+      },
+      "error": "Failed to change password. Please try again later."
+    },
+    "verifyChangePasswordOtp": {
+      "validation": {
+        "allFieldsRequired": "All fields are required.",
+        "emptyPendingPassword": "No pending password change request found.",
+        "invalidToken": "Invalid verification code."
+      },
+      "error": "An error occurred while verifying the code. Please try again later."
+    },
+    "getFriends": {
+      "error": "Failed to fetch friends. Please try again later."
+    },
+    "getIncomingFriendRequests": {
+      "error": "Failed to fetch incoming friend requests. Please try again later."
+    },
+    "getNotifications": {
+      "error": "Failed to fetch notifications. Please try again later."
+    },
+    "updateProfile": {
+      "validation": {
+        "allFieldsRequired": "All fields are required.",
+        "userNotFound": "User not found.",
+        "profileNotFound": "Profile not found."
+      },
+      "error": "Failed to update profile. Please try again later."
+    },
+    "deleteFriend": {
+      "validation": {
+        "notYourSelf": "You cannot unfriend yourself.",
+        "friendNotFound": "Friend not found."
+      },
+      "error": "Failed to unfriend. Please try again later."
+    },
+    "sendFriendRequest": {
+      "validation": {
+        "notYourSelf": "You cannot send a friend request to yourself.",
+        "userNotFound": "User not found.",
+        "alreadyFriends": "You are already friends with this user.",
+        "requestAlreadySent": "Friend request already sent to this user."
+      },
+      "error": "Failed to send friend request. Please try again later."
+    },
+    "updateFriendRequest": {
+      "validation": {
+        "notYourSelf": "You cannot update a friend request for yourself.",
+        "requestNotFound": "Friend request not found."
+      },
+      "error": "Failed to update friend request. Please try again later."
+    },
+    "updateNotification": {
+      "validation": {
+        "notificationNotFound": "Notification not found."
+      },
+      "error": "Failed to update notification. Please try again later."
+    },
+    "getFriendsCouldBeAddedToGroup": {
+      "error": "Failed to fetch friends who could be added to the group. Please try again later."
+    }
+  }
+}

@@ -100,7 +100,7 @@ const Message = ({
       });
       setTranslatedText(response.translated);
     } catch (error) {
-      toast.error("Error translating text. Please try again.");
+      toast.error("Error translating text. Please try again later.");
       console.error("Error translating text:", error);
     } finally {
       setIsTranslatingText(false);

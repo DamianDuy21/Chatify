@@ -144,15 +144,8 @@ const SignUpPage = () => {
       });
       return;
     }
-    try {
-      signUpMutation(cleanedData);
-    } catch (error) {
-      console.error("Sign up failed:", error);
-      showToast({
-        message: error?.message || t("toast.handleSignUp.error"),
-        type: "error",
-      });
-    }
+
+    signUpMutation(cleanedData);
   };
 
   const handleResendVerificationCode = () => {
@@ -167,16 +160,8 @@ const SignUpPage = () => {
       });
       return;
     }
-    try {
-      resendVerificationCodeMutation(cleanedData);
-    } catch (error) {
-      console.error("Resend verification code failed:", error);
-      showToast({
-        message:
-          error?.message || t("toast.resendVerificationCodeMutation.error"),
-        type: "error",
-      });
-    }
+
+    resendVerificationCodeMutation(cleanedData);
   };
 
   const handleSignUpVerification = (e) => {
@@ -189,20 +174,13 @@ const SignUpPage = () => {
       });
       return;
     }
-    try {
-      signUpVerificationMutation({
-        email: signUpData.email,
-        fullName: signUpData.fullName,
-        password: signUpData.password,
-        otp: trimmedVerificationCode,
-      });
-    } catch (error) {
-      console.error("Sign up verification failed:", error);
-      showToast({
-        message: error?.message || t("toast.handleSignUpVerification.error"),
-        type: "error",
-      });
-    }
+
+    signUpVerificationMutation({
+      email: signUpData.email,
+      fullName: signUpData.fullName,
+      password: signUpData.password,
+      otp: trimmedVerificationCode,
+    });
   };
 
   return (

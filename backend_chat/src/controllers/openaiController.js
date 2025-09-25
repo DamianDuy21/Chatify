@@ -66,11 +66,14 @@ export const openaiCreateChatBot = async (req, res) => {
         messages: [],
         unSeenMessageQuantity: 0,
       },
-      message: "Kết nối tới Chatbot thành công",
+      message: "",
     });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Chatbot creation failed" });
+    return res.status(500).json({
+      locale: req.i18n.language,
+      message: req.t("errors:openaiRoute.createChatBot.error"),
+    });
   }
 };
 
@@ -111,7 +114,9 @@ export const openaiTranslateMessage = async (req, res) => {
     res.json({ translated });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: "Translation failed" });
+    res.status(500).json({
+      message: "",
+    });
   }
 };
 

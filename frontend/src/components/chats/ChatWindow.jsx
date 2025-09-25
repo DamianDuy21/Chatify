@@ -348,7 +348,7 @@ const ChatWindow = () => {
         setSelectedFriendIds([]);
       },
       onError: (error) => {
-        console.log("Cancel friend request error:", error);
+        console.log("Leave group error:", error);
         showToast({
           message:
             error?.response?.data?.message ||
@@ -400,7 +400,7 @@ const ChatWindow = () => {
       });
     },
     onError: (error) => {
-      console.log("Cancel friend request error:", error);
+      console.log("Delete conversation error:", error);
       showToast({
         message:
           error?.response?.data?.message ||

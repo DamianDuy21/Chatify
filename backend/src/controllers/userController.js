@@ -38,19 +38,32 @@ export const changePassword = async (req, res) => {
     const userId = req.user.id;
 
     if (!currentPassword || !newPassword) {
-      return res.status(400).json({ message: "Tất cả các trường là bắt buộc" });
+      return res.status(400).json({
+        locale: req.i18n.language,
+        message: req.t(
+          "errors:userRoute.changePassword.validation.allFieldsRequired"
+        ),
+      });
     }
 
     const user = await User.findById(userId);
     if (!user) {
-      return res.status(404).json({ message: "Người dùng không tồn tại" });
+      return res.status(404).json({
+        locale: req.i18n.language,
+        message: req.t(
+          "errors:userRoute.changePassword.validation.userNotFound"
+        ),
+      });
     }
 
     const isMatch = await user.comparePassword(currentPassword);
     if (!isMatch) {
-      return res
-        .status(400)
-        .json({ message: "Mật khẩu hiện tại không chính xác" });
+      return res.status(400).json({
+        locale: req.i18n.language,
+        message: req.t(
+          "errors:userRoute.changePassword.validation.incorrectCurrentPassword"
+        ),
+      });
     }
 
     // Bọc trong transaction để đồng bộ
@@ -110,7 +123,7 @@ export const changePassword = async (req, res) => {
 
       return res.status(201).json({
         success: true,
-        message: "Vui lòng kiểm tra email để lấy mã xác thực",
+        message: "",
         data: {
           email: user.email,
           expiresAt: expireAt,
@@ -123,7 +136,11 @@ export const changePassword = async (req, res) => {
     }
   } catch (error) {
     console.error("Error changing password:", error);
-    res.status(500).json({ success: false, message: "Lỗi máy chủ nội bộ" });
+    res.status(500).json({
+      success: false,
+      locale: req.i18n.language,
+      message: req.t("errors:userRoute.changePassword.error"),
+    });
   }
 };
 
@@ -132,7 +149,12 @@ export const verifyChangePasswordOtp = async (req, res) => {
   const userId = req.user.id;
 
   if (!code) {
-    return res.status(400).json({ message: "Tất cả các trường là bắt buộc" });
+    return res.status(400).json({
+      locale: req.i18n.language,
+      message: req.t(
+        "errors:userRoute.verifyChangePasswordOtp.validation.allFieldsRequired"
+      ),
+    });
   }
 
   try {
@@ -142,9 +164,12 @@ export const verifyChangePasswordOtp = async (req, res) => {
     });
 
     if (!pendingPassword) {
-      return res
-        .status(400)
-        .json({ message: "Không tìm thấy yêu cầu thay đổi mật khẩu nào" });
+      return res.status(400).json({
+        locale: req.i18n.language,
+        message: req.t(
+          "errors:userRoute.verifyChangePasswordOtp.validation.emptyPendingPassword"
+        ),
+      });
     }
 
     const validOtp = await OTP.findOne({
@@ -157,9 +182,12 @@ export const verifyChangePasswordOtp = async (req, res) => {
     });
 
     if (!validOtp) {
-      return res
-        .status(400)
-        .json({ message: "Mã xác thực không hợp lệ hoặc đã hết hạn" });
+      return res.status(400).json({
+        locale: req.i18n.language,
+        message: req.t(
+          "errors:userRoute.verifyChangePasswordOtp.validation.invalidToken"
+        ),
+      });
     }
 
     // Mark OTP as verified
@@ -173,12 +201,14 @@ export const verifyChangePasswordOtp = async (req, res) => {
     const hash = await bcrypt.hash(pendingPassword.newPassword, salt);
     await User.updateOne({ _id: userId }, { password: hash });
 
-    return res
-      .status(200)
-      .json({ success: true, data: {}, message: "Xác thực mã thành công" });
+    return res.status(200).json({ success: true, data: {}, message: "" });
   } catch (error) {
     console.error("Error verifying OTP:", error);
-    res.status(500).json({ success: false, message: "Lỗi máy chủ nội bộ" });
+    res.status(500).json({
+      success: false,
+      locale: req.i18n.language,
+      message: req.t("errors:userRoute.verifyChangePasswordOtp.error"),
+    });
   }
 };
 
@@ -273,11 +303,15 @@ export const getRecommendedUsers = async (req, res) => {
           totalPages,
         },
       },
-      message: "Danh sách người dùng được đề xuất đã được lấy thành công",
+      message: "",
     });
   } catch (error) {
     console.error("Error fetching recommended users:", error);
-    res.status(500).json({ success: false, message: "Lỗi máy chủ nội bộ" });
+    res.status(500).json({
+      success: false,
+      locale: req.i18n.language,
+      message: req.t("errors:userRoute.getRecommendedUsers.error"),
+    });
   }
 };
 
@@ -361,11 +395,15 @@ export const getFriends = async (req, res) => {
           totalPages,
         },
       },
-      message: "Danh sách bạn bè đã được lấy thành công",
+      message: "",
     });
   } catch (error) {
     console.error("Error fetching friends:", error);
-    res.status(500).json({ success: false, message: "Lỗi máy chủ nội bộ" });
+    res.status(500).json({
+      success: false,
+      locale: req.i18n.language,
+      message: req.t("errors:userRoute.getFriends.error"),
+    });
   }
 };
 
@@ -375,14 +413,22 @@ export const sendFriendRequest = async (req, res) => {
     const { id: recipientId } = req.params;
 
     if (recipientId === currentUserId) {
-      return res
-        .status(400)
-        .json({ message: "Bạn không thể gửi yêu cầu kết bạn cho chính mình" });
+      return res.status(400).json({
+        locale: req.i18n.language,
+        message: req.t(
+          "errors:userRoute.sendFriendRequest.validation.notYourSelf"
+        ),
+      });
     }
 
     const recipient = await User.findById(recipientId);
     if (!recipient) {
-      return res.status(404).json({ message: "Người dùng không tồn tại" });
+      return res.status(404).json({
+        locale: req.i18n.language,
+        message: req.t(
+          "errors:userRoute.sendFriendRequest.validation.userNotFound"
+        ),
+      });
     }
 
     // Check if the recipient is already a friend
@@ -393,7 +439,12 @@ export const sendFriendRequest = async (req, res) => {
       ],
     });
     if (alreadyFriends.length > 0) {
-      return res.status(400).json({ message: "Người dùng đã là bạn bè" });
+      return res.status(400).json({
+        locale: req.i18n.language,
+        message: req.t(
+          "errors:userRoute.sendFriendRequest.validation.alreadyFriends"
+        ),
+      });
     }
 
     // Check if a friend request already exists
@@ -405,7 +456,12 @@ export const sendFriendRequest = async (req, res) => {
       status: "pending",
     });
     if (existingRequest) {
-      return res.status(400).json({ message: "Yêu cầu kết bạn đã được gửi" });
+      return res.status(400).json({
+        locale: req.i18n.language,
+        message: req.t(
+          "errors:userRoute.sendFriendRequest.validation.requestAlreadySent"
+        ),
+      });
     }
 
     // Create a new friend request
@@ -433,11 +489,15 @@ export const sendFriendRequest = async (req, res) => {
       data: {
         ...fullDataOutgoingRequest,
       },
-      message: "Yêu cầu kết bạn đã được gửi thành công",
+      message: "",
     });
   } catch (error) {
     console.error("Error sending friend request:", error);
-    res.status(500).json({ success: false, message: "Lỗi máy chủ nội bộ" });
+    res.status(500).json({
+      success: false,
+      locale: req.i18n.language,
+      message: req.t("errors:userRoute.sendFriendRequest.error"),
+    });
   }
 };
 
@@ -494,11 +554,15 @@ export const getOutgoingFriendRequests = async (req, res) => {
           pageSize: limit,
         },
       },
-      message: "Danh sách yêu cầu kết bạn đã được lấy thành công",
+      message: "",
     });
   } catch (error) {
     console.error("Error fetching outgoing friend requests:", error);
-    res.status(500).json({ success: false, message: "Lỗi máy chủ nội bộ" });
+    res.status(500).json({
+      success: false,
+      locale: req.i18n.language,
+      message: req.t("errors:userRoute.getOutgoingFriendRequests.error"),
+    });
   }
 };
 
@@ -512,7 +576,12 @@ export const updateFriendRequest = async (req, res) => {
       status: "pending",
     });
     if (!friendRequest) {
-      return res.status(404).json({ message: "Yêu cầu kết bạn không tồn tại" });
+      return res.status(404).json({
+        locale: req.i18n.language,
+        message: req.t(
+          "errors:userRoute.updateFriendRequest.validation.requestNotFound"
+        ),
+      });
     }
 
     if (type === "accept") {
@@ -588,7 +657,7 @@ export const updateFriendRequest = async (req, res) => {
             notification: { ...friendRequestAcceptedNotification.toObject() },
             isNewCreated: false,
           },
-          message: "Yêu cầu kết bạn đã được chấp nhận",
+          message: "",
         });
       }
       if (!conversation) {
@@ -666,7 +735,7 @@ export const updateFriendRequest = async (req, res) => {
             notification: { ...friendRequestAcceptedNotification.toObject() },
             isNewCreated: true,
           },
-          message: "Yêu cầu kết bạn đã được chấp nhận",
+          message: "",
         });
       }
     }
@@ -677,7 +746,7 @@ export const updateFriendRequest = async (req, res) => {
 
       return res.status(200).json({
         success: true,
-        message: "Yêu cầu kết bạn đã bị từ chối",
+        message: "",
         data: {
           request: { ...friendRequest.toObject() },
         },
@@ -691,7 +760,7 @@ export const updateFriendRequest = async (req, res) => {
 
       return res.status(200).json({
         success: true,
-        message: "Yêu cầu kết bạn đã được hủy",
+        message: "",
         data: {
           request: { ...friendRequest.toObject() },
         },
@@ -699,7 +768,11 @@ export const updateFriendRequest = async (req, res) => {
     }
   } catch (error) {
     console.error("Error accepting friend request:", error);
-    res.status(500).json({ success: false, message: "Lỗi máy chủ nội bộ" });
+    res.status(500).json({
+      success: false,
+      locale: req.i18n.language,
+      message: req.t("errors:userRoute.updateFriendRequest.error"),
+    });
   }
 };
 
@@ -758,11 +831,15 @@ export const getIncomingFriendRequests = async (req, res) => {
           pageSize: limit,
         },
       },
-      message: "Danh sách yêu cầu kết bạn đến đã được lấy thành công",
+      message: "",
     });
   } catch (error) {
     console.error("Error fetching friend requests:", error);
-    res.status(500).json({ success: false, message: "Lỗi máy chủ nội bộ" });
+    res.status(500).json({
+      success: false,
+      locale: req.i18n.language,
+      message: req.t("errors:userRoute.getIncomingFriendRequests.error"),
+    });
   }
 };
 
@@ -772,9 +849,10 @@ export const deleteFriend = async (req, res) => {
     const { id: friendId } = req.params;
 
     if (friendId === currentUserId) {
-      return res
-        .status(400)
-        .json({ message: "Bạn không thể hủy kết bạn với chính mình" });
+      return res.status(400).json({
+        locale: req.i18n.language,
+        message: req.t("errors:userRoute.deleteFriend.validation.notYourSelf"),
+      });
     }
 
     // Check if the users are friends
@@ -786,7 +864,12 @@ export const deleteFriend = async (req, res) => {
     });
 
     if (!friend) {
-      return res.status(404).json({ message: "Không tìm thấy bạn bè" });
+      return res.status(404).json({
+        locale: req.i18n.language,
+        message: req.t(
+          "errors:userRoute.deleteFriend.validation.friendNotFound"
+        ),
+      });
     }
 
     // Delete the friend relationship
@@ -794,12 +877,16 @@ export const deleteFriend = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      message: "Đã hủy kết bạn thành công",
+      message: "",
       data: { user: { _id: friendId } },
     });
   } catch (error) {
     console.error("Error deleting friend:", error);
-    res.status(500).json({ success: false, message: "Lỗi máy chủ nội bộ" });
+    res.status(500).json({
+      success: false,
+      locale: req.i18n.language,
+      message: req.t("errors:userRoute.deleteFriend.error"),
+    });
   }
 };
 
@@ -817,13 +904,21 @@ export const updateProfile = async (req, res) => {
       !profilePic
     ) {
       return res.status(400).json({
-        message: "Tất cả các trường là bắt buộc",
+        locale: req.i18n.language,
+        message: req.t(
+          "errors:userRoute.updateProfile.validation.allFieldsRequired"
+        ),
       });
     }
 
     const profile = await Profile.findOne({ userId });
     if (!profile) {
-      return res.status(404).json({ message: "Hồ sơ không tồn tại" });
+      return res.status(404).json({
+        locale: req.i18n.language,
+        message: req.t(
+          "errors:userRoute.updateProfile.validation.profileNotFound"
+        ),
+      });
     }
 
     profile.bio = bio;
@@ -836,12 +931,16 @@ export const updateProfile = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: "Cập nhật hồ sơ người dùng thành công",
+      message: "",
       data: { profile: profile.toObject() },
     });
   } catch (error) {
     console.log("Error in updateProfile controller", error);
-    res.status(500).json({ success: false, message: "Lỗi máy chủ nội bộ" });
+    res.status(500).json({
+      success: false,
+      locale: req.i18n.language,
+      message: req.t("errors:userRoute.updateProfile.error"),
+    });
   }
 };
 
@@ -911,11 +1010,15 @@ export const getNotifications = async (req, res) => {
           pageSize: limit,
         },
       },
-      message: "Danh sách thông báo đã được lấy thành công",
+      message: "",
     });
   } catch (error) {
     console.error("Error fetching notifications:", error);
-    res.status(500).json({ success: false, message: "Lỗi máy chủ nội bộ" });
+    res.status(500).json({
+      success: false,
+      locale: req.i18n.language,
+      message: req.t("errors:userRoute.getNotifications.error"),
+    });
   }
 };
 
@@ -932,7 +1035,12 @@ export const updateNotification = async (req, res) => {
       },
     });
     if (!notification) {
-      return res.status(404).json({ message: "Thông báo không tồn tại" });
+      return res.status(404).json({
+        locale: req.i18n.language,
+        message: req.t(
+          "errors:userRoute.updateNotification.validation.notificationNotFound"
+        ),
+      });
     }
 
     if (type == "accept") {
@@ -945,12 +1053,16 @@ export const updateNotification = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: "Cập nhật thông báo thành công",
+      message: "",
       data: { notification: notification.toObject() },
     });
   } catch (error) {
     console.error("Error updating notification:", error);
-    res.status(500).json({ success: false, message: "Lỗi máy chủ nội bộ" });
+    res.status(500).json({
+      success: false,
+      locale: req.i18n.language,
+      message: req.t("errors:userRoute.updateNotification.error"),
+    });
   }
 };
 
@@ -1075,10 +1187,14 @@ export const getFriendsCouldBeAddedToGroup = async (req, res) => {
           totalPages,
         },
       },
-      message: "Danh sách bạn bè đã được lấy thành công",
+      message: "",
     });
   } catch (error) {
     console.error("Error fetching friends:", error);
-    res.status(500).json({ success: false, message: "Lỗi máy chủ nội bộ" });
+    res.status(500).json({
+      success: false,
+      locale: req.i18n.language,
+      message: req.t("errors:userRoute.getFriendsCouldBeAddedToGroup.error"),
+    });
   }
 };

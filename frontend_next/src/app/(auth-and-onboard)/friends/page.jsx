@@ -176,8 +176,10 @@ const FriendsPage = () => {
       setFriendQuantity(data.pagination.total);
       setTotalPages(data.pagination.totalPages);
     } catch (error) {
+      console.error("Error fetching friends:", error);
       showToast({
-        message: error?.message || t("toast.fetchFriends.error"),
+        message:
+          error?.response?.data?.message || t("toast.fetchFriends.error"),
         type: "error",
       });
     } finally {

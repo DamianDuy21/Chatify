@@ -516,13 +516,16 @@ export const updateConversationSettings = async (req, res) => {
       { new: true }
     );
     if (!updatedMySetting) {
-      return res
-        .status(404)
-        .json({ message: "Conversation setting not found" });
+      return res.status(404).json({
+        locale: req.i18n.language,
+        message: req.t(
+          "errors:chatRoute.updateConversationSettings.validation.settingsNotFound"
+        ),
+      });
     }
 
     return res.status(200).json({
-      message: "Conversation settings updated successfully",
+      message: "",
       data: {
         conversation: {
           _id: conversationId,
@@ -532,7 +535,10 @@ export const updateConversationSettings = async (req, res) => {
     });
   } catch (error) {
     console.error("Error updating conversation settings:", error);
-    return res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({
+      locale: req.i18n.language,
+      message: req.t("errors:chatRoute.updateConversationSettings.error"),
+    });
   }
 };
 
@@ -595,7 +601,12 @@ export const createGroup = async (req, res) => {
     const { name, memberIds } = req.body;
 
     if (!name || !Array.isArray(memberIds) || memberIds.length === 0) {
-      return res.status(400).json({ message: "Invalid group data" });
+      return res.status(400).json({
+        locale: req.i18n.language,
+        message: req.t(
+          "errors:chatRoute.createGroup.validation.allFieldsRequired"
+        ),
+      });
     }
 
     const notificationMembers = memberIds.filter((id) => id != currentUserId);
@@ -693,11 +704,14 @@ export const createGroup = async (req, res) => {
 
         notifications: createGroupNotifications,
       },
-      message: "Group created successfully",
+      message: "",
     });
   } catch (error) {
     console.error("Error creating group:", error);
-    res.status(500).json({ message: "Lỗi máy chủ nội bộ" });
+    res.status(500).json({
+      locale: req.i18n.language,
+      message: req.t("errors:chatRoute.createGroup.error"),
+    });
   }
 };
 
@@ -707,11 +721,21 @@ export const addMembersToGroup = async (req, res) => {
   const { memberIds } = req.body;
   try {
     if (!Array.isArray(memberIds) || memberIds.length === 0) {
-      return res.status(400).json({ message: "Invalid member data" });
+      return res.status(400).json({
+        locale: req.i18n.language,
+        message: req.t(
+          "errors:chatRoute.addMembersToGroup.validation.invalidMemberData"
+        ),
+      });
     }
     const conversation = await Conversation.findById(conversationId);
     if (!conversation || conversation.type !== "group") {
-      return res.status(404).json({ message: "Group not found" });
+      return res.status(404).json({
+        locale: req.i18n.language,
+        message: req.t(
+          "errors:chatRoute.addMembersToGroup.validation.groupNotFound"
+        ),
+      });
     }
     const existingMemberIds = await ConversationMember.find({
       conversationId,
@@ -721,9 +745,12 @@ export const addMembersToGroup = async (req, res) => {
       (id) => !existingMemberIds.includes(id)
     );
     if (newMemberIds.length === 0) {
-      return res
-        .status(400)
-        .json({ message: "All members are already in the group" });
+      return res.status(400).json({
+        locale: req.i18n.language,
+        message: req.t(
+          "errors:chatRoute.addMembersToGroup.validation.alreadyMember"
+        ),
+      });
     }
     let fullDataNewMembers = await Promise.all(
       newMemberIds.map(async (memberId) => {
@@ -796,11 +823,14 @@ export const addMembersToGroup = async (req, res) => {
         },
         notifications: addMembersToGroupNotifications,
       },
-      message: "Thêm thành viên vào nhóm thành công",
+      message: "",
     });
   } catch (error) {
     console.error("Error adding members to group:", error);
-    return res.status(500).json({ message: "Lỗi máy chủ nội bộ" });
+    return res.status(500).json({
+      locale: req.i18n.language,
+      message: req.t("errors:chatRoute.addMembersToGroup.error"),
+    });
   }
 };
 
@@ -877,7 +907,12 @@ export const deleteConversation = async (req, res) => {
     if (!currentUserId) {
       await session.abortTransaction();
       session.endSession();
-      return res.status(400).json({ message: "Invalid user data" });
+      return res.status(400).json({
+        locale: req.i18n.language,
+        message: req.t(
+          "errors:chatRoute.deleteConversation.validation.invalidMemberData"
+        ),
+      });
     }
 
     const conversation = await Conversation.findById(conversationId).session(
@@ -892,7 +927,12 @@ export const deleteConversation = async (req, res) => {
     if (!conversation) {
       await session.abortTransaction();
       session.endSession();
-      return res.status(404).json({ message: "Conversation not found" });
+      return res.status(404).json({
+        locale: req.i18n.language,
+        message: req.t(
+          "errors:chatRoute.deleteConversation.validation.conversationNotFound"
+        ),
+      });
     }
 
     const deleteWholeConversation = async () => {
@@ -969,7 +1009,7 @@ export const deleteConversation = async (req, res) => {
 
       return res.status(200).json({
         success: true,
-        message: "Conversation deleted successfully",
+        message: "",
         data: {
           conversation: {
             ...stats.data,
@@ -1008,8 +1048,7 @@ export const deleteConversation = async (req, res) => {
       session.endSession();
       return res.status(200).json({
         success: true,
-        message:
-          "Conversation deleted successfully (private - single member fallback)",
+        message: "",
         ...stats,
       });
     }
@@ -1027,13 +1066,16 @@ export const deleteConversation = async (req, res) => {
         notifications: createGroupNotifications,
       },
 
-      message: " Xóa cuộc trò chuyện thành công",
+      message: "",
     });
   } catch (error) {
     await session.abortTransaction();
     session.endSession();
     console.error("Error deleting conversation:", error);
-    return res.status(500).json({ message: "Lỗi máy chủ nội bộ" });
+    return res.status(500).json({
+      locale: req.i18n.language,
+      message: req.t("errors:chatRoute.deleteConversation.error"),
+    });
   }
 };
 
@@ -1044,7 +1086,12 @@ export const leaveGroup = async (req, res) => {
   const { isKeyMember = false, newKeyMemberId = null } = req.body || {};
 
   if (!currentUserId) {
-    return res.status(400).json({ message: "Invalid member data" });
+    return res.status(400).json({
+      locale: req.i18n.language,
+      message: req.t(
+        "errors:chatRoute.leaveGroup.validation.invalidMemberData"
+      ),
+    });
   }
 
   const session = await mongoose.startSession();
@@ -1054,7 +1101,13 @@ export const leaveGroup = async (req, res) => {
         session
       );
       if (!conversation || conversation.type !== "group") {
-        throw { status: 404, message: "Group not found" };
+        throw {
+          status: 404,
+          locale: req.i18n.language,
+          message: req.t(
+            "errors:chatRoute.leaveGroup.validation.groupNotFound"
+          ),
+        };
       }
 
       const leavingMember = await ConversationMember.findOne({
@@ -1063,20 +1116,32 @@ export const leaveGroup = async (req, res) => {
       }).session(session);
 
       if (!leavingMember) {
-        throw { status: 404, message: "Member not found in group" };
+        throw {
+          status: 404,
+          locale: req.i18n.language,
+          message: req.t(
+            "errors:chatRoute.leaveGroup.validation.memberNotFoundInGroup"
+          ),
+        };
       }
 
       if (isKeyMember === true) {
         if (!newKeyMemberId) {
           throw {
             status: 400,
-            message: "Vui lòng chọn trưởng nhóm mới (newKeyMemberId).",
+            locale: req.i18n.language,
+            message: req.t(
+              "errors:chatRoute.leaveGroup.validation.newKeyMemberRequired"
+            ),
           };
         }
         if (String(newKeyMemberId) === String(currentUserId)) {
           throw {
             status: 400,
-            message: "Không thể chuyển vai trò cho chính bạn.",
+            locale: req.i18n.language,
+            message: req.t(
+              "errors:chatRoute.leaveGroup.validation.newKeyMemberNotYourself"
+            ),
           };
         }
 
@@ -1088,7 +1153,10 @@ export const leaveGroup = async (req, res) => {
         if (!receiver) {
           throw {
             status: 404,
-            message: "Thành viên nhận quyền không tồn tại trong nhóm.",
+            locale: req.i18n.language,
+            message: req.t(
+              "errors:chatRoute.leaveGroup.validation.newKeyMemberNotInGroup"
+            ),
           };
         }
 
@@ -1120,18 +1188,18 @@ export const leaveGroup = async (req, res) => {
           },
           users: usersPayload,
         },
-        message: "Rời khỏi nhóm thành công",
+        message: "",
       });
     });
   } catch (err) {
-    console.error("leaveGroupController error:", err);
+    console.error("LeaveGroupController error:", err);
     if (session.inTransaction()) {
       try {
         await session.abortTransaction();
       } catch (_) {}
     }
     const status = err?.status || 500;
-    const message = err?.message || "Lỗi máy chủ nội bộ";
+    const message = err?.message || req.t("errors:chatRoute.leaveGroup.error");
     return res.status(status).json({ message });
   } finally {
     session.endSession();

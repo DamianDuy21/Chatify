@@ -43,6 +43,12 @@
     "languages": {
       "native": "Mẹ đẻ",
       "learning": "Đang học"
+    },
+    "toast": {
+      "sendFriendRequestMutation": {
+        "success": "Gửi lời mời kết bạn thành công",
+        "error": "Gửi lời mời kết bạn thất bại. Vui lòng thử lại sau"
+      }
     }
   },
   "friendCard_HomePage_OutgoingRequest": {
@@ -282,5 +288,17 @@
   },
   "textEditor": {
     "placeholder": "Nhập tin nhắn"
+  },
+  "friendCard_GroupChatMemberList": {
+    "toast": {
+      "sendFriendRequestMutation": {
+        "success": "Gửi lời mời kết bạn thành công",
+        "error": "Gửi lời mời kết bạn thất bại. Vui lòng thử lại sau"
+      },
+      "deleteMemberFromGroupMutation": {
+        "success": "Xóa thành viên khỏi nhóm thành công",
+        "error": "Xóa thành viên khỏi nhóm thất bại. Vui lòng thử lại sau"
+      }
+    }
   }
 }

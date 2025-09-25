@@ -296,8 +296,11 @@ const NotificationsPage = () => {
       setIncomingFriendRequestsQuantity(data.pagination.total);
       setTotalIncomingFriendRequestsPages(data.pagination.totalPages);
     } catch (error) {
+      console.error("Failed to fetch incoming friend requests:", error);
       showToast({
-        message: error?.message || t("toast.fetchIncomingFriendRequests.error"),
+        message:
+          error?.response?.data?.message ||
+          t("toast.fetchIncomingFriendRequests.error"),
         type: "error",
       });
     } finally {
@@ -313,8 +316,10 @@ const NotificationsPage = () => {
       setNotificationsQuantity(data.pagination.total);
       setTotalNotificationsPages(data.pagination.totalPages);
     } catch (error) {
+      console.error("Failed to fetch notifications:", error);
       showToast({
-        message: error?.message || t("toast.fetchNotifications.error"),
+        message:
+          error?.response?.data?.message || t("toast.fetchNotifications.error"),
         type: "error",
       });
     } finally {

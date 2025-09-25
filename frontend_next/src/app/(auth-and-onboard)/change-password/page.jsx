@@ -74,17 +74,10 @@ const ChangePasswordPage = () => {
       });
       return;
     }
-    try {
-      changePasswordMutation({
-        currentPassword: trimmedOldPassword,
-        newPassword: trimmedNewPassword,
-      });
-    } catch (error) {
-      showToast({
-        message: error?.message || t("toast.changePasswordMutation.error"),
-        type: "error",
-      });
-    }
+    changePasswordMutation({
+      currentPassword: trimmedOldPassword,
+      newPassword: trimmedNewPassword,
+    });
   };
   const handleChangePasswordVerification = (e) => {
     e.preventDefault();
@@ -98,15 +91,7 @@ const ChangePasswordPage = () => {
       });
       return;
     }
-    try {
-      changePasswordVerificationMutation(trimmedVerificationCode);
-    } catch (error) {
-      showToast({
-        message:
-          error?.message || t("toast.handleChangePasswordVerification.error"),
-        type: "error",
-      });
-    }
+    changePasswordVerificationMutation(trimmedVerificationCode);
   };
 
   return (

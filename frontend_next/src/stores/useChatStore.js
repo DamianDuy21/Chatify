@@ -10,8 +10,8 @@ import {
   sendMessageChatbotAPI,
   waitForResponseChatbotAPI,
 } from "../lib/api.js";
-import { useAuthStore } from "./useAuthStore.js";
 import { getLocaleById, isConversationFitFilter } from "../lib/utils.js";
+import { useAuthStore } from "./useAuthStore.js";
 
 export const useChatStore = create((set, get) => ({
   conversations: [],

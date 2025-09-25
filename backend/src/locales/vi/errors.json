@@ -1,0 +1,121 @@
+{
+  "middleware": {
+    "unauthorized": {
+      "emptyToken": "Không có quyền truy cập - Không có mã xác thực.",
+      "invalidToken": "Không có quyền truy cập - Mã xác thực không hợp lệ.",
+      "userNotFound": "Không có quyền truy cập - Không tìm thấy người dùng.",
+      "accessDenied": "Không có quyền truy cập - Truy cập bị từ chối."
+    }
+  },
+  "authRoute": {
+    "onboard": {
+      "validation": {
+        "allFieldsRequired": "Tất cả các trường đều bắt buộc."
+      },
+      "error": "Đã xảy ra lỗi khi hoàn thiện hồ sơ. Vui lòng thử lại sau."
+    },
+    "resetPassword": {
+      "validation": {
+        "allFieldsRequired": "Tất cả các trường đều bắt buộc.",
+        "userNotFound": "Không tìm thấy người dùng."
+      },
+      "error": "Đã xảy ra lỗi khi gửi mã xác thực. Vui lòng thử lại sau."
+    },
+    "verifyResetPasswordOtp": {
+      "validation": {
+        "allFieldsRequired": "Tất cả các trường đều bắt buộc.",
+        "userNotFound": "Không tìm thấy người dùng.",
+        "invalidToken": "Mã xác thực không hợp lệ."
+      },
+      "error": "Đã xảy ra lỗi khi xác minh mã. Vui lòng thử lại sau."
+    },
+    "signUp": {
+      "validation": {
+        "allFieldsRequired": "Tất cả các trường đều bắt buộc.",
+        "userAlreadyExists": "Email đã được đăng ký, vui lòng sử dụng email khác."
+      },
+      "error": "Đã xảy ra lỗi khi đăng ký. Vui lòng thử lại sau."
+    },
+    "verifySignUpOtp": {
+      "validation": {
+        "allFieldsRequired": "Tất cả các trường đều bắt buộc.",
+        "emailNotFound": "Không tìm thấy email.",
+        "invalidToken": "Mã xác thực không hợp lệ."
+      },
+      "error": "Đã xảy ra lỗi khi xác minh mã. Vui lòng thử lại sau."
+    }
+  },
+  "userRoute": {
+    "getRecommendedUsers": {
+      "error": "Có lỗi khi lấy danh sách người dùng được đề xuất. Vui lòng thử lại sau."
+    },
+    "getOutgoingFriendRequests": {
+      "error": "Có lỗi khi lấy danh sách yêu cầu kết bạn đã gửi. Vui lòng thử lại sau."
+    },
+    "changePassword": {
+      "validation": {
+        "allFieldsRequired": "Tất cả các trường đều bắt buộc.",
+        "userNotFound": "Không tìm thấy người dùng.",
+        "incorrectCurrentPassword": "Mật khẩu hiện tại không chính xác."
+      },
+      "error": "Đã xảy ra lỗi khi thay đổi mật khẩu. Vui lòng thử lại sau."
+    },
+    "verifyChangePasswordOtp": {
+      "validation": {
+        "allFieldsRequired": "Tất cả các trường đều bắt buộc.",
+        "emptyPendingPassword": "Không tìm thấy yêu cầu thay đổi mật khẩu nào.",
+        "invalidToken": "Mã xác thực không hợp lệ."
+      },
+      "error": "Đã xảy ra lỗi khi xác minh. Vui lòng thử lại sau."
+    },
+    "getFriends": {
+      "error": "Có lỗi khi lấy danh sách bạn bè. Vui lòng thử lại sau."
+    },
+    "getIncomingFriendRequests": {
+      "error": "Có lỗi khi lấy danh sách yêu cầu kết bạn. Vui lòng thử lại sau."
+    },
+    "getNotifications": {
+      "error": "Có lỗi khi lấy danh sách thông báo. Vui lòng thử lại sau."
+    },
+    "updateProfile": {
+      "validation": {
+        "allFieldsRequired": "Tất cả các trường đều bắt buộc.",
+        "userNotFound": "Không tìm thấy người dùng.",
+        "profileNotFound": "Không tìm thấy hồ sơ."
+      },
+      "error": "Đã xảy ra lỗi khi cập nhật hồ sơ. Vui lòng thử lại sau."
+    },
+    "deleteFriend": {
+      "validation": {
+        "notYourSelf": "Bạn không thể hủy kết bạn với chính mình.",
+        "friendNotFound": "Không tìm thấy bạn bè."
+      },
+      "error": "Đã xảy ra lỗi khi hủy kết bạn. Vui lòng thử lại sau."
+    },
+    "sendFriendRequest": {
+      "validation": {
+        "notYourSelf": "Bạn không thể gửi yêu cầu kết bạn cho chính mình.",
+        "userNotFound": "Không tìm thấy người dùng.",
+        "alreadyFriends": "Bạn đã là bạn bè với người dùng này.",
+        "requestAlreadySent": "Yêu cầu kết bạn đã được gửi đến người dùng này."
+      },
+      "error": "Đã xảy ra lỗi khi gửi yêu cầu kết bạn. Vui lòng thử lại sau."
+    },
+    "updateFriendRequest": {
+      "validation": {
+        "notYourSelf": "Bạn không thể cập nhật yêu cầu kết bạn của chính mình.",
+        "requestNotFound": "Không tìm thấy yêu cầu kết bạn."
+      },
+      "error": "Đã xảy ra lỗi khi cập nhật yêu cầu kết bạn. Vui lòng thử lại sau."
+    },
+    "updateNotification": {
+      "validation": {
+        "notificationNotFound": "Không tìm thấy thông báo."
+      },
+      "error": "Đã xảy ra lỗi khi cập nhật thông báo. Vui lòng thử lại sau."
+    },
+    "getFriendsCouldBeAddedToGroup": {
+      "error": "Có lỗi khi lấy danh sách bạn bè có thể được thêm vào nhóm. Vui lòng thử lại sau."
+    }
+  }
+}

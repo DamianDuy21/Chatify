@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useAuthStore } from "../stores/useAuthStore";
+import { getUserLocale } from "@/services/locale";
 
 const BACKEND_CHAT_URL = process.env.NEXT_PUBLIC_BACKEND_CHAT_URL;
 
@@ -10,6 +11,14 @@ export const axiosInstanceChat = axios.create({
     Accept: "application/json",
   },
   withCredentials: true,
+});
+
+axiosInstanceChat.interceptors.request.use(async (config) => {
+  const locale = await getUserLocale();
+  if (locale) {
+    config.headers["X-Locale"] = locale;
+  }
+  return config;
 });
 
 axiosInstanceChat.interceptors.response.use(

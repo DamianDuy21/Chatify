@@ -43,6 +43,12 @@
     "languages": {
       "native": "Native",
       "learning": "Learning"
+    },
+    "toast": {
+      "sendFriendRequestMutation": {
+        "success": "Friend request sent successfully",
+        "error": "Failed to send friend request. Please try again later"
+      }
     }
   },
   "friendCard_HomePage_OutgoingRequest": {
@@ -282,5 +288,17 @@
   },
   "textEditor": {
     "placeholder": "Type a message"
+  },
+  "friendCard_GroupChatMemberList": {
+    "toast": {
+      "sendFriendRequestMutation": {
+        "success": "Friend request sent successfully",
+        "error": "Failed to send friend request. Please try again later"
+      },
+      "deleteMemberFromGroupMutation": {
+        "success": "Member removed from group successfully",
+        "error": "Failed to remove member from group. Please try again later"
+      }
+    }
   }
 }

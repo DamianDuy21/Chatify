@@ -44,6 +44,12 @@
       "languages": {
         "native": "Mẹ đẻ",
         "learning": "Đang học"
+      },
+      "toast": {
+        "sendFriendRequestMutation": {
+          "success": "Gửi lời mời kết bạn thành công",
+          "error": "Gửi lời mời kết bạn thất bại. Vui lòng thử lại sau"
+        }
       }
     },
     "friendCard_HomePage_OutgoingRequest": {
@@ -274,7 +280,7 @@
           "emptyMembers": "Vui lòng chọn thành viên để thêm"
         },
         "fetchFriends": {
-          "error": "Lấy danh sách bạn bè thất bại. Vui lòng thử lại sau"
+          "error": "Lỗi khi tải danh sách bạn bè. Vui lòng thử lại sau."
         },
         "initChat": {
           "error": "Khởi tạo trò chuyện thất bại. Vui lòng thử lại sau"
@@ -283,6 +289,18 @@
     },
     "textEditor": {
       "placeholder": "Nhập tin nhắn"
+    },
+    "friendCard_GroupChatMemberList": {
+      "toast": {
+        "sendFriendRequestMutation": {
+          "success": "Gửi lời mời kết bạn thành công",
+          "error": "Gửi lời mời kết bạn thất bại. Vui lòng thử lại sau"
+        },
+        "deleteMemberFromGroupMutation": {
+          "success": "Xóa thành viên khỏi nhóm thành công",
+          "error": "Xóa thành viên khỏi nhóm thất bại. Vui lòng thử lại sau"
+        }
+      }
     }
   },
   "SignInPage": {
@@ -331,12 +349,12 @@
     "toast": {
       "useLogin": {
         "success": "Đăng nhập thành công!",
-        "error": "Đăng nhập thất bại. Vui lòng thử lại."
+        "error": "Đăng nhập thất bại. Vui lòng thử lại sau."
       },
       "handleLogin": {
         "allFieldsAreRequired": "Tất cả các trường đều bắt buộc.",
         "termsAndPolicyNotAgreed": "Bạn phải đồng ý với điều khoản dịch vụ và chính sách bảo mật.",
-        "error": "Đăng nhập không thành công. Vui lòng thử lại."
+        "error": "Đăng nhập không thành công. Vui lòng thử lại sau."
       }
     }
   },
@@ -404,15 +422,15 @@
     "toast": {
       "signUpMutation": {
         "success": "Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản.",
-        "error": "Đăng ký không thành công. Vui lòng thử lại."
+        "error": "Đăng ký không thành công. Vui lòng thử lại sau."
       },
       "signUpVerificationMutation": {
         "success": "Xác thực thành công! Bạn có thể đăng nhập ngay bây giờ.",
-        "error": "Xác thực không thành công. Vui lòng thử lại."
+        "error": "Xác thực không thành công. Vui lòng thử lại sau."
       },
       "resendVerificationCodeMutation": {
         "success": "Mã xác thực đã được gửi lại. Vui lòng kiểm tra email của bạn.",
-        "error": "Gửi mã xác thực không thành công. Vui lòng thử lại."
+        "error": "Gửi mã xác thực không thành công. Vui lòng thử lại sau."
       },
       "validateSignUpData": {
         "allFieldsAreRequired": "Tất cả các trường đều bắt buộc.",
@@ -422,14 +440,14 @@
         "termsAndPolicyNotAgreed": "Bạn phải đồng ý với điều khoản dịch vụ và chính sách bảo mật."
       },
       "handleSignUp": {
-        "error": "Đăng ký không thành công. Vui lòng thử lại."
+        "error": "Đăng ký không thành công. Vui lòng thử lại sau."
       },
       "handleResendVerificationCode": {
-        "error": "Gửi mã xác thực không thành công. Vui lòng thử lại."
+        "error": "Gửi mã xác thực không thành công. Vui lòng thử lại sau."
       },
       "handleSignUpVerification": {
         "emptyVerificationCode": "Vui lòng nhập mã xác thực",
-        "error": "Xác thực không thành công. Vui lòng thử lại."
+        "error": "Xác thực không thành công. Vui lòng thử lại sau."
       }
     }
   },
@@ -476,18 +494,18 @@
     "toast": {
       "resetPasswordMutation": {
         "success": "Mã xác thực đã được gửi đến email của bạn",
-        "error": "Đã xảy ra lỗi khi gửi mã xác thực. Vui lòng thử lại."
+        "error": "Đã xảy ra lỗi khi gửi mã xác thực. Vui lòng thử lại sau."
       },
       "resetPasswordVerificationMutation": {
         "success": "Mật khẩu đã được khôi phục thành công",
-        "error": "Đã xảy ra lỗi khi khôi phục mật khẩu. Vui lòng thử lại."
+        "error": "Đã xảy ra lỗi khi khôi phục mật khẩu. Vui lòng thử lại sau."
       },
       "validateResetPasswordData": {
         "allFieldsAreRequired": "Tất cả các trường đều bắt buộc",
         "invalidEmail": "Email không hợp lệ"
       },
       "handleResetPassword": {
-        "error": "Đã xảy ra lỗi khi gửi mã xác thực. Vui lòng thử lại."
+        "error": "Đã xảy ra lỗi khi gửi mã xác thực. Vui lòng thử lại sau."
       },
 
       "validateResetPasswordVerificationData": {
@@ -495,7 +513,7 @@
         "invalidPassword": "Mật khẩu phải chứa ít nhất 8 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt."
       },
       "handleResetPasswordVerification": {
-        "error": "Đã xảy ra lỗi khi khôi phục mật khẩu. Vui lòng thử lại."
+        "error": "Đã xảy ra lỗi khi khôi phục mật khẩu. Vui lòng thử lại sau."
       }
     }
   },
@@ -540,15 +558,15 @@
         "success": "Lấy danh sách ngôn ngữ bạn đang học thành công"
       },
       "onboardingMutation": {
-        "error": "Không thể lưu hồ sơ. Vui lòng thử lại.",
+        "error": "Không thể lưu hồ sơ. Vui lòng thử lại sau.",
         "success": "Chào mừng đến với Chatify!"
       },
       "handleRandomAvatar": {
-        "error": "Không thể tạo hình đại diện ngẫu nhiên. Vui lòng thử lại.",
+        "error": "Không thể tạo hình đại diện ngẫu nhiên. Vui lòng thử lại sau.",
         "success": "Tạo hình đại diện ngẫu nhiên thành công"
       },
       "handleSubmit": {
-        "error": "Không thể lưu hồ sơ. Vui lòng thử lại.",
+        "error": "Không thể lưu hồ sơ. Vui lòng thử lại sau.",
         "success": "Hồ sơ đã được lưu thành công"
       },
       "validateOnboardingData": {
@@ -597,18 +615,18 @@
     "toast": {
       "updateProfileMutation": {
         "success": "Cập nhật hồ sơ thành công!",
-        "error": "Cập nhật hồ sơ thất bại. Vui lòng thử lại."
+        "error": "Cập nhật hồ sơ thất bại. Vui lòng thử lại sau."
       },
       "validateProfileData": {
         "missingLanguages": "Vui lòng chọn ngôn ngữ",
         "allFieldsRequired": "Tất cả các trường đều bắt buộc"
       },
       "handleRandomAvatar": {
-        "error": "Không thể tạo hình đại diện ngẫu nhiên. Vui lòng thử lại.",
+        "error": "Không thể tạo hình đại diện ngẫu nhiên. Vui lòng thử lại sau.",
         "success": "Tạo hình đại diện ngẫu nhiên thành công"
       },
       "handleSubmit": {
-        "error": "Không thể lưu hồ sơ. Vui lòng thử lại.",
+        "error": "Không thể lưu hồ sơ. Vui lòng thử lại sau.",
         "success": "Cập nhật hồ sơ thành công!"
       }
     }
@@ -655,32 +673,32 @@
     "toast": {
       "changePasswordVerificationMutation": {
         "success": "Đổi mật khẩu thành công",
-        "error": "Đã xảy ra lỗi khi xác thực mã. Vui lòng thử lại."
+        "error": "Đã xảy ra lỗi khi xác thực mã. Vui lòng thử lại sau."
       },
       "validateChangePasswordVerification": {
         "allFieldsRequired": "Tất cả các trường đều bắt buộc",
         "invalidVerificationCode": "Mã xác thực không hợp lệ"
       },
       "handleChangePasswordVerification": {
-        "error": "Đã xảy ra lỗi khi xác thực mã. Vui lòng thử lại."
+        "error": "Đã xảy ra lỗi khi xác thực mã. Vui lòng thử lại sau."
       },
       "changePasswordMutation": {
         "success": "Mã xác thực đã được gửi đến email của bạn",
-        "error": "Đã xảy ra lỗi khi gửi mã xác thực. Vui lòng thử lại."
+        "error": "Đã xảy ra lỗi khi gửi mã xác thực. Vui lòng thử lại sau."
       },
 
       "validateChangePassword": {
         "allFieldsRequired": "Tất cả các trường đều bắt buộc"
       },
       "handleChangePassword": {
-        "error": "Đã xảy ra lỗi khi gửi mã xác thực. Vui lòng thử lại."
+        "error": "Đã xảy ra lỗi khi gửi mã xác thực. Vui lòng thử lại sau."
       }
     }
   },
   "Navbar": {
     "useLogout": {
       "success": "Đăng xuất thành công",
-      "error": "Đã xảy ra lỗi khi đăng xuất. Vui lòng thử lại."
+      "error": "Đã xảy ra lỗi khi đăng xuất. Vui lòng thử lại sau."
     }
   },
   "Sidebar": {
@@ -725,10 +743,10 @@
     },
     "toast": {
       "fetchRecommendedUsers": {
-        "error": "Không thể tải người dùng mới. Vui lòng thử lại."
+        "error": "Không thể lấy danh sách người dùng được đề xuất. Vui lòng thử lại sau."
       },
       "fetchOutgoingFriendRequests": {
-        "error": "Không thể tải lời mời kết bạn đã gửi. Vui lòng thử lại."
+        "error": "Không thể lấy danh sách lời mời kết bạn đã gửi. Vui lòng thử lại sau."
       }
     }
   },
@@ -775,10 +793,10 @@
     },
     "toast": {
       "fetchNotifications": {
-        "error": "Không thể tải thông báo. Vui lòng thử lại."
+        "error": "Không thể tải thông báo. Vui lòng thử lại sau."
       },
       "fetchIncomingFriendRequests": {
-        "error": "Không thể tải lời mời kết bạn. Vui lòng thử lại."
+        "error": "Không thể tải lời mời kết bạn. Vui lòng thử lại sau."
       }
     }
   },
@@ -813,11 +831,11 @@
     },
     "toast": {
       "fetchFriends": {
-        "error": "Lỗi khi tải bạn bè. Vui lòng thử lại sau."
+        "error": "Lỗi khi tải danh sách bạn bè. Vui lòng thử lại sau."
       },
       "createGroupMutation": {
         "success": "Nhóm đã được tạo thành công!",
-        "error": "Lỗi khi tạo nhóm. Vui lòng thử lại sau."
+        "error": "Lỗi khi tạo nhóm trò chuyện. Vui lòng thử lại sau."
       },
       "handleCreateGroup": {
         "selectedFriendLengthMin": "Vui lòng chọn ít nhất 02 bạn bè để tạo nhóm.",

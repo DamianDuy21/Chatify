@@ -88,16 +88,9 @@ const ForgotPasswordPage = () => {
       });
       return;
     }
-    try {
-      const trimmedEmail = email.trim();
-      resetPasswordMutation({ email: trimmedEmail });
-    } catch (error) {
-      console.error(error);
-      showToast({
-        message: error?.message || t("toast.handleResetPassword.error"),
-        type: "error",
-      });
-    }
+
+    const trimmedEmail = email.trim();
+    resetPasswordMutation({ email: trimmedEmail });
   };
 
   const validateResetPasswordVerificationData = () => {
@@ -139,22 +132,13 @@ const ForgotPasswordPage = () => {
       return;
     }
 
-    try {
-      const trimmedNewPassword = newPassword.trim();
-      const trimmedVerificationCode = verificationCode.trim();
-      resetPasswordVerificationMutation({
-        email: email.trim(),
-        newPassword: trimmedNewPassword,
-        otp: trimmedVerificationCode,
-      });
-    } catch (error) {
-      console.error(error);
-      showToast({
-        message:
-          error?.message || t("toast.handleResetPasswordVerification.error"),
-        type: "error",
-      });
-    }
+    const trimmedNewPassword = newPassword.trim();
+    const trimmedVerificationCode = verificationCode.trim();
+    resetPasswordVerificationMutation({
+      email: email.trim(),
+      newPassword: trimmedNewPassword,
+      otp: trimmedVerificationCode,
+    });
   };
 
   return (
