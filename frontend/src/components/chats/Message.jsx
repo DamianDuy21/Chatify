@@ -18,6 +18,8 @@ import {
   getLocaleById,
 } from "../../lib/utils";
 import CommonRoundedButton from "../buttons/CommonRoundedButton";
+import { useTranslation } from "react-i18next";
+import { showToast } from "../costumed/CostumedToast";
 
 const Message = ({
   ref,
@@ -29,6 +31,7 @@ const Message = ({
   isShowAvatar = false,
   isShowTime = false,
 }) => {
+  const { t } = useTranslation("components", { keyPrefix: "message" });
   const [images, setImages] = useState([]);
   const [videos, setVideos] = useState([]);
   const [otherFiles, setOtherFiles] = useState([]);
@@ -104,7 +107,11 @@ const Message = ({
       });
       setTranslatedText(response.translated);
     } catch (error) {
-      toast.error("Error translating text. Please try again.");
+      showToast({
+        message:
+          error?.response?.data?.message || t("toast.translateText.error"),
+        type: "error",
+      });
       console.error("Error translating text:", error);
     } finally {
       setIsTranslatingText(false);

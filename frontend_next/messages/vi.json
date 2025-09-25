@@ -1,5 +1,12 @@
 {
   "Components": {
+    "message": {
+      "toast": {
+        "translateText": {
+          "error": "Dịch văn bản thất bại. Vui lòng thử lại sau."
+        }
+      }
+    },
     "friendFilterInput": {
       "fullName": {
         "label": "Họ và tên",

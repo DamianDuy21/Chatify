@@ -1,5 +1,12 @@
 {
   "Components": {
+    "message": {
+      "toast": {
+        "translateText": {
+          "error": "Failed to translate text. Please try again later."
+        }
+      }
+    },
     "friendFilterInput": {
       "fullName": {
         "label": "Full Name",

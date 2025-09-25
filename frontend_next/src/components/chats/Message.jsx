@@ -14,6 +14,8 @@ import toast from "react-hot-toast";
 import { translateMessageAPI } from "@/lib/api";
 import { copyToClipboard, formatISOToParts, getLocaleById } from "@/lib/utils";
 import CommonRoundedButton from "../buttons/CommonRoundedButton";
+import { showToast } from "../costumed/CostumedToast";
+import { useTranslations } from "next-intl";
 
 const Message = ({
   ref,
@@ -25,6 +27,7 @@ const Message = ({
   isShowAvatar = false,
   isShowTime = false,
 }) => {
+  const t = useTranslations("Components.message");
   const [images, setImages] = useState([]);
   const [videos, setVideos] = useState([]);
   const [otherFiles, setOtherFiles] = useState([]);
@@ -100,7 +103,11 @@ const Message = ({
       });
       setTranslatedText(response.translated);
     } catch (error) {
-      toast.error("Error translating text. Please try again later.");
+      showToast({
+        message:
+          error?.response?.data?.message || t("toast.translateText.error"),
+        type: "error",
+      });
       console.error("Error translating text:", error);
     } finally {
       setIsTranslatingText(false);

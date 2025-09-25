@@ -502,7 +502,7 @@ const ChatWindow = () => {
       setTotalPages(data.pagination.totalPages);
     } catch (error) {
       showToast({
-        message: error?.message || t("toast.fetchFriends.error"),
+        message: error.response.data.message || t("toast.fetchFriends.error"),
         type: "error",
       });
     } finally {
@@ -625,7 +625,7 @@ const ChatWindow = () => {
     } catch (error) {
       console.error("Error initializing chat:", error);
       showToast({
-        message: error?.message || t("toast.initChat.error"),
+        message: error.response.data.message || t("toast.initChat.error"),
         type: "error",
       });
     } finally {

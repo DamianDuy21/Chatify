@@ -105,7 +105,7 @@ const ChatsPage = () => {
       setFriends(data.users);
     } catch (error) {
       showToast({
-        message: error?.message || t("toast.fetchFriends.error"),
+        message: error.response.data.message || t("toast.fetchFriends.error"),
         type: "error",
       });
     } finally {
