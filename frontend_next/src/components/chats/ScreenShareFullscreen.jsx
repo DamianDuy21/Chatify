@@ -34,8 +34,8 @@ export default function ScreenShareFullscreen() {
     if (!el || !el.requestFullscreen) return;
     try {
       await el.requestFullscreen();
-    } catch (e) {
-      console.error("RequestFullscreen failed:", e);
+    } catch (error) {
+      console.error("RequestFullscreen failed:", error);
     }
   };
 
@@ -43,8 +43,8 @@ export default function ScreenShareFullscreen() {
     if (document.fullscreenElement) {
       try {
         await document.exitFullscreen();
-      } catch (e) {
-        console.error("ExitFullscreen failed:", e);
+      } catch (error) {
+        console.error("ExitFullscreen failed:", error);
       }
     }
   };

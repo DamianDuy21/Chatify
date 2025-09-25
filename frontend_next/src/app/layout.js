@@ -43,7 +43,7 @@ const themeInit = `
     el.style.colorScheme = darkSet.has(resolved) ? 'dark' : 'light';
     // đảm bảo cookie luôn phản ánh lựa chọn hiện tại
     document.cookie = 'chatify-theme=' + saved + '; path=/; max-age=31536000; samesite=lax';
-  } catch (e) {}
+  } catch (error) {}
 })();
 `;
 

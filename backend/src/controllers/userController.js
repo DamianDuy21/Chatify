@@ -24,11 +24,14 @@ export const getLanguages = async (req, res) => {
       data: {
         languages,
       },
-      message: "Lấy danh sách ngôn ngữ thành công",
+      message: "",
     });
   } catch (error) {
     console.error("Error fetching languages:", error);
-    res.status(500).json({ message: "Lỗi máy chủ nội bộ" });
+    res.status(500).json({
+      locale: req.i18n.language,
+      message: req.t("errors:userRoute.getLanguages.error"),
+    });
   }
 };
 
@@ -129,10 +132,10 @@ export const changePassword = async (req, res) => {
           expiresAt: expireAt,
         },
       });
-    } catch (e) {
+    } catch (error) {
       await session.abortTransaction();
       session.endSession();
-      throw e;
+      throw error;
     }
   } catch (error) {
     console.error("Error changing password:", error);

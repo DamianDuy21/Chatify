@@ -32,8 +32,8 @@ axiosInstance.interceptors.response.use(
           await logout({ skipRemote: true });
           window.location.href = "/signin";
         }
-      } catch (e) {
-        console.error("Error during forced logout:", e);
+      } catch (error) {
+        console.error("Error during forced logout:", error);
       }
     }
     return Promise.reject(error);

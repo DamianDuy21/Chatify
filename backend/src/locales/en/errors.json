@@ -8,6 +8,22 @@
     }
   },
   "authRoute": {
+    "login": {
+      "validation": {
+        "allFieldsRequired": "All fields are required.",
+        "incorrectData": "Incorrect email or password."
+      },
+      "error": "An error occurred during login. Please try again later."
+    },
+    "logout": {
+      "error": "An error occurred during logout. Please try again later."
+    },
+    "me": {
+      "validation": {
+        "userNotFound": "User not found."
+      },
+      "error": "An error occurred while fetching user data. Please try again later."
+    },
     "onboard": {
       "validation": {
         "allFieldsRequired": "All fields are required."
@@ -46,6 +62,9 @@
     }
   },
   "userRoute": {
+    "getLanguages": {
+      "error": "Failed to fetch languages. Please try again later."
+    },
     "getRecommendedUsers": {
       "error": "Failed to fetch recommended users. Please try again later."
     },
@@ -116,6 +135,21 @@
     },
     "getFriendsCouldBeAddedToGroup": {
       "error": "Failed to fetch friends who could be added to the group. Please try again later."
+    }
+  },
+  "chatRoute": {
+    "createPrivateConversation": {
+      "validation": {
+        "notYourSelf": "You cannot create a conversation with yourself.",
+        "userNotFound": "Other user not found."
+      },
+      "error": "An error occurred while creating the conversation. Please try again later."
+    },
+    "getConversations": {
+      "error": "Failed to fetch conversations. Please try again later."
+    },
+    "getTotalConversationQuantityAboveFilter": {
+      "error": "Failed to fetch total conversation quantity. Please try again later."
     }
   }
 }

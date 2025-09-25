@@ -26,8 +26,8 @@ import Conversation from "../models/Conversation.js";
     });
 
     process.exit(0);
-  } catch (err) {
-    console.error("Migration error:", err);
+  } catch (error) {
+    console.error("Migration error:", error);
     process.exit(1);
   }
 })();

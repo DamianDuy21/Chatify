@@ -8,6 +8,68 @@
     }
   },
   "chatRoute": {
+    "getConversationMessages": {
+      "validation": {
+        "invalidLastMessageId": "Tin nhắn cuối không hợp lệ.",
+        "conversationNotFound": "Không tìm thấy cuộc trò chuyện.",
+        "notParticipant": "Bạn không phải là thành viên của cuộc trò chuyện này."
+      },
+      "error": "Lấy tin nhắn không thành công. Vui lòng thử lại sau."
+    },
+    "getConversationMembers": {
+      "validation": {
+        "conversationNotFound": "Không tìm thấy cuộc trò chuyện.",
+        "notParticipant": "Bạn không phải là thành viên của cuộc trò chuyện này."
+      },
+      "error": "Lấy thành viên cuộc trò chuyện không thành công. Vui lòng thử lại sau."
+    },
+    "sendMessage": {
+      "validation": {
+        "invalidMessageType": "Loại tin nhắn không hợp lệ.",
+        "emptyTextMessage": "Tin nhắn văn bản không được để trống.",
+        "fileTooLarge": "Kích thước tệp vượt quá giới hạn tối đa là 20MB.",
+        "unsupportedFileType": "Loại tệp không được hỗ trợ.",
+        "conversationNotFound": "Không tìm thấy cuộc trò chuyện.",
+        "notParticipant": "Bạn không phải là thành viên của cuộc trò chuyện này."
+      },
+      "error": "Gửi tin nhắn không thành công. Vui lòng thử lại sau."
+    },
+    "markMessageAsSeen": {
+      "validation": {
+        "conversationNotFound": "Không tìm thấy cuộc trò chuyện.",
+        "notParticipant": "Bạn không phải là thành viên của cuộc trò chuyện này.",
+        "messageNotFound": "Không tìm thấy tin nhắn trong cuộc trò chuyện này."
+      },
+      "error": "Đánh dấu tin nhắn là đã xem không thành công. Vui lòng thử lại sau."
+    },
+    "markAllMessagesAsSeen": {
+      "validation": {
+        "invalidMemberData": "Dữ liệu thành viên không hợp lệ.",
+        "conversationNotFound": "Không tìm thấy cuộc trò chuyện.",
+        "notParticipant": "Bạn không phải là thành viên của cuộc trò chuyện này.",
+        "noMessagesToMark": "Không có tin nhắn mới nào để đánh dấu là đã xem."
+      },
+      "error": "Đánh dấu tất cả tin nhắn là đã xem không thành công. Vui lòng thử lại sau."
+    },
+    "getVideoCallToken": {
+      "validation": {
+        "conversationNotFound": "Không tìm thấy cuộc trò chuyện.",
+        "notParticipant": "Bạn không phải là thành viên của cuộc trò chuyện này."
+      },
+      "error": "Tạo mã cuộc gọi video không thành công. Vui lòng thử lại sau."
+    },
+
+    "deleteMemberFromGroup": {
+      "validation": {
+        "invalidMemberData": "Dữ liệu thành viên không hợp lệ.",
+        "groupNotFound": "Không tìm thấy nhóm trò chuyện.",
+        "notMember": "Bạn không phải là thành viên của nhóm này.",
+        "cannotRemoveSelf": "Bạn không thể xóa chính mình khỏi nhóm.",
+        "memberNotInGroup": "Người dùng cần xóa không phải là thành viên của nhóm."
+      },
+      "error": "Xóa thành viên khỏi nhóm trò chuyện không thành công. Vui lòng thử lại sau."
+    },
+
     "createGroup": {
       "validation": {
         "allFieldsRequired": "Tất cả các trường đều bắt buộc."
@@ -50,6 +112,26 @@
   "openaiRoute": {
     "createChatBot": {
       "error": "Tạo Chatbot không thành công. Vui lòng thử lại sau."
+    },
+    "translateMessage": {
+      "validation": {
+        "missingTextOrTargetLang": "Thiếu văn bản / ngôn ngữ dịch"
+      },
+      "error": "Dịch không thành công. Vui lòng thử lại sau."
+    },
+    "sendMessageChatbot": {
+      "validation": {
+        "invalidMessageType": "Loại tin nhắn không hợp lệ.",
+        "emptyTextMessage": "Tin nhắn văn bản không được để trống.",
+        "fileTooLarge": "Kích thước tệp vượt quá giới hạn tối đa là 20MB.",
+        "unsupportedFileType": "Loại tệp không được hỗ trợ.",
+        "conversationNotFound": "Không tìm thấy cuộc trò chuyện.",
+        "notParticipant": "Bạn không phải là thành viên của cuộc trò chuyện này."
+      },
+      "error": "Gửi tin nhắn đến Chatbot không thành công. Vui lòng thử lại sau."
+    },
+    "responseMessageChatbot": {
+      "error": "Chatbot phản hồi không thành công. Vui lòng thử lại sau."
     }
   }
 }

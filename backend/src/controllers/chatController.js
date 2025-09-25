@@ -15,14 +15,20 @@ export const createPrivateConversation = async (req, res) => {
     const currentUserId = req.user._id;
     const { userId: otherUserId } = req.body;
     if (!otherUserId) {
-      return res
-        .status(400)
-        .json({ message: "userId của người dùng khác là bắt buộc" });
+      return res.status(400).json({
+        locale: req.i18n.language,
+        message: req.t(
+          "errors:chatRoute.createPrivateConversation.validation.userNotFound"
+        ),
+      });
     }
     if (otherUserId === currentUserId.toString()) {
-      return res
-        .status(400)
-        .json({ message: "Không thể tạo cuộc trò chuyện với chính mình" });
+      return res.status(400).json({
+        locale: req.i18n.language,
+        message: req.t(
+          "errors:chatRoute.createPrivateConversation.validation.notYourSelf"
+        ),
+      });
     }
     // Kiểm tra xem đã có private conversation giữa 2 user chưa
     const conversationsMember1 = await ConversationMember.find({
@@ -59,7 +65,7 @@ export const createPrivateConversation = async (req, res) => {
           },
           isNewCreated: false,
         },
-        message: "Yêu cầu kết bạn đã được chấp nhận",
+        message: "",
       });
     }
     if (!conversation) {
@@ -135,12 +141,15 @@ export const createPrivateConversation = async (req, res) => {
           },
           isNewCreated: true,
         },
-        message: "Yêu cầu kết bạn đã được chấp nhận",
+        message: "",
       });
     }
   } catch (error) {
     console.error("Error creating private conversation:", error);
-    res.status(500).json({ message: "Lỗi máy chủ nội bộ" });
+    res.status(500).json({
+      locale: req.i18n.language,
+      message: req.t("errors:chatRoute.createPrivateConversation.error"),
+    });
   }
 };
 
@@ -531,11 +540,14 @@ export const getConversations = async (req, res) => {
           totalPages,
         },
       },
-      message: "Lấy danh sách cuộc trò chuyện thành công",
+      message: "",
     });
   } catch (error) {
     console.error("Error fetching conversations:", error);
-    res.status(500).json({ message: "Lỗi máy chủ nội bộ" });
+    res.status(500).json({
+      locale: req.i18n.language,
+      message: req.t("errors:chatRoute.getConversations.error"),
+    });
   }
 };
 
@@ -553,10 +565,15 @@ export const getTotalConversationQuantityAboveFilter = async (req, res) => {
           conversations: quantity,
         },
       },
-      message: "Lấy tổng số lượng cuộc trò chuyện thành công",
+      message: "",
     });
   } catch (error) {
     console.error("Error fetching total conversation quantity:", error);
-    res.status(500).json({ message: "Lỗi máy chủ nội bộ" });
+    res.status(500).json({
+      locale: req.i18n.language,
+      message: req.t(
+        "errors:chatRoute.getTotalConversationQuantityAboveFilter.error"
+      ),
+    });
   }
 };

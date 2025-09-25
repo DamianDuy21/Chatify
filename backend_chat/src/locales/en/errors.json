@@ -8,6 +8,68 @@
     }
   },
   "chatRoute": {
+    "getConversationMessages": {
+      "validation": {
+        "invalidLastMessageId": "Invalid last message ID.",
+        "conversationNotFound": "Conversation not found.",
+        "notParticipant": "You are not a participant of this conversation."
+      },
+      "error": "Failed to fetch messages. Please try again later."
+    },
+    "getConversationMembers": {
+      "validation": {
+        "conversationNotFound": "Conversation not found.",
+        "notParticipant": "You are not a participant of this conversation."
+      },
+      "error": "Failed to fetch conversation members. Please try again later."
+    },
+    "sendMessage": {
+      "validation": {
+        "invalidMessageType": "Invalid message type.",
+        "emptyTextMessage": "Text message cannot be empty.",
+        "fileTooLarge": "File size exceeds the maximum limit of 20MB.",
+        "unsupportedFileType": "Unsupported file type.",
+        "conversationNotFound": "Conversation not found.",
+        "notParticipant": "You are not a participant of this conversation."
+      },
+      "error": "Failed to send message. Please try again later."
+    },
+    "markMessageAsSeen": {
+      "validation": {
+        "conversationNotFound": "Conversation not found.",
+        "notParticipant": "You are not a participant of this conversation.",
+        "messageNotFound": "Message not found in this conversation."
+      },
+      "error": "Failed to mark message as seen. Please try again later."
+    },
+    "markAllMessagesAsSeen": {
+      "validation": {
+        "invalidMemberData": "Invalid member data.",
+        "conversationNotFound": "Conversation not found.",
+        "notParticipant": "You are not a participant of this conversation.",
+        "noMessagesToMark": "No new messages to mark as seen."
+      },
+      "error": "Failed to mark all messages as seen. Please try again later."
+    },
+    "getVideoCallToken": {
+      "validation": {
+        "conversationNotFound": "Conversation not found.",
+        "notParticipant": "You are not a participant of this conversation."
+      },
+      "error": "Failed to generate video call token. Please try again later."
+    },
+
+    "deleteMemberFromGroup": {
+      "validation": {
+        "invalidMemberData": "Invalid member data.",
+        "groupNotFound": "Group chat not found.",
+        "notMember": "You are not a member of this group.",
+        "cannotRemoveSelf": "You cannot remove yourself from the group.",
+        "memberNotInGroup": "The user to be removed is not a member of the group."
+      },
+      "error": "Failed to remove member from group chat. Please try again later."
+    },
+
     "createGroup": {
       "validation": {
         "allFieldsRequired": "All fields are required."
@@ -50,6 +112,26 @@
   "openaiRoute": {
     "createChatBot": {
       "error": "Failed to create Chatbot. Please try again later."
+    },
+    "translateMessage": {
+      "validation": {
+        "missingTextOrTargetLang": "Missing text/targetLang"
+      },
+      "error": "Translation failed. Please try again later."
+    },
+    "sendMessageChatbot": {
+      "validation": {
+        "invalidMessageType": "Invalid message type.",
+        "emptyTextMessage": "Text message cannot be empty.",
+        "fileTooLarge": "File size exceeds the maximum limit of 20MB.",
+        "unsupportedFileType": "Unsupported file type.",
+        "conversationNotFound": "Conversation not found.",
+        "notParticipant": "You are not a participant of this conversation."
+      },
+      "error": "Failed to send message to Chatbot. Please try again later."
+    },
+    "responseMessageChatbot": {
+      "error": "Failed to get response from Chatbot. Please try again later."
     }
   }
 }

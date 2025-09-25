@@ -68,8 +68,8 @@ export const openaiCreateChatBot = async (req, res) => {
       },
       message: "",
     });
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error("Error creating chatbot:", error);
     return res.status(500).json({
       locale: req.i18n.language,
       message: req.t("errors:openaiRoute.createChatBot.error"),
@@ -81,7 +81,12 @@ export const openaiTranslateMessage = async (req, res) => {
   try {
     const { text, targetLang, formality = "auto" } = req.body || {};
     if (!text || !targetLang) {
-      return res.status(400).json({ error: "Missing text/targetLang" });
+      return res.status(400).json({
+        locale: req.i18n.language,
+        message: req.t(
+          "errors:openaiRoute.translateMessage.validation.missingTextOrTargetLang"
+        ),
+      });
     }
 
     const sourceLang = FLAG_TO_LANGUAGE[targetLang] || "English";
@@ -112,10 +117,11 @@ export const openaiTranslateMessage = async (req, res) => {
       response.output_text ?? response.output?.[0]?.content?.[0]?.text ?? "";
 
     res.json({ translated });
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error("Error translating message:", error);
     res.status(500).json({
-      message: "",
+      locale: req.i18n.language,
+      message: req.t("errors:openaiRoute.translateMessage.error"),
     });
   }
 };
@@ -199,7 +205,12 @@ export const openaiSendMessageChatbot = async (req, res) => {
         videoFiles.length === 0 &&
         otherFiles.length === 0
       ) {
-        return res.status(400).json({ message: "Empty message" });
+        return res.status(400).json({
+          locale: req.i18n.language,
+          message: req.t(
+            "errors:openaiRoute.sendMessageChatbot.validation.emptyTextMessage"
+          ),
+        });
       }
 
       const [uploadedImages, uploadedVideos, uploadedOthers] =
@@ -335,12 +346,15 @@ export const openaiSendMessageChatbot = async (req, res) => {
       }
 
       res.status(201).json({
-        message: "Message sent successfully",
+        message: "",
         data: fullDataNewMessage,
       });
     } catch (error) {
       console.error("Error sending message:", error);
-      return res.status(500).json({ message: "Internal server error" });
+      return res.status(500).json({
+        locale: req.i18n.language,
+        message: req.t("errors:openaiRoute.sendMessageChatbot.error"),
+      });
     }
   });
 };
@@ -393,11 +407,14 @@ export const openaiResponseMessageChatbot = async (req, res) => {
     }
 
     res.status(201).json({
-      message: "Chatbot response successfully",
+      message: "",
       data: fullDataNewMessage,
     });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: "Chatbot response failed" });
+  } catch (error) {
+    console.error("Error responding to chatbot:", error);
+    res.status(500).json({
+      locale: req.i18n.language,
+      message: req.t("errors:openaiRoute.responseMessageChatbot.error"),
+    });
   }
 };

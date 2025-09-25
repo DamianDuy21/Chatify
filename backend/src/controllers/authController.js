@@ -109,10 +109,10 @@ export const signup = async (req, res) => {
         },
         success: true,
       });
-    } catch (e) {
+    } catch (error) {
       await session.abortTransaction();
       session.endSession();
-      throw e;
+      throw error;
     }
   } catch (error) {
     console.log("Error in signup controller", error);
@@ -214,22 +214,20 @@ export const verifySignUpOtp = async (req, res) => {
       return res.status(201).json({
         success: true,
         data: {},
-        message: "Đăng kí thành công",
+        message: "",
       });
-    } catch (e) {
+    } catch (error) {
       await session.abortTransaction();
       session.endSession();
-      throw e;
+      throw error;
     }
   } catch (error) {
     console.log("Error in verify signup OTP controller", error);
-    res
-      .status(500)
-      .json({
-        success: false,
-        locale: req.i18n.language,
-        message: req.t("errors:authRoute.verifySignUpOtp.error"),
-      });
+    res.status(500).json({
+      success: false,
+      locale: req.i18n.language,
+      message: req.t("errors:authRoute.verifySignUpOtp.error"),
+    });
   }
 };
 
@@ -238,21 +236,26 @@ export const login = async (req, res) => {
     const { email, password } = req.body;
 
     if (!email || !password) {
-      return res.status(400).json({ message: "Tất cả các trường là bắt buộc" });
+      return res.status(400).json({
+        locale: req.i18n.language,
+        message: req.t("errors:authRoute.login.validation.allFieldsRequired"),
+      });
     }
 
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(400).json({
-        message: "Thông tin đăng nhập không chính xác",
+        locale: req.i18n.language,
+        message: req.t("errors:authRoute.login.validation.incorrectData"),
       });
     }
 
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
-      return res
-        .status(400)
-        .json({ message: "Thông tin đăng nhập không chính xác" });
+      return res.status(400).json({
+        locale: req.i18n.language,
+        message: req.t("errors:authRoute.login.validation.incorrectData"),
+      });
     }
 
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET_KEY, {
@@ -278,11 +281,15 @@ export const login = async (req, res) => {
     return res.status(200).json({
       success: true,
       data: { user: resUser },
-      message: "Đăng nhập thành công",
+      message: "",
     });
   } catch (error) {
     console.log("Error in login controller", error);
-    res.status(500).json({ success: false, message: "Lỗi máy chủ nội bộ" });
+    res.status(500).json({
+      success: false,
+      locale: req.i18n.language,
+      message: req.t("errors:authRoute.login.error"),
+    });
   }
 };
 
@@ -292,12 +299,14 @@ export const logout = async (req, res) => {
     await JWT.updateOne({ token }, { $set: { expire_at: new Date() } });
     res.clearCookie("jwt");
 
-    res
-      .status(200)
-      .json({ success: true, message: "Đăng xuất thành công", data: {} });
+    res.status(200).json({ success: true, message: "", data: {} });
   } catch (error) {
     console.log("Error in logout controller", error);
-    res.status(500).json({ success: false, message: "Lỗi máy chủ nội bộ" });
+    res.status(500).json({
+      success: false,
+      locale: req.i18n.language,
+      message: req.t("errors:authRoute.logout.error"),
+    });
   }
 };
 
@@ -370,10 +379,10 @@ export const resetPassword = async (req, res) => {
           expiresAt: expireAt,
         },
       });
-    } catch (e) {
+    } catch (error) {
       await session.abortTransaction();
       session.endSession();
-      throw e;
+      throw error;
     }
   } catch (error) {
     console.log("Error in reset password controller", error);
@@ -531,12 +540,6 @@ export const onboard = async (req, res) => {
       .select("-password -createdAt -updatedAt -__v")
       .lean();
 
-    console.log({
-      id: updatedUser._id.toString(),
-      name: updatedUser.fullName,
-      image: newProfile.profilePic || "",
-    });
-
     try {
       await upsertStreamUser({
         id: updatedUser._id.toString(),
@@ -555,7 +558,7 @@ export const onboard = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: "Tạo hồ sơ người dùng thành công",
+      message: "",
       data: {
         user: {
           ...updatedUser,
@@ -581,7 +584,11 @@ export const me = async (req, res) => {
       "-password -__v -createdAt -updatedAt"
     );
     if (!user) {
-      return res.status(404).json({ message: "Người dùng không tồn tại" });
+      return res.status(404).json({
+        success: false,
+        locale: req.i18n.language,
+        message: req.t("errors:authRoute.me.validation.userNotFound"),
+      });
     }
 
     if (user.isOnboarded) {
@@ -599,7 +606,7 @@ export const me = async (req, res) => {
             },
           },
         },
-        message: "Lấy thông tin người dùng thành công",
+        message: "",
       });
     } else {
       return res.status(200).json({
@@ -607,11 +614,14 @@ export const me = async (req, res) => {
         data: {
           user: { ...user.toObject() },
         },
-        message: "Lấy thông tin người dùng thành công",
+        message: "",
       });
     }
   } catch (error) {
     console.log("Error in getMe controller", error);
-    res.status(500).json({ message: "Lỗi máy chủ nội bộ" });
+    res.status(500).json({
+      locale: req.i18n.language,
+      message: req.t("errors:authRoute.me.error"),
+    });
   }
 };

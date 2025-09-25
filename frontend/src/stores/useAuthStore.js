@@ -44,8 +44,8 @@ export const useAuthStore = create(
           if (!options.skipRemote) {
             await logoutAPI();
           }
-        } catch (err) {
-          console.error("Error logging out:", err);
+        } catch (error) {
+          console.error("Error logging out:", error);
         } finally {
           set({ authUser: null });
           Cookies.remove("jwt");
@@ -143,8 +143,8 @@ export const useAuthStore = create(
             if (authUser) {
               connectSocket();
             }
-          } catch (e) {
-            console.error("Post-hydrate hook failed:", e);
+          } catch (error) {
+            console.error("Post-hydrate hook failed:", error);
           }
         });
       },

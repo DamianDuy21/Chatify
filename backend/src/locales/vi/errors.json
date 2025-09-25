@@ -8,6 +8,22 @@
     }
   },
   "authRoute": {
+    "login": {
+      "validation": {
+        "allFieldsRequired": "Tất cả các trường đều bắt buộc.",
+        "incorrectData": "Email hoặc mật khẩu không đúng."
+      },
+      "error": "Đã xảy ra lỗi khi đăng nhập. Vui lòng thử lại sau."
+    },
+    "logout": {
+      "error": "Đã xảy ra lỗi khi đăng xuất. Vui lòng thử lại sau."
+    },
+    "me": {
+      "validation": {
+        "userNotFound": "Không tìm thấy người dùng."
+      },
+      "error": "Đã xảy ra lỗi khi lấy dữ liệu người dùng. Vui lòng thử lại sau."
+    },
     "onboard": {
       "validation": {
         "allFieldsRequired": "Tất cả các trường đều bắt buộc."
@@ -46,6 +62,9 @@
     }
   },
   "userRoute": {
+    "getLanguages": {
+      "error": "Có lỗi khi lấy danh sách ngôn ngữ. Vui lòng thử lại sau."
+    },
     "getRecommendedUsers": {
       "error": "Có lỗi khi lấy danh sách người dùng được đề xuất. Vui lòng thử lại sau."
     },
@@ -116,6 +135,21 @@
     },
     "getFriendsCouldBeAddedToGroup": {
       "error": "Có lỗi khi lấy danh sách bạn bè có thể được thêm vào nhóm. Vui lòng thử lại sau."
+    }
+  },
+  "chatRoute": {
+    "createPrivateConversation": {
+      "validation": {
+        "notYourSelf": "Bạn không thể tạo cuộc trò chuyện với chính mình.",
+        "userNotFound": "Không tìm thấy người dùng khác."
+      },
+      "error": "Đã xảy ra lỗi khi tạo cuộc trò chuyện. Vui lòng thử lại sau."
+    },
+    "getConversations": {
+      "error": "Đã xảy ra lỗi khi lấy danh sách cuộc trò chuyện. Vui lòng thử lại sau."
+    },
+    "getTotalConversationQuantityAboveFilter": {
+      "error": "Đã xảy ra lỗi khi lấy tổng số lượng cuộc trò chuyện. Vui lòng thử lại sau."
     }
   }
 }

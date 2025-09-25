@@ -50,8 +50,8 @@ export const copyToClipboard = (text) => {
       document.execCommand("copy");
       document.body.removeChild(ta);
     }
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error(error);
   }
 };
 
@@ -124,7 +124,8 @@ export const toDownloadUrl = (url, filename) => {
 
     u.pathname = parts.join("/");
     return u.toString();
-  } catch {
+  } catch (error) {
+    console.error("Error generating download URL:", error);
     return url;
   }
 };

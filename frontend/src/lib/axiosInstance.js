@@ -22,8 +22,8 @@ axiosInstance.interceptors.response.use(
         if (logout) {
           await logout({ skipRemote: true });
         }
-      } catch (e) {
-        console.error("Error during forced logout:", e);
+      } catch (error) {
+        console.error("Error during forced logout:", error);
       }
     }
     return Promise.reject(error);

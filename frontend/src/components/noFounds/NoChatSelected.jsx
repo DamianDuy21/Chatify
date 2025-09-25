@@ -61,11 +61,11 @@ const NoChatSelected = ({ hasFriends }) => {
           totalConversationQuantityUnderFilter + 1
         );
       }
-    } catch (err) {
-      console.log("Error:", err);
+    } catch (error) {
+      console.log("Error:", error);
       showToast({
         message:
-          err?.response?.data?.message || t("toast.handleGetChatbot.error"),
+          error?.response?.data?.message || t("toast.handleGetChatbot.error"),
         type: "error",
       });
       return;

@@ -24,7 +24,12 @@ export const getConversationMessages = async (req, res) => {
 
     const conversation = await Conversation.findById(conversationId);
     if (!conversation) {
-      return res.status(404).json({ message: "Conversation not found" });
+      return res.status(404).json({
+        locale: req.i18n.language,
+        message: req.t(
+          "errors:chatRoute.getConversationMessages.validation.conversationNotFound"
+        ),
+      });
     }
 
     let messages;
@@ -33,7 +38,12 @@ export const getConversationMessages = async (req, res) => {
     if (lastMessageId) {
       anchor = await Message.findOne({ _id: lastMessageId, conversationId });
       if (!anchor) {
-        return res.status(400).json({ message: "Invalid lastMessageId" });
+        return res.status(400).json({
+          locale: req.i18n.language,
+          message: req.t(
+            "errors:chatRoute.getConversationMessages.validation.invalidLastMessageId"
+          ),
+        });
       }
 
       messages = await Message.find({
@@ -115,7 +125,7 @@ export const getConversationMessages = async (req, res) => {
     );
 
     return res.status(200).json({
-      message: "Messages fetched successfully",
+      message: "",
       data: {
         conversation: {
           messages: fullDataMessages,
@@ -124,7 +134,10 @@ export const getConversationMessages = async (req, res) => {
     });
   } catch (error) {
     console.error("Error fetching messages:", error);
-    return res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({
+      locale: req.i18n.language,
+      message: req.t("errors:chatRoute.getConversationMessages.error"),
+    });
   }
 };
 
@@ -154,14 +167,17 @@ export const getConversationMembers = async (req, res) => {
     );
 
     return res.status(200).json({
-      message: "Conversation members fetched successfully",
+      message: "",
       data: {
         members: fullDataMembers,
       },
     });
   } catch (error) {
     console.error("Error fetching conversation members:", error);
-    return res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({
+      locale: req.i18n.language,
+      message: req.t("errors:chatRoute.getConversationMembers.error"),
+    });
   }
 };
 
@@ -187,7 +203,7 @@ export const getConversationMedia = async (req, res) => {
     const paginated = media.slice(offset, offset + limit);
 
     return res.status(200).json({
-      message: "Conversation media fetched successfully",
+      message: "",
       data: {
         media: paginated,
         pagination: {
@@ -225,7 +241,7 @@ export const getConversationFiles = async (req, res) => {
     const paginated = files.slice(offset, offset + limit);
 
     return res.status(200).json({
-      message: "Conversation files fetched successfully",
+      message: "",
       data: {
         files: paginated,
         pagination: {
@@ -321,7 +337,12 @@ export const sendMessage = async (req, res) => {
         videoFiles.length === 0 &&
         otherFiles.length === 0
       ) {
-        return res.status(400).json({ message: "Empty message" });
+        return res.status(400).json({
+          locale: req.i18n.language,
+          message: req.t(
+            "errors:chatRoute.sendMessage.validation.emptyTextMessage"
+          ),
+        });
       }
 
       const [uploadedImages, uploadedVideos, uploadedOthers] =
@@ -457,12 +478,15 @@ export const sendMessage = async (req, res) => {
       }
 
       res.status(201).json({
-        message: "Message sent successfully",
+        message: "",
         data: fullDataNewMessage,
       });
     } catch (error) {
       console.error("Error sending message:", error);
-      return res.status(500).json({ message: "Internal server error" });
+      return res.status(500).json({
+        locale: req.i18n.language,
+        message: req.t("errors:chatRoute.sendMessage.error"),
+      });
     }
   });
 };
@@ -472,7 +496,12 @@ export const markMessageAsSeen = async (req, res) => {
     const { id: messageId } = req.params;
     const message = await Message.findById(messageId);
     if (!message) {
-      return res.status(404).json({ message: "Message not found" });
+      return res.status(404).json({
+        locale: req.i18n.language,
+        message: req.t(
+          "errors:chatRoute.markMessageAsSeen.validation.messageNotFound"
+        ),
+      });
     }
     await SeenBy.create({
       messageId,
@@ -480,12 +509,15 @@ export const markMessageAsSeen = async (req, res) => {
     });
 
     return res.status(200).json({
-      message: "Message marked as seen successfully",
+      message: "",
       data: {},
     });
   } catch (error) {
     console.error("Error marking message as seen:", error);
-    return res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({
+      locale: req.i18n.language,
+      message: req.t("errors:chatRoute.markMessageAsSeen.error"),
+    });
   }
 };
 
@@ -495,12 +527,15 @@ export const getVideoCallToken = async (req, res) => {
     const token = generateStreamToken(currentUserId);
 
     return res.status(200).json({
-      message: "Video call token generated successfully",
+      message: "",
       data: { token },
     });
   } catch (error) {
     console.log("Error in getStreamToken controller:", error.message);
-    return res.status(500).json({ message: "Internal Server Error" });
+    return res.status(500).json({
+      locale: req.i18n.language,
+      message: req.t("errors:chatRoute.getVideoCallToken.error"),
+    });
   }
 };
 
@@ -548,11 +583,21 @@ export const markAllMessagesAsSeen = async (req, res) => {
     const currentUserId = req.user?._id;
 
     if (!currentUserId) {
-      return res.status(400).json({ message: "Invalid user data" });
+      return res.status(400).json({
+        locale: req.i18n.language,
+        message: req.t(
+          "errors:chatRoute.markAllMessagesAsSeen.validation.invalidMemberData"
+        ),
+      });
     }
     const conversation = await Conversation.findById(conversationId);
     if (!conversation) {
-      return res.status(404).json({ message: "Conversation not found" });
+      return res.status(404).json({
+        locale: req.i18n.language,
+        message: req.t(
+          "errors:chatRoute.markAllMessagesAsSeen.validation.conversationNotFound"
+        ),
+      });
     }
     const messageIds = await Message.distinct("_id", {
       conversationId,
@@ -560,9 +605,13 @@ export const markAllMessagesAsSeen = async (req, res) => {
     });
 
     if (!messageIds.length) {
-      return res
-        .status(200)
-        .json({ message: "No messages to mark", inserted: 0 });
+      return res.status(200).json({
+        locale: req.i18n.language,
+        message: req.t(
+          "errors:chatRoute.markAllMessagesAsSeen.validation.noMessagesToMark"
+        ),
+        inserted: 0,
+      });
     }
 
     const ops = messageIds.map((mid) => ({
@@ -581,7 +630,7 @@ export const markAllMessagesAsSeen = async (req, res) => {
       insertedCount += result?.upsertedCount || 0;
     }
     return res.status(200).json({
-      message: "All messages marked as seen",
+      message: "",
       data: {
         total: {
           messages: messageIds.length,
@@ -591,7 +640,10 @@ export const markAllMessagesAsSeen = async (req, res) => {
     });
   } catch (error) {
     console.error("Error marking messages as seen:", error);
-    res.status(500).json({ message: "Lỗi máy chủ nội bộ" });
+    res.status(500).json({
+      locale: req.i18n.language,
+      message: req.t("errors:chatRoute.markAllMessagesAsSeen.error"),
+    });
   }
 };
 
@@ -840,18 +892,33 @@ export const deleteMemberFromGroup = async (req, res) => {
   const { memberId } = req.query;
   try {
     if (!memberId) {
-      return res.status(400).json({ message: "Invalid member data" });
+      return res.status(400).json({
+        locale: req.i18n.language,
+        message: req.t(
+          "errors:chatRoute.deleteMemberFromGroup.validation.invalidMemberData"
+        ),
+      });
     }
     const conversation = await Conversation.findById(conversationId);
     if (!conversation || conversation.type !== "group") {
-      return res.status(404).json({ message: "Group not found" });
+      return res.status(404).json({
+        locale: req.i18n.language,
+        message: req.t(
+          "errors:chatRoute.deleteMemberFromGroup.validation.groupNotFound"
+        ),
+      });
     }
     const member = await ConversationMember.findOne({
       conversationId,
       userId: memberId,
     });
     if (!member) {
-      return res.status(404).json({ message: "Member not found in group" });
+      return res.status(404).json({
+        locale: req.i18n.language,
+        message: req.t(
+          "errors:chatRoute.deleteMemberFromGroup.validation.memberNotInGroup"
+        ),
+      });
     }
 
     await ConversationMember.deleteOne({ _id: member._id });
@@ -889,11 +956,14 @@ export const deleteMemberFromGroup = async (req, res) => {
         },
         notifications: createGroupNotifications,
       },
-      message: "Xóa thành viên khỏi nhóm thành công",
+      message: "",
     });
   } catch (error) {
     console.error("Error deleting member from group:", error);
-    return res.status(500).json({ message: "Lỗi máy chủ nội bộ" });
+    return res.status(500).json({
+      locale: req.i18n.language,
+      message: req.t("errors:chatRoute.deleteMemberFromGroup.error"),
+    });
   }
 };
 
@@ -1191,15 +1261,18 @@ export const leaveGroup = async (req, res) => {
         message: "",
       });
     });
-  } catch (err) {
-    console.error("LeaveGroupController error:", err);
+  } catch (error) {
+    console.error("LeaveGroupController error:", error);
     if (session.inTransaction()) {
       try {
         await session.abortTransaction();
-      } catch (_) {}
+      } catch (error) {
+        console.error("Error aborting transaction:", error);
+      }
     }
-    const status = err?.status || 500;
-    const message = err?.message || req.t("errors:chatRoute.leaveGroup.error");
+    const status = error?.status || 500;
+    const message =
+      error?.message || req.t("errors:chatRoute.leaveGroup.error");
     return res.status(status).json({ message });
   } finally {
     session.endSession();

@@ -26,8 +26,8 @@ const seeds = [
     await Language.insertMany(seeds, { ordered: false });
     console.log("Seeded languages successfully!");
     process.exit(0);
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error("Seeding error:", error);
     process.exit(1);
   }
 })();

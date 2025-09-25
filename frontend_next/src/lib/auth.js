@@ -31,8 +31,8 @@ export async function getAuthSession() {
 
     const authData = await res.json();
     return authData;
-  } catch (e) {
-    console.error("Auth session error:", e);
+  } catch (error) {
+    console.error("Auth session error:", error);
     return null;
   }
 }
