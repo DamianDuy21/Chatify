@@ -7,6 +7,7 @@ import { formatFileSize, getFileExtension } from "../../lib/utils";
 import { useChatStore } from "../../stores/useChatStore";
 import CommonRoundedButton from "../buttons/CommonRoundedButton";
 import CostumedModal from "../costumed/CostumedModal";
+import { showToast } from "../costumed/CostumedToast";
 
 const TextEditor = ({
   text,
@@ -95,6 +96,10 @@ const TextEditor = ({
       // Scroll
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (error) {
+      showToast({
+        type: "error",
+        message: t("toast.handleSendMessage.error"),
+      });
       console.error("Failed to send message:", error);
     }
   };
@@ -134,6 +139,10 @@ const TextEditor = ({
       // Scroll
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (error) {
+      showToast({
+        type: "error",
+        message: t("toast.handleSendMessageChatbot.error"),
+      });
       console.error("Failed to send message:", error);
     }
   };

@@ -6,6 +6,7 @@ import CommonRoundedButton from "../buttons/CommonRoundedButton";
 import CostumedEmojiPicker from "../costumed/CostumedEmojiPicker";
 import CostumedModal from "../costumed/CostumedModal";
 import { useTranslation } from "react-i18next";
+import { showToast } from "../costumed/CostumedToast";
 
 const TextEditor = ({
   text,
@@ -94,6 +95,10 @@ const TextEditor = ({
       // Scroll
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (error) {
+      showToast({
+        type: "error",
+        message: t("toast.handleSendMessage.error"),
+      });
       console.error("Failed to send message:", error);
     }
   };
@@ -133,6 +138,10 @@ const TextEditor = ({
       // Scroll
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (error) {
+      showToast({
+        type: "error",
+        message: t("toast.handleSendMessageChatbot.error"),
+      });
       console.error("Failed to send message:", error);
     }
   };

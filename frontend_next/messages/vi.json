@@ -1,5 +1,12 @@
 {
   "Components": {
+    "conversation": {
+      "toast": {
+        "getMessages": {
+          "error": "Không thể tải tin nhắn. Vui lòng thử lại sau."
+        }
+      }
+    },
     "message": {
       "toast": {
         "translateText": {
@@ -295,7 +302,15 @@
       }
     },
     "textEditor": {
-      "placeholder": "Nhập tin nhắn"
+      "placeholder": "Nhập tin nhắn",
+      "toast": {
+        "handleSendMessage": {
+          "error": "Gửi tin nhắn thất bại. Vui lòng thử lại sau"
+        },
+        "handleSendMessageChatbot": {
+          "error": "Gửi tin nhắn thất bại. Vui lòng thử lại sau"
+        }
+      }
     },
     "friendCard_GroupChatMemberList": {
       "toast": {

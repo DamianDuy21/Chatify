@@ -7,6 +7,8 @@ import { useChatStore } from "../../stores/useChatStore";
 import CommonRoundedButton from "../buttons/CommonRoundedButton";
 import Message from "./Message";
 import { formatISOToParts } from "../../lib/utils";
+import { useTranslation } from "react-i18next";
+import { showToast } from "../costumed/CostumedToast";
 
 const getSenderId = (m) => m?.sender?._id ?? m?.message?.senderId ?? null;
 
@@ -23,6 +25,7 @@ const toDateKeyTZ = (iso, timeZone = "Asia/Bangkok") =>
   }).format(new Date(iso));
 
 const Conversation = ({ translatedTo }) => {
+  const { t } = useTranslation("components", { keyPrefix: "conversation" });
   const authUser = useAuthStore((s) => s.authUser);
   const selectedConversation = useChatStore((s) => s.selectedConversation);
   const isChatbotResponding = useChatStore((s) => s.isChatbotResponding);
@@ -76,6 +79,21 @@ const Conversation = ({ translatedTo }) => {
     return { groupsSorted: groups, groupCounts: counts, flat: flatArr };
   }, [data]);
 
+  const handleGetMessages = async () => {
+    try {
+      getMessages({
+        conversationId: selectedConversation.conversation._id,
+        lastMessageId: data[0].message._id,
+      });
+    } catch (error) {
+      showToast({
+        type: "error",
+        message: t("toast.getMessages.error"),
+      });
+      console.error("Error fetching messages:", error);
+    }
+  };
+
   useEffect(() => {
     if (!virtuosoRef.current) return;
 
@@ -112,12 +130,7 @@ const Conversation = ({ translatedTo }) => {
         } top-8 left-1/2 -translate-x-1/2 z-10 `}
       >
         <CommonRoundedButton
-          onClick={() => {
-            getMessages({
-              conversationId: selectedConversation.conversation._id,
-              lastMessageId: data[0].message._id,
-            });
-          }}
+          onClick={handleGetMessages}
           className={`${
             isGettingMessages ? "pointer-events-none" : ""
           } rounded-full`}

@@ -1,5 +1,12 @@
 {
   "Components": {
+    "conversation": {
+      "toast": {
+        "getMessages": {
+          "error": "Failed to fetch messages. Please try again later."
+        }
+      }
+    },
     "message": {
       "toast": {
         "translateText": {
@@ -295,7 +302,15 @@
       }
     },
     "textEditor": {
-      "placeholder": "Type a message"
+      "placeholder": "Type a message",
+      "toast": {
+        "handleSendMessage": {
+          "error": "Failed to send message. Please try again later"
+        },
+        "handleSendMessageChatbot": {
+          "error": "Failed to send message. Please try again later"
+        }
+      }
     },
     "friendCard_GroupChatMemberList": {
       "toast": {
