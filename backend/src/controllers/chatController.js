@@ -577,3 +577,47 @@ export const getTotalConversationQuantityAboveFilter = async (req, res) => {
     });
   }
 };
+
+export const getConversationsHaveUnSeenMessages = async (req, res) => {
+  try {
+    const currentUserId = req.user._id;
+    const myConversationIds = await ConversationMember.find({
+      userId: currentUserId,
+    }).distinct("conversationId");
+    const notMyRecentMessage = await Message.find({
+      conversationId: { $in: myConversationIds },
+      senderId: { $ne: currentUserId },
+    }).select("_id conversationId");
+    const unSeenMessages = notMyRecentMessage.map(async (msg) => {
+      const isSeen = await SeenBy.findOne({
+        messageId: msg._id,
+        userId: currentUserId,
+      });
+      return isSeen ? null : msg.conversationId;
+    });
+    const unSeenMessageQuantity = (await Promise.all(unSeenMessages)).filter(
+      Boolean
+    );
+    const uniqueUnSeenConversationIds = [
+      ...new Set(unSeenMessageQuantity.map((id) => id.toString())),
+    ];
+    res.status(200).json({
+      success: true,
+      data: {
+        conversations: uniqueUnSeenConversationIds,
+        total: {
+          conversations: uniqueUnSeenConversationIds.length,
+        },
+      },
+      message: "",
+    });
+  } catch (error) {
+    console.error("Error fetching total conversation quantity:", error);
+    res.status(500).json({
+      locale: req.i18n.language,
+      message: req.t(
+        "errors:chatRoute.getConversationsHaveUnSeenMessages.error"
+      ),
+    });
+  }
+};

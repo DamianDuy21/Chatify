@@ -43,6 +43,12 @@ const FriendCard_v2_FriendsPage = ({
   );
   const conversations = useChatStore((s) => s.conversations);
   const setConversations = useChatStore((s) => s.setConversations);
+  const setConversationsHaveUnSeenMessages = useChatStore(
+    (s) => s.setConversationsHaveUnSeenMessages
+  );
+  const conversationsHaveUnSeenMessages = useChatStore(
+    (s) => s.conversationsHaveUnSeenMessages
+  );
 
   const { mutate: deleteFriendMutation, isPending: isDeleting } = useMutation({
     mutationFn: deleteFriendAPI,
@@ -79,6 +85,11 @@ const FriendCard_v2_FriendsPage = ({
           )
         );
         setSelectedConversation(data.conversations[0]);
+        setConversationsHaveUnSeenMessages(
+          conversationsHaveUnSeenMessages.filter(
+            (id) => id !== data.conversations[0].conversation._id
+          )
+        );
         navigate(`/chats`);
       } else {
         const { data: newConvData } = await createPrivateConversationAPI(

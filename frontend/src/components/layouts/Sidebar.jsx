@@ -16,6 +16,9 @@ const Sidebar = () => {
   const authUser = useAuthStore((s) => s.authUser);
   const conversations = useChatStore((s) => s.conversations);
   const isGettingConversations = useChatStore((s) => s.isGettingConversations);
+  const conversationsHaveUnSeenMessages = useChatStore(
+    (s) => s.conversationsHaveUnSeenMessages
+  );
 
   const { t } = useTranslation("sidebar");
   const location = useLocation();
@@ -43,7 +46,9 @@ const Sidebar = () => {
     const unseenCount = conversations.reduce((total, conv) => {
       return total + (conv.unSeenMessageQuantity || 0);
     }, 0);
-    setTotalUnseenMessages(unseenCount);
+    setTotalUnseenMessages(
+      unseenCount + conversationsHaveUnSeenMessages.length
+    );
   }, [conversations]);
 
   return (

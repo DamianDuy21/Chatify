@@ -150,6 +150,9 @@
     },
     "getTotalConversationQuantityAboveFilter": {
       "error": "Failed to fetch total conversation quantity. Please try again later."
+    },
+    "getConversationsHaveUnSeenMessages": {
+      "error": "Failed to fetch conversations with unseen messages. Please try again later."
     }
   }
 }

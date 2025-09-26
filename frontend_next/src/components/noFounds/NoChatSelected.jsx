@@ -34,6 +34,12 @@ const NoChatSelected = ({ hasFriends }) => {
   const setTotalConversationQuantityUnderFilter = useChatStore(
     (s) => s.setTotalConversationQuantityUnderFilter
   );
+  const setConversationsHaveUnSeenMessages = useChatStore(
+    (s) => s.setConversationsHaveUnSeenMessages
+  );
+  const conversationsHaveUnSeenMessages = useChatStore(
+    (s) => s.conversationsHaveUnSeenMessages
+  );
 
   const handleGetChatbot = async () => {
     try {
@@ -43,6 +49,12 @@ const NoChatSelected = ({ hasFriends }) => {
       });
       if (isAlreadyHaveChatbot.conversations[0]) {
         setSelectedConversation(isAlreadyHaveChatbot.conversations[0]);
+        setConversationsHaveUnSeenMessages(
+          conversationsHaveUnSeenMessages.filter(
+            (id) =>
+              id !== isAlreadyHaveChatbot.conversations[0].conversation._id
+          )
+        );
         return;
       }
       const { data: newChatbotConversation } = await createChatbotAPI();
@@ -98,6 +110,11 @@ const NoChatSelected = ({ hasFriends }) => {
                 );
                 if (chatbotConversation) {
                   setSelectedConversation(chatbotConversation);
+                  setConversationsHaveUnSeenMessages(
+                    conversationsHaveUnSeenMessages.filter(
+                      (id) => id !== chatbotConversation.conversation._id
+                    )
+                  );
                   return;
                 } else {
                   handleGetChatbot();

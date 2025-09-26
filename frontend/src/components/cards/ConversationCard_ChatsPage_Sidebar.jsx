@@ -17,6 +17,12 @@ const ConversationCard_ChatsPage_Sidebar = ({
   const conversations = useChatStore((s) => s.conversations);
   const userPresenceList = useAuthStore((s) => s.userPresenceList);
   const authUser = useAuthStore((s) => s.authUser);
+  const setConversationsHaveUnSeenMessages = useChatStore(
+    (s) => s.setConversationsHaveUnSeenMessages
+  );
+  const conversationsHaveUnSeenMessages = useChatStore(
+    (s) => s.conversationsHaveUnSeenMessages
+  );
 
   const { t } = useTranslation("components", {
     keyPrefix: "conversationCard_ChatsPage_Sidebar",
@@ -43,6 +49,11 @@ const ConversationCard_ChatsPage_Sidebar = ({
           )
         );
         setSelectedConversation(conversation);
+        setConversationsHaveUnSeenMessages(
+          conversationsHaveUnSeenMessages.filter(
+            (id) => id !== conversation.conversation._id
+          )
+        );
       }}
     >
       <div className="flex items-center gap-3 relative">

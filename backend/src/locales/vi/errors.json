@@ -150,6 +150,9 @@
     },
     "getTotalConversationQuantityAboveFilter": {
       "error": "Đã xảy ra lỗi khi lấy tổng số lượng cuộc trò chuyện. Vui lòng thử lại sau."
+    },
+    "getConversationsHaveUnSeenMessages": {
+      "error": "Đã xảy ra lỗi khi lấy các cuộc trò chuyện có tin nhắn chưa xem. Vui lòng thử lại sau."
     }
   }
 }

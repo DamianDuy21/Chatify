@@ -27,6 +27,11 @@ export default function AuthAndOnboardClientProvider({ children }) {
   const getTotalConversationQuantityAboveFilter = useChatStore(
     (s) => s.getTotalConversationQuantityAboveFilter
   );
+
+  const getConversationsHaveUnSeenMessages = useChatStore(
+    (s) => s.getConversationsHaveUnSeenMessages
+  );
+
   const setConversationNameFilter = useChatStore(
     (s) => s.setConversationNameFilter
   );
@@ -68,6 +73,10 @@ export default function AuthAndOnboardClientProvider({ children }) {
   useEffect(() => {
     getTotalConversationQuantityAboveFilter();
   }, [getTotalConversationQuantityAboveFilter]);
+
+  useEffect(() => {
+    getConversationsHaveUnSeenMessages();
+  }, [getConversationsHaveUnSeenMessages]);
 
   useEffect(() => {
     setConversationNameFilter("");

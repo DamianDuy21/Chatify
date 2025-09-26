@@ -41,6 +41,9 @@ const App = () => {
   const getTotalConversationQuantityAboveFilter = useChatStore(
     (s) => s.getTotalConversationQuantityAboveFilter
   );
+  const getConversationsHaveUnSeenMessages = useChatStore(
+    (s) => s.getConversationsHaveUnSeenMessages
+  );
   const setConversationNameFilter = useChatStore(
     (s) => s.setConversationNameFilter
   );
@@ -77,10 +80,11 @@ const App = () => {
     }
     if (authUser) {
       getTotalConversationQuantityAboveFilter();
+      getConversationsHaveUnSeenMessages();
     }
     setConversationNameFilter("");
     setSelectedConversation(null);
-  }, [authUser]);
+  }, [authUser?.user?._id]);
 
   useEffect(() => {
     if (!socketChat) return;

@@ -274,6 +274,13 @@ export const getTotalConversationQuantityAboveFilterAPI = async () => {
   return response.data;
 };
 
+export const getConversationsHaveUnSeenMessagesAPI = async () => {
+  const response = await axiosInstance.get(
+    "/chat/conversations/have-unseen-messages"
+  );
+  return response.data;
+};
+
 export const getMessagesAPI = async (
   conversationId = null,
   lastMessageId = null,

@@ -3,6 +3,7 @@
 import { create } from "zustand";
 import {
   getConversationsAPI,
+  getConversationsHaveUnSeenMessagesAPI,
   getMessagesAPI,
   getTotalConversationQuantityAboveFilterAPI,
   markMessageAsSeenAPI,
@@ -26,6 +27,7 @@ export const useChatStore = create((set, get) => ({
   conversationNameFilter: "",
   totalConversationQuantityAboveFilter: 0,
   totalConversationQuantityUnderFilter: 0,
+  conversationsHaveUnSeenMessages: [],
 
   currentConversationPage: 1,
 
@@ -38,6 +40,8 @@ export const useChatStore = create((set, get) => ({
     set({ totalConversationQuantityAboveFilter: quantity }),
   setTotalConversationQuantityUnderFilter: (quantity) =>
     set({ totalConversationQuantityUnderFilter: quantity }),
+  setConversationsHaveUnSeenMessages: (conversations) =>
+    set({ conversationsHaveUnSeenMessages: conversations }),
 
   setCurrentConversationPage: (page) => set({ currentConversationPage: page }),
 
@@ -49,6 +53,18 @@ export const useChatStore = create((set, get) => ({
     } catch (error) {
       console.error(
         "Failed to fetch total conversations quantity above filter:",
+        error
+      );
+    }
+  },
+
+  getConversationsHaveUnSeenMessages: async () => {
+    try {
+      const { data } = await getConversationsHaveUnSeenMessagesAPI();
+      set({ conversationsHaveUnSeenMessages: data.conversations || [] });
+    } catch (error) {
+      console.error(
+        "Failed to fetch conversations have unseen messages:",
         error
       );
     }
