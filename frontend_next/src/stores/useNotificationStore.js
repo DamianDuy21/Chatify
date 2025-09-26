@@ -447,6 +447,9 @@ export const useNotificationStore = create((set, get) => ({
         }
         return {
           pendingIncomingRequests: [...updatedRequests, data],
+          totalIncomingRequestQuantity: exists
+            ? state.totalIncomingRequestQuantity
+            : state.totalIncomingRequestQuantity + 1,
         };
       });
 

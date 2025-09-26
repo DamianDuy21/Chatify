@@ -390,7 +390,7 @@ const NotificationsPage = () => {
             return [request, ...prev];
           });
           setIncomingFriendRequestsQuantity((prev) => prev + 1);
-          setTotalIncomingRequestQuantity(totalIncomingRequestQuantity + 1);
+          // setTotalIncomingRequestQuantity(totalIncomingRequestQuantity + 1);
           setTotalIncomingFriendRequestsPages(
             Math.ceil((incomingFriendRequestsQuantity + 1) / pageSize)
           );
