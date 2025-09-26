@@ -542,7 +542,12 @@ export const useNotificationStore = create((set, get) => ({
 
         if (isFitFilter) {
           tmpConversations = [
-            data.conversationIsNewCreated,
+            {
+              ...data.conversationIsNewCreated,
+              users: data.conversationIsNewCreated.users.filter(
+                (u) => u.user._id !== authUser.user._id
+              ),
+            },
             ...tmpConversations,
           ];
           setConversations(tmpConversations);
