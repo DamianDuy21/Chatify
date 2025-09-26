@@ -46,6 +46,9 @@ export default function AuthAndOnboardClientProvider({ children }) {
   const unsubscribeFromNotifications = useNotificationStore(
     (s) => s.unsubscribeFromNotifications
   );
+  const getTotalNotificationQuantity = useNotificationStore(
+    (s) => s.getTotalNotificationQuantity
+  );
 
   // ----- Sockets -----
   const socketChat = useAuthStore((s) => s.socketChat);
@@ -69,6 +72,10 @@ export default function AuthAndOnboardClientProvider({ children }) {
   useEffect(() => {
     getLanguages();
   }, [getLanguages]);
+
+  useEffect(() => {
+    getTotalNotificationQuantity();
+  }, [getTotalNotificationQuantity]);
 
   useEffect(() => {
     getTotalConversationQuantityAboveFilter();

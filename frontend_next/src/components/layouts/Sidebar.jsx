@@ -1,6 +1,7 @@
 "use client";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useChatStore } from "@/stores/useChatStore";
+import { useNotificationStore } from "@/stores/useNotificationStore";
 import {
   Badge,
   BellIcon,
@@ -22,6 +23,14 @@ const Sidebar = () => {
   const isGettingConversations = useChatStore((s) => s.isGettingConversations);
   const conversationsHaveUnSeenMessages = useChatStore(
     (s) => s.conversationsHaveUnSeenMessages
+  );
+
+  // unseen notifications
+  const totalNotificationQuantity = useNotificationStore(
+    (s) => s.totalNotificationQuantity
+  );
+  const totalIncomingRequestQuantity = useNotificationStore(
+    (s) => s.totalIncomingRequestQuantity
   );
 
   const pathname = usePathname();
@@ -141,9 +150,11 @@ const Sidebar = () => {
                 {t("pages.notifications")}
               </span>
             ) : null}
-            {/* <div className="absolute right-1 -top-0 lg:right-4 lg:top-1/2 lg:transform lg:-translate-y-1/2">
-              <span className="size-2 rounded-full bg-primary inline-block opacity-100" />
-            </div> */}
+            {totalNotificationQuantity + totalIncomingRequestQuantity > 0 && (
+              <div className="absolute right-1 -top-0 lg:right-4 lg:top-1/2 lg:transform lg:-translate-y-1/2">
+                <span className="size-2 rounded-full bg-primary inline-block opacity-100" />
+              </div>
+            )}
           </Link>
         </nav>
 

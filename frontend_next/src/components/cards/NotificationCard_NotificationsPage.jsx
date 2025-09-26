@@ -8,6 +8,7 @@ import { acceptNotificationAPI, deleteNotificationAPI } from "../../lib/api";
 import { showToast } from "../costumed/CostumedToast";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import { useNotificationStore } from "@/stores/useNotificationStore";
 
 const NotificationCard_NotificationsPage = ({
   notification,
@@ -16,6 +17,14 @@ const NotificationCard_NotificationsPage = ({
   onSuccessDelete,
   onError,
 }) => {
+  // unseen notifications
+  const totalNotificationQuantity = useNotificationStore(
+    (s) => s.totalNotificationQuantity
+  );
+
+  const setTotalNotificationQuantity = useNotificationStore(
+    (s) => s.setTotalNotificationQuantity
+  );
   const t = useTranslations("Components.notificationCard_notificationsPage");
   const { mutate: acceptNotificationMutation, isPending: isAccepting } =
     useMutation({
@@ -27,6 +36,9 @@ const NotificationCard_NotificationsPage = ({
         //     data?.message || t("toast.acceptNotificationMutation.success"),
         //   type: "success",
         // });
+        if (notification.status === "pending") {
+          setTotalNotificationQuantity(totalNotificationQuantity - 1);
+        }
       },
       onError: (error) => {
         onError();
@@ -44,6 +56,9 @@ const NotificationCard_NotificationsPage = ({
       mutationFn: deleteNotificationAPI,
       onSuccess: (data) => {
         onSuccessDelete(data);
+        if (notification.status === "pending") {
+          setTotalNotificationQuantity(totalNotificationQuantity - 1);
+        }
         showToast({
           message:
             data?.message || t("toast.deleteNotificationMutation.success"),

@@ -38,6 +38,10 @@ const App = () => {
   const unsubscribeFromNotifications = useNotificationStore(
     (s) => s.unsubscribeFromNotifications
   );
+  const getTotalNotificationQuantity = useNotificationStore(
+    (s) => s.getTotalNotificationQuantity
+  );
+
   const getTotalConversationQuantityAboveFilter = useChatStore(
     (s) => s.getTotalConversationQuantityAboveFilter
   );
@@ -81,6 +85,7 @@ const App = () => {
     if (authUser) {
       getTotalConversationQuantityAboveFilter();
       getConversationsHaveUnSeenMessages();
+      getTotalNotificationQuantity();
     }
     setConversationNameFilter("");
     setSelectedConversation(null);

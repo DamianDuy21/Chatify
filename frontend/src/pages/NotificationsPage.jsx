@@ -19,6 +19,19 @@ import { useTranslation } from "react-i18next";
 
 const NotificationsPage = () => {
   const { t } = useTranslation("notificationsPage");
+
+  // unseen notifications
+  const totalNotificationQuantity = useNotificationStore(
+    (s) => s.totalNotificationQuantity
+  );
+  const totalIncomingRequestQuantity = useNotificationStore(
+    (s) => s.totalIncomingRequestQuantity
+  );
+
+  const setTotalIncomingRequestQuantity = useNotificationStore(
+    (s) => s.setTotalIncomingRequestQuantity
+  );
+
   const pendingNotifications = useNotificationStore(
     (s) => s.pendingNotifications
   );
@@ -180,6 +193,7 @@ const NotificationsPage = () => {
           prev.filter((request) => request.user._id != otherUserId)
         );
         setIncomingFriendRequestsQuantity((prev) => prev - 1);
+        setTotalIncomingRequestQuantity(totalIncomingRequestQuantity - 1);
       }
     } else {
       fetchIncomingFriendRequests({ page: currentPage });
@@ -290,10 +304,13 @@ const NotificationsPage = () => {
 
   const fetchIncomingFriendRequests = async (args = {}) => {
     setIsLoadingIncomingFriendRequests(true);
+    setIncomingFriendRequestsQuantity(0);
+    setTotalIncomingRequestQuantity(0);
     try {
       const { data } = await getIncomingFriendRequestsAPI(args);
       setIncomingFriendRequests(data.requests);
       setIncomingFriendRequestsQuantity(data.pagination.total);
+      setTotalIncomingRequestQuantity(data.pagination.total);
       setTotalIncomingFriendRequestsPages(data.pagination.totalPages);
     } catch (error) {
       showToast({
@@ -371,6 +388,7 @@ const NotificationsPage = () => {
             return [request, ...prev];
           });
           setIncomingFriendRequestsQuantity((prev) => prev + 1);
+          setTotalIncomingRequestQuantity(totalIncomingRequestQuantity + 1);
           setTotalIncomingFriendRequestsPages(
             Math.ceil((incomingFriendRequestsQuantity + 1) / pageSize)
           );
@@ -394,6 +412,9 @@ const NotificationsPage = () => {
             prev.filter((n) => n.notification._id !== exists.notification._id)
           );
           setNotifications((prev) => [request, ...prev]);
+          // if (exists.notification.status !== "pending") {
+          //   setTotalNotificationQuantity(totalNotificationQuantity + 1);
+          // }
         } else if (!exists) {
           setNotifications((prev) => {
             if (prev.length >= pageSize) {
@@ -402,6 +423,7 @@ const NotificationsPage = () => {
             return [request, ...prev];
           });
           setNotificationsQuantity((prev) => prev + 1);
+          // setTotalNotificationQuantity(totalNotificationQuantity + 1);
           setTotalNotificationsPages(
             Math.ceil((notificationsQuantity + 1) / pageSize)
           );
@@ -507,7 +529,7 @@ const NotificationsPage = () => {
                     {t("notifications.title")}
                   </h1>
 
-                  <CountBadge count={notificationsQuantity}></CountBadge>
+                  <CountBadge count={totalNotificationQuantity}></CountBadge>
                 </div>
 
                 {!isShowMoreNotifications ? (

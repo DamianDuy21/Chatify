@@ -1201,3 +1201,36 @@ export const getFriendsCouldBeAddedToGroup = async (req, res) => {
     });
   }
 };
+
+export const getTotalNotificationQuantity = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const totalNotificationQuantity = await Notification.countDocuments({
+      userId,
+      status: "pending",
+    });
+    const totalFriendRequestQuantity = await FriendRequest.countDocuments({
+      recipientId: userId,
+      status: "pending",
+    });
+    const total = totalNotificationQuantity + totalFriendRequestQuantity;
+    return res.status(200).json({
+      success: true,
+      message: "",
+      data: {
+        total: {
+          notifications: totalNotificationQuantity,
+          friendRequests: totalFriendRequestQuantity,
+          total,
+        },
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching total notification quantity:", error);
+    res.status(500).json({
+      success: false,
+      locale: req.i18n.language,
+      message: req.t("errors:userRoute.getTotalNotificationQuantity.error"),
+    });
+  }
+};

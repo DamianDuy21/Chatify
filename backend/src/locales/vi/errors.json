@@ -62,6 +62,9 @@
     }
   },
   "userRoute": {
+    "getTotalNotificationQuantity": {
+      "error": "Có lỗi khi lấy tổng số thông báo. Vui lòng thử lại sau."
+    },
     "getLanguages": {
       "error": "Có lỗi khi lấy danh sách ngôn ngữ. Vui lòng thử lại sau."
     },

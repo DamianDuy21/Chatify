@@ -62,6 +62,9 @@
     }
   },
   "userRoute": {
+    "getTotalNotificationQuantity": {
+      "error": "Failed to fetch total notification quantity. Please try again later."
+    },
     "getLanguages": {
       "error": "Failed to fetch languages. Please try again later."
     },

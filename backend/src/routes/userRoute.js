@@ -9,6 +9,7 @@ import {
   getNotifications,
   getOutgoingFriendRequests,
   getRecommendedUsers,
+  getTotalNotificationQuantity,
   sendFriendRequest,
   updateFriendRequest,
   updateNotification,
@@ -48,5 +49,6 @@ userRoute.get("/friends/incoming-friend-requests", getIncomingFriendRequests);
 
 userRoute.get("/notifications", getNotifications);
 userRoute.put("/notification/:id", updateNotification);
+userRoute.get("/notifications/total", getTotalNotificationQuantity);
 
 export default userRoute;

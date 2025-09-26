@@ -2,7 +2,10 @@ import { create } from "zustand";
 import { isConversationFitFilter } from "../lib/utils.js";
 import { useAuthStore } from "./useAuthStore.js";
 import { useChatStore } from "./useChatStore.js";
-import { getConversationsAPI } from "../lib/api.js";
+import {
+  getConversationsAPI,
+  getTotalNotificationQuantityAPI,
+} from "../lib/api.js";
 
 const pageSize = 12;
 
@@ -10,6 +13,8 @@ export const useNotificationStore = create((set, get) => ({
   pendingIncomingRequests: [],
   pendingFriends: [],
   pendingNotifications: [],
+  totalNotificationQuantity: 0,
+  totalIncomingRequestQuantity: 0,
 
   setPendingIncomingRequests: (requests) => {
     set({ pendingIncomingRequests: requests });
@@ -19,6 +24,23 @@ export const useNotificationStore = create((set, get) => ({
   },
   setPendingNotifications: (notifications) => {
     set({ pendingNotifications: notifications });
+  },
+
+  setTotalNotificationQuantity: (quantity) => {
+    set({ totalNotificationQuantity: quantity });
+  },
+  setTotalIncomingRequestQuantity: (quantity) => {
+    set({ totalIncomingRequestQuantity: quantity });
+  },
+
+  getTotalNotificationQuantity: async () => {
+    try {
+      const { data } = await getTotalNotificationQuantityAPI();
+      set({ totalNotificationQuantity: data.total.notifications || 0 });
+      set({ totalIncomingRequestQuantity: data.total.friendRequests || 0 });
+    } catch (error) {
+      console.error("Failed to fetch total notification quantity:", error);
+    }
   },
 
   sendFriendRequest_NotificationStore: async (data) => {
@@ -146,6 +168,7 @@ export const useNotificationStore = create((set, get) => ({
             newNotification,
             ...state.pendingNotifications,
           ].slice(0, pageSize),
+          totalNotificationQuantity: state.totalNotificationQuantity + 1,
         };
       });
 
@@ -246,6 +269,7 @@ export const useNotificationStore = create((set, get) => ({
             newNotification,
             ...state.pendingNotifications,
           ].slice(0, pageSize),
+          totalNotificationQuantity: state.totalNotificationQuantity + 1,
         };
       });
 
@@ -279,6 +303,7 @@ export const useNotificationStore = create((set, get) => ({
             newNotification,
             ...state.pendingNotifications,
           ].slice(0, pageSize),
+          totalNotificationQuantity: state.totalNotificationQuantity + 1,
         };
       });
       const conversationId = data.conversation.conversation._id;
@@ -390,6 +415,7 @@ export const useNotificationStore = create((set, get) => ({
             newNotification,
             ...state.pendingNotifications,
           ].slice(0, pageSize),
+          totalNotificationQuantity: state.totalNotificationQuantity + 1,
         };
       });
       const { data: newConversation } = await getConversationsAPI({
@@ -484,6 +510,7 @@ export const useNotificationStore = create((set, get) => ({
             newNotification,
             ...state.pendingNotifications,
           ].slice(0, pageSize),
+          totalNotificationQuantity: state.totalNotificationQuantity + 1,
         };
       });
 

@@ -6,6 +6,7 @@ import { useMutation } from "@tanstack/react-query";
 import { acceptNotificationAPI, deleteNotificationAPI } from "../../lib/api";
 import { showToast } from "../costumed/CostumedToast";
 import { useTranslation } from "react-i18next";
+import { useNotificationStore } from "../../stores/useNotificationStore";
 
 const NotificationCard_NotificationsPage = ({
   notification,
@@ -14,6 +15,14 @@ const NotificationCard_NotificationsPage = ({
   onSuccessDelete,
   onError,
 }) => {
+  // unseen notifications
+  const totalNotificationQuantity = useNotificationStore(
+    (s) => s.totalNotificationQuantity
+  );
+
+  const setTotalNotificationQuantity = useNotificationStore(
+    (s) => s.setTotalNotificationQuantity
+  );
   const { i18n } = useTranslation();
   const getUserLocaleClient = () => {
     if (typeof window === "undefined") return "vi";
@@ -33,6 +42,9 @@ const NotificationCard_NotificationsPage = ({
         //     data?.message || t("toast.acceptNotificationMutation.success"),
         //   type: "success",
         // });
+        if (notification.status === "pending") {
+          setTotalNotificationQuantity(totalNotificationQuantity - 1);
+        }
       },
       onError: (error) => {
         onError();
@@ -50,6 +62,9 @@ const NotificationCard_NotificationsPage = ({
       mutationFn: deleteNotificationAPI,
       onSuccess: (data) => {
         onSuccessDelete(data);
+        if (notification.status === "pending") {
+          setTotalNotificationQuantity(totalNotificationQuantity - 1);
+        }
         showToast({
           message:
             data?.message || t("toast.deleteNotificationMutation.success"),

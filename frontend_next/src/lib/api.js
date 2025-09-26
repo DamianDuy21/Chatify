@@ -123,6 +123,11 @@ export const getIncomingFriendRequestsAPI = async (args = {}) => {
   return response.data;
 };
 
+export const getTotalNotificationQuantityAPI = async () => {
+  const response = await axiosInstance.get("/user/notifications/total");
+  return response.data;
+};
+
 export const getNotificationsAPI = async (args = {}) => {
   const { page = 1, limit = 12 } = args;
   const response = await axiosInstance.get("/user/notifications", {
