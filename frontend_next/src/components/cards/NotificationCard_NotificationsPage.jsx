@@ -22,11 +22,11 @@ const NotificationCard_NotificationsPage = ({
       mutationFn: acceptNotificationAPI,
       onSuccess: (data) => {
         onSuccessAccept(data);
-        showToast({
-          message:
-            data?.message || t("toast.acceptNotificationMutation.success"),
-          type: "success",
-        });
+        // showToast({
+        //   message:
+        //     data?.message || t("toast.acceptNotificationMutation.success"),
+        //   type: "success",
+        // });
       },
       onError: (error) => {
         onError();
@@ -61,7 +61,19 @@ const NotificationCard_NotificationsPage = ({
       },
     });
   return (
-    <div key={notification._id} className="card bg-base-200 shadow-sm">
+    <div
+      key={notification._id}
+      className={`card ${
+        notification?.status == "pending"
+          ? "cursor-pointer bg-base-200 hover:shadow-md transition-all duration-300"
+          : "border border-base-200"
+      }`}
+      onClick={() => {
+        if (notification?.status == "pending") {
+          acceptNotificationMutation(notification._id);
+        }
+      }}
+    >
       <div className={`card-body p-4 pr-[106px]`}>
         <div className="flex items-start gap-3">
           <div className="avatar">
@@ -105,7 +117,7 @@ const NotificationCard_NotificationsPage = ({
             </p>
           </div>
 
-          {notification?.status == "pending" && (
+          {/* {notification?.status == "pending" && (
             <CommonRoundedButton
               className={`absolute top-4 right-14 ${
                 isAccepting ? "pointer-events-none opacity-70" : ""
@@ -121,7 +133,7 @@ const NotificationCard_NotificationsPage = ({
                 <Check className="size-4" />
               )}
             </CommonRoundedButton>
-          )}
+          )} */}
 
           <CommonRoundedButton
             className={`absolute top-4 right-4 ${

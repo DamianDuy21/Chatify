@@ -94,7 +94,7 @@ const ThemeSelector = () => {
               ${
                 theme === themeOption.name
                   ? "bg-primary/10 text-primary"
-                  : "hover:bg-base-content/5"
+                  : "hover:bg-base-content/10"
               }
             `}
                 onClick={() => {
