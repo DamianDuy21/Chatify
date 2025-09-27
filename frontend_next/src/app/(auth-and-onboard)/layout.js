@@ -7,7 +7,7 @@ export default async function AuthAndOnboardLayout({ children }) {
   const authData = await getAuthSession();
 
   if (!authData || !authData.data.user) {
-    return redirect("/signin");
+    // return redirect("/signin");
   }
   if (authData && !authData.data.user.isOnboarded) {
     return redirect("/onboarding");
