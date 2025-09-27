@@ -43,7 +43,7 @@ const LoginPage = () => {
     loginMutation(cleanedLoginData);
   };
 
-  Cookies.remove("jwt_chatify");
+  // Cookies.remove("jwt_chatify");
   return (
     <>
       <div
