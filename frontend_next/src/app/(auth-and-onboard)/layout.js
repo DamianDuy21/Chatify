@@ -3,8 +3,6 @@ import { getAuthSession } from "@/lib/auth";
 import AuthAndOnboardClientProvider from "@/providers/AuthAndOnboardClientProvider";
 import { redirect } from "next/navigation";
 
-export const dynamic = "force-dynamic";
-
 export default async function AuthAndOnboardLayout({ children }) {
   const authData = await getAuthSession();
 

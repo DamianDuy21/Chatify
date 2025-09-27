@@ -4,7 +4,6 @@ import { redirect } from "next/navigation";
 
 export default async function PublicLayout({ children }) {
   const authData = await getAuthSession();
-  console.log("PublicLayout ~ authData:", authData);
 
   if (authData && authData.data.user && authData.data.user.isOnboarded) {
     return redirect("/");
