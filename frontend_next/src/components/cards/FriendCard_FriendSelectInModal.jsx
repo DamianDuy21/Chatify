@@ -2,6 +2,7 @@
 import { getLocaleById } from "@/lib/utils";
 import { getLanguageFlag } from "./FriendCard_Func";
 import { useAuthStore } from "@/stores/useAuthStore";
+import Image from "next/image";
 
 const FriendCard_FriendSelectInModal = ({
   friend = null,
@@ -32,7 +33,12 @@ const FriendCard_FriendSelectInModal = ({
         <div className="flex items-center gap-3 relative">
           <div className="avatar">
             <div className="w-10 rounded-full">
-              <img src={friend?.profile?.profilePic} alt="" />
+              <Image
+                src={friend?.profile?.profilePic}
+                alt="avatar"
+                width={40}
+                height={40}
+              />
             </div>
           </div>
 

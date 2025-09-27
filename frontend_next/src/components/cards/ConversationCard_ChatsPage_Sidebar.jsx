@@ -3,6 +3,7 @@ import { useTranslations } from "next-intl";
 import { useAuthStore } from "../../stores/useAuthStore";
 import { useChatStore } from "../../stores/useChatStore";
 import CostumedAvatarGroupChat from "@/components/costumed/CostumedAvatarGroupChat";
+import Image from "next/image";
 
 const ConversationCard_ChatsPage_Sidebar = ({
   isFirstCard,
@@ -59,9 +60,14 @@ const ConversationCard_ChatsPage_Sidebar = ({
         <div className="avatar">
           <div className="w-10 rounded-full">
             {conversation.conversation?.type == "private" ? (
-              <img
-                src={conversation?.users[0]?.user?.profile?.profilePic}
-                alt=""
+              <Image
+                src={
+                  conversation?.users[0]?.user?.profile?.profilePic ||
+                  "https://avatar.iran.liara.run/public/20.png"
+                }
+                alt="avatar"
+                width={40}
+                height={40}
               />
             ) : conversation.conversation.type == "group" ? (
               <CostumedAvatarGroupChat conversation={conversation} />

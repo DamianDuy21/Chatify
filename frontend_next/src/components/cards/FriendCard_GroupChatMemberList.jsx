@@ -15,6 +15,7 @@ import { showToast } from "../costumed/CostumedToast";
 import { getLanguageFlag } from "./FriendCard_Func";
 import { useChatStore } from "../../stores/useChatStore";
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 
 const FriendCard_GroupChatMemberList = ({
   friend = null,
@@ -94,7 +95,12 @@ const FriendCard_GroupChatMemberList = ({
         <div className="flex items-center gap-3 relative">
           <div className="avatar">
             <div className="w-10 rounded-full">
-              <img src={friend?.user?.profile?.profilePic} alt="" />
+              <Image
+                src={friend?.user?.profile?.profilePic}
+                alt="avatar"
+                width={40}
+                height={40}
+              />
             </div>
           </div>
 

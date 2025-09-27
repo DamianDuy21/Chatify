@@ -47,6 +47,7 @@ import CostumedSelect from "../costumed/CostumedSelect.jsx";
 import { showToast } from "../costumed/CostumedToast.jsx";
 import Conversation from "./Conversation";
 import TextEditor from "./TextEditor";
+import Image from "next/image.js";
 
 const STREAM_API_KEY = process.env.NEXT_PUBLIC_STREAM_API_KEY;
 
@@ -648,12 +649,14 @@ const ChatWindow = () => {
               <div className="avatar">
                 <div className="w-10 rounded-full">
                   {selectedConversation.conversation?.type == "private" ? (
-                    <img
+                    <Image
                       src={
                         selectedConversation?.users[0]?.user?.profile
                           ?.profilePic
                       }
-                      alt=""
+                      alt="avatar"
+                      width={40}
+                      height={40}
                     />
                   ) : selectedConversation.conversation.type == "group" ? (
                     <CostumedAvatarGroupChat
@@ -1198,7 +1201,12 @@ const ChatWindow = () => {
                               key={index}
                               className="w-16 h-16 rounded-card overflow-hidden"
                             >
-                              <img src={image} alt={`Image ${index + 1}`} />
+                              <Image
+                                src={image}
+                                alt={`Image ${index + 1}`}
+                                width={64}
+                                height={64}
+                              />
                             </div>
                           );
                         })}
@@ -1270,7 +1278,12 @@ const ChatWindow = () => {
                               key={index}
                               className="w-16 h-16 rounded-card overflow-hidden"
                             >
-                              <img src={file} alt={`File ${index + 1}`} />
+                              <Image
+                                src={file}
+                                alt={`File ${index + 1}`}
+                                width={64}
+                                height={64}
+                              />
                             </div>
                           );
                         })}

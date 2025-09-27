@@ -160,7 +160,7 @@ const ProfilePage = () => {
                   {profilePic && (
                     <Image
                       src={profilePic}
-                      alt=""
+                      alt="avatar"
                       className="w-full h-full object-cover"
                       width={128}
                       height={128}

@@ -1,15 +1,15 @@
 "use client";
+import Message from "@/components/chats/Message";
 import { ChevronsDown, ChevronsUp, LoaderIcon } from "lucide-react";
-import { use, useEffect, useMemo, useRef, useState } from "react";
-import { GroupedVirtuoso, Virtuoso } from "react-virtuoso";
+import { useTranslations } from "next-intl";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { GroupedVirtuoso } from "react-virtuoso";
 import useCalm from "../../hooks/useCalm";
+import { formatISOToParts } from "../../lib/utils";
 import { useAuthStore } from "../../stores/useAuthStore";
 import { useChatStore } from "../../stores/useChatStore";
 import CommonRoundedButton from "../buttons/CommonRoundedButton";
-import Message from "@/components/chats/Message";
-import { formatISOToParts } from "../../lib/utils";
 import { showToast } from "../costumed/CostumedToast";
-import { useTranslations } from "next-intl";
 
 const getSenderId = (m) => m?.sender?._id ?? m?.message?.senderId ?? null;
 

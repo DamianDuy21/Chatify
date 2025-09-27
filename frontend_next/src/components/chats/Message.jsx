@@ -16,6 +16,7 @@ import { copyToClipboard, formatISOToParts, getLocaleById } from "@/lib/utils";
 import CommonRoundedButton from "../buttons/CommonRoundedButton";
 import { showToast } from "../costumed/CostumedToast";
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 
 const Message = ({
   ref,
@@ -124,7 +125,15 @@ const Message = ({
             // title={message.sender?.fullName}
           >
             {isShowAvatar && (
-              <img src={message.sender?.profile?.profilePic} alt="" />
+              <Image
+                src={
+                  message.sender?.profile?.profilePic ||
+                  "https://avatar.iran.liara.run/public/20.png"
+                }
+                alt="avatar"
+                width={40}
+                height={40}
+              />
             )}
           </div>
         ) : (

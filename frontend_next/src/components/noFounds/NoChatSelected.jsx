@@ -8,6 +8,7 @@ import { LoaderIcon } from "lucide-react";
 import { isConversationFitFilter } from "../../lib/utils";
 import { useAuthStore } from "../../stores/useAuthStore";
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 
 const NoChatSelected = ({ hasFriends }) => {
   const t = useTranslations("Components.noChatSelected");
@@ -88,10 +89,12 @@ const NoChatSelected = ({ hasFriends }) => {
   };
   return (
     <div className="relative aspect-square max-w-sm mx-auto">
-      <img
+      <Image
         className="w-full h-full"
         src={`/images/nochat_selected_pic/${theme}.png`}
         alt="No chat selected"
+        width={1000}
+        height={1000}
       />
       <div className="text-center">
         <h3 className="font-semibold mb-2">

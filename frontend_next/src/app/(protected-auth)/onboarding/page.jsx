@@ -147,7 +147,7 @@ const OnboardingPage = () => {
                   {profilePic && (
                     <Image
                       src={getProfilePicUrl(profilePic)}
-                      alt=""
+                      alt="avatar"
                       className="w-full h-full object-cover"
                       width={128}
                       height={128}

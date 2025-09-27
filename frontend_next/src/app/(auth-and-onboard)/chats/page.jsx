@@ -353,7 +353,7 @@ const ChatsPage = () => {
                 </div>
               ))}
               {conversations.length < totalConversationQuantityUnderFilter && (
-                <div className="flex justify-center items-center h-[62px]">
+                <div className="flex justify-center items-center h-[64px]">
                   <CommonRoundedButton
                     onClick={() => {
                       setCurrentConversationPage(currentConversationPage + 1);

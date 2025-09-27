@@ -95,7 +95,7 @@ const NotificationCard_NotificationsPage = ({
             <div className="w-10 rounded-full">
               <Image
                 src={user?.profile?.profilePic}
-                alt={""}
+                alt={"avatar"}
                 width={40}
                 height={40}
               />
