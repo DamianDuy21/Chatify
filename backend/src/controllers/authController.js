@@ -268,19 +268,19 @@ export const login = async (req, res) => {
       expire_at: new Date(Date.now() + 1 * 24 * 60 * 60 * 1000),
     });
 
-    res.cookie("jwt", token, {
-      httpOnly: true,
-      secure: true,
-      sameSite: "none",
-      maxAge: 24 * 60 * 60 * 1000,
-    });
+    // res.cookie("jwt", token, {
+    //   httpOnly: true,
+    //   secure: true,
+    //   sameSite: "none",
+    //   maxAge: 24 * 60 * 60 * 1000,
+    // });
 
     let resUser = user.toObject();
     delete resUser.password;
 
     return res.status(200).json({
       success: true,
-      data: { user: resUser },
+      data: { user: resUser, token },
       message: "",
     });
   } catch (error) {
@@ -297,7 +297,7 @@ export const logout = async (req, res) => {
   try {
     const token = req.token;
     await JWT.updateOne({ token }, { $set: { expire_at: new Date() } });
-    res.clearCookie("jwt");
+    // res.clearCookie("jwt");
 
     res.status(200).json({ success: true, message: "", data: {} });
   } catch (error) {

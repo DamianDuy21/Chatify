@@ -1,3 +1,4 @@
+import Cookies from "js-cookie";
 import { axiosInstance } from "./axiosInstance";
 import { axiosInstanceChat } from "./axiosInstanceChat";
 
@@ -29,12 +30,15 @@ export const signUpVerificationAPI = async ({
 export const loginAPI = async (data) => {
   const response = await axiosInstance.post("/auth/login", data);
 
+  const jwt = response.data.data?.token;
+  Cookies.remove("jwt_chatify");
+  Cookies.set("jwt_chatify", jwt, { expires: 1 });
   return response.data;
 };
 
 export const logoutAPI = async () => {
   const response = await axiosInstance.post("/auth/logout");
-
+  Cookies.remove("jwt_chatify");
   return response.data;
 };
 

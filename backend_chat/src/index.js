@@ -1,4 +1,4 @@
-import cookieParser from "cookie-parser";
+// import cookieParser from "cookie-parser";
 import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
@@ -41,7 +41,7 @@ await i18next.use(Backend).init({
 app.use(
   cors({
     origin: true,
-    credentials: true,
+    credentials: false,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "X-Locale", "Accept"],
   })
@@ -50,7 +50,7 @@ app.options("*", cors());
 
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
-app.use(cookieParser());
+// app.use(cookieParser());
 
 app.use(i18nextMiddleware.handle(i18next));
 

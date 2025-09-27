@@ -32,8 +32,8 @@ export const useAuthStore = create(
       signInAuthStore: async (loginData) => {
         try {
           await loginAPI(loginData);
-          const { data } = await getAuthUserAPI();
-          set({ authUser: data });
+          const { data: userData } = await getAuthUserAPI();
+          set({ authUser: userData });
           get().connectSocket();
         } catch (error) {
           console.error("Error signing in:", error);
@@ -50,7 +50,7 @@ export const useAuthStore = create(
           console.error("Error logging out:", error);
         } finally {
           set({ authUser: null });
-          Cookies.remove("jwt");
+          Cookies.remove("jwt_chatify");
           get().disconnectSocket();
         }
       },
@@ -64,7 +64,7 @@ export const useAuthStore = create(
         } catch (error) {
           set({ authUser: null });
           get().disconnectSocket();
-          Cookies.remove("jwt");
+          Cookies.remove("jwt_chatify");
           console.error("Error checking authentication:", error);
         } finally {
           set({ isGettingAuthUser: false });

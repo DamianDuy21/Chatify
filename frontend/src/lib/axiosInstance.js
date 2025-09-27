@@ -1,7 +1,9 @@
 import axios from "axios";
+import Cookies from "js-cookie";
 import { useAuthStore } from "../stores/useAuthStore";
 
 const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+const JWT_NAME = "jwt_chatify";
 
 export const axiosInstance = axios.create({
   baseURL: `${BACKEND_URL}/api`,
@@ -9,7 +11,17 @@ export const axiosInstance = axios.create({
     "Content-Type": "application/json",
     Accept: "application/json",
   },
-  withCredentials: true,
+});
+
+axiosInstance.interceptors.request.use((config) => {
+  const raw = Cookies.get(JWT_NAME);
+  if (raw) {
+    config.headers = {
+      ...(config.headers || {}),
+      Authorization: `Bearer ${raw}`,
+    };
+  }
+  return config;
 });
 
 axiosInstance.interceptors.response.use(

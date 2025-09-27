@@ -1,33 +1,23 @@
 import "server-only";
 import { cookies } from "next/headers";
 
-const rawSecret = process.env.JWT_SECRET_KEY;
-if (!rawSecret) {
-  throw new Error("Missing JWT_SECRET_KEY env var");
-}
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+const JWT_NAME = "jwt_chatify";
 
 export async function getAuthSession() {
   const cookieStore = await cookies();
-  const token = cookieStore.get("jwt")?.value;
+  const token = cookieStore.get(JWT_NAME)?.value;
 
   if (!token) return null;
 
   try {
-    const cookieHeader = cookieStore
-      .getAll()
-      .map((c) => `${c.name}=${encodeURIComponent(c.value)}`)
-      .join("; ");
-
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/auth/me`,
-      {
-        headers: {
-          Cookie: cookieHeader,
-          Accept: "application/json",
-        },
-        cache: "no-store",
-      }
-    );
+    const res = await fetch(`${BACKEND_URL}/api/auth/me`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        Accept: "application/json",
+      },
+      cache: "no-store",
+    });
 
     const authData = await res.json();
     return authData;
