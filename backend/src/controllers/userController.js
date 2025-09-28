@@ -932,10 +932,18 @@ export const updateProfile = async (req, res) => {
 
     await profile.save();
 
+    const resProfile = {
+      bio: profile.bio,
+      nativeLanguage: profile.nativeLanguage,
+      learningLanguage: profile.learningLanguage,
+      location: profile.location,
+      profilePic: profile.profilePic,
+    };
+
     res.status(200).json({
       success: true,
       message: "",
-      data: { profile: profile.toObject() },
+      data: { profile: resProfile },
     });
   } catch (error) {
     console.log("Error in updateProfile controller", error);

@@ -17,8 +17,16 @@ import { useAuthStore } from "@/stores/useAuthStore.js";
 import { useLanguageStore } from "@/stores/useLanguageStore.js";
 import Link from "next/link";
 import Image from "next/image";
+import { useChatStore } from "@/stores/useChatStore";
 
 const ProfilePage = () => {
+  const conversations = useChatStore((s) => s.conversations);
+  const setConversations = useChatStore((s) => s.setConversations);
+  const selectedConversation = useChatStore((s) => s.selectedConversation);
+  const setSelectedConversation = useChatStore(
+    (s) => s.setSelectedConversation
+  );
+
   const setAuthUser = useAuthStore((s) => s.setAuthUser);
   const authUser = useAuthStore((s) => s.authUser);
 
@@ -52,6 +60,39 @@ const ProfilePage = () => {
     useMutation({
       mutationFn: updateProfileAPI,
       onSuccess: (data) => {
+        setConversations(
+          conversations.map((conversation) => ({
+            ...conversation,
+            users: conversation.users.map((userObj) =>
+              userObj?.user?._id === authUser.user._id
+                ? {
+                    ...userObj,
+                    user: {
+                      ...userObj.user,
+                      profile: { ...data.data.profile },
+                    },
+                  }
+                : userObj
+            ),
+          }))
+        );
+
+        if (selectedConversation) {
+          setSelectedConversation({
+            ...selectedConversation,
+            users: selectedConversation.users.map((userObj) =>
+              userObj?.user?._id === authUser.user._id
+                ? {
+                    ...userObj,
+                    user: {
+                      ...userObj.user,
+                      profile: { ...data.data.profile },
+                    },
+                  }
+                : userObj
+            ),
+          });
+        }
         showToast({
           message: data.message || t("toast.updateProfileMutation.success"),
           type: "success",
