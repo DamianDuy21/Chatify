@@ -48,7 +48,10 @@ const CallPage = () => {
         const user = {
           id: authUser.user._id,
           name: authUser.user.fullName,
-          image: authUser.user.profile.profilePic,
+          // image: authUser.user.profile.profilePic,
+          image: `/images/avatar/${
+            authUser?.user?.profile?.profilePic || 1
+          }.png`,
         };
 
         const videoClient = new StreamVideoClient({

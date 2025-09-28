@@ -164,11 +164,16 @@ const Sidebar = () => {
             <div className="avatar">
               <div className="w-10 rounded-full">
                 <Image
+                  // src={
+                  //   authUser?.user?.profile?.profilePic ||
+                  //   "https://avatar.iran.liara.run/public/20.png"
+                  // }
                   src={
-                    authUser?.user?.profile?.profilePic ||
-                    "https://avatar.iran.liara.run/public/20.png"
+                    authUser?.user?.profile?.profilePic
+                      ? `/images/avatar/${authUser?.user?.profile?.profilePic}.png`
+                      : `/images/avatar/1.png`
                   }
-                  alt=""
+                  alt="avatar"
                   rel="noreferrer"
                   width={40}
                   height={40}

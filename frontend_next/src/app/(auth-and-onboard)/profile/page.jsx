@@ -101,10 +101,9 @@ const ProfilePage = () => {
   };
 
   const handleRandomAvatar = () => {
-    const idx = Math.floor(Math.random() * 10) + 1; // 1-10 included
-    const randomAvatar = `https://avatar.iran.liara.run/public/${idx}.png`;
-
-    setProfilePic(randomAvatar);
+    const idx = Math.floor(Math.random() * 10) + 1;
+    // const randomAvatar = `https://avatar.iran.liara.run/public/${idx}.png`;
+    setProfilePic(idx);
   };
 
   const handleSubmit = async (e) => {
@@ -136,7 +135,7 @@ const ProfilePage = () => {
   };
 
   useEffect(() => {
-    setProfilePic(authUser?.user?.profile?.profilePic || "");
+    setProfilePic(authUser?.user?.profile?.profilePic || 1);
   }, [authUser]);
 
   useEffect(() => {
@@ -159,7 +158,7 @@ const ProfilePage = () => {
                 <div className="size-32 rounded-full bg-base-200 overflow-hidden">
                   {profilePic && (
                     <Image
-                      src={profilePic}
+                      src={`/images/avatar/${profilePic}.png`}
                       alt="avatar"
                       className="w-full h-full object-cover"
                       width={128}
@@ -180,7 +179,7 @@ const ProfilePage = () => {
                   <Pencil className="size-4" />
                 </CommonRoundedButton> */}
 
-                <input
+                {/* <input
                   ref={profilePicInputRef}
                   type="file"
                   accept="image/*"
@@ -190,7 +189,7 @@ const ProfilePage = () => {
                       setProfilePic(e.target.files[0]);
                     }
                   }}
-                />
+                /> */}
 
                 {/* Generate Random Avatar Button */}
                 <div className="flex items-center gap-2">

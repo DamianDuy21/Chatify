@@ -51,7 +51,12 @@ const RecommendedUserCard_HomePage = ({ user, onSuccess, onError }) => {
           <div className="avatar">
             <div className="w-10 rounded-full">
               <Image
-                src={user.profile.profilePic}
+                // src={user.profile.profilePic}
+                src={
+                  user?.profile?.profilePic
+                    ? `/images/avatar/${user?.profile?.profilePic}.png`
+                    : `/images/avatar/1.png`
+                }
                 alt={user.fullName}
                 width={40}
                 height={40}

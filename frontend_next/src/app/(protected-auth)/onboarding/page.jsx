@@ -100,9 +100,8 @@ const OnboardingPage = () => {
 
   const handleRandomAvatar = () => {
     const idx = Math.floor(Math.random() * 10) + 1;
-    const randomAvatar = `https://avatar.iran.liara.run/public/${idx}.png`;
-
-    setProfilePic(randomAvatar);
+    // const randomAvatar = `https://avatar.iran.liara.run/public/${idx}.png`;
+    setProfilePic(idx);
   };
 
   const handleSubmit = async (e) => {
@@ -146,7 +145,8 @@ const OnboardingPage = () => {
                 <div className="size-32 rounded-full bg-base-200 overflow-hidden">
                   {profilePic && (
                     <Image
-                      src={getProfilePicUrl(profilePic)}
+                      // src={getProfilePicUrl(profilePic)}
+                      src={`/images/avatar/${profilePic}.png`}
                       alt="avatar"
                       className="w-full h-full object-cover"
                       width={128}
@@ -167,7 +167,7 @@ const OnboardingPage = () => {
                   <Pencil className="size-4" />
                 </CommonRoundedButton> */}
 
-                <input
+                {/* <input
                   ref={profilePicInputRef}
                   type="file"
                   accept="image/*"
@@ -177,7 +177,7 @@ const OnboardingPage = () => {
                       setProfilePic(e.target.files[0]);
                     }
                   }}
-                />
+                /> */}
 
                 {/* Generate Random Avatar Button */}
                 <div className="flex items-center gap-2">

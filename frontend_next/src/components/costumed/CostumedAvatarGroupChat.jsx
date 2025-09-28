@@ -9,7 +9,12 @@ const CostumedAvatarGroupChat = ({ conversation }) => {
         <>
           <div className="w-4 rounded-full absolute left-[3px] bottom-[6px]">
             <Image
-              src={conversation?.users[0]?.user?.profile?.profilePic}
+              // src={conversation?.users[0]?.user?.profile?.profilePic}
+              src={
+                conversation?.users[0]?.user?.profile?.profilePic
+                  ? `/images/avatar/${conversation?.users[0]?.user?.profile?.profilePic}.png`
+                  : `/images/avatar/1.png`
+              }
               alt="avatar"
               width={16}
               height={16}
@@ -17,7 +22,12 @@ const CostumedAvatarGroupChat = ({ conversation }) => {
           </div>
           <div className="w-4 rounded-full absolute left-3 top-[2px]">
             <Image
-              src={conversation?.users[1]?.user?.profile?.profilePic}
+              // src={conversation?.users[1]?.user?.profile?.profilePic}
+              src={
+                conversation?.users[1]?.user?.profile?.profilePic
+                  ? `/images/avatar/${conversation?.users[1]?.user?.profile?.profilePic}.png`
+                  : `/images/avatar/1.png`
+              }
               alt="avatar"
               width={16}
               height={16}
@@ -25,7 +35,12 @@ const CostumedAvatarGroupChat = ({ conversation }) => {
           </div>
           <div className="w-4 rounded-full absolute right-[3px] bottom-[6px]">
             <Image
-              src={conversation?.users[2]?.user?.profile?.profilePic}
+              // src={conversation?.users[2]?.user?.profile?.profilePic}
+              src={
+                conversation?.users[2]?.user?.profile?.profilePic
+                  ? `/images/avatar/${conversation?.users[2]?.user?.profile?.profilePic}.png`
+                  : `/images/avatar/1.png`
+              }
               alt="avatar"
               width={16}
               height={16}
@@ -38,7 +53,12 @@ const CostumedAvatarGroupChat = ({ conversation }) => {
             <>
               <div className="w-5 rounded-full absolute left-[3px] bottom-[16px]">
                 <Image
-                  src={conversation?.users[0]?.user?.profile?.profilePic}
+                  // src={conversation?.users[0]?.user?.profile?.profilePic}
+                  src={
+                    conversation?.users[0]?.user?.profile?.profilePic
+                      ? `/images/avatar/${conversation?.users[0]?.user?.profile?.profilePic}.png`
+                      : `/images/avatar/1.png`
+                  }
                   alt="avatar"
                   width={20}
                   height={20}
@@ -46,7 +66,12 @@ const CostumedAvatarGroupChat = ({ conversation }) => {
               </div>
               <div className="w-5 rounded-full absolute right-[3px] top-[16px]">
                 <Image
-                  src={conversation?.users[1]?.user?.profile?.profilePic}
+                  // src={conversation?.users[1]?.user?.profile?.profilePic}
+                  src={
+                    conversation?.users[1]?.user?.profile?.profilePic
+                      ? `/images/avatar/${conversation?.users[1]?.user?.profile?.profilePic}.png`
+                      : `/images/avatar/1.png`
+                  }
                   alt="avatar"
                   width={20}
                   height={20}
@@ -56,7 +81,12 @@ const CostumedAvatarGroupChat = ({ conversation }) => {
           ) : (
             <>
               <Image
-                src={conversation?.users[0]?.user?.profile?.profilePic}
+                // src={conversation?.users[0]?.user?.profile?.profilePic}
+                src={
+                  conversation?.users[0]?.user?.profile?.profilePic
+                    ? `/images/avatar/${conversation?.users[0]?.user?.profile?.profilePic}.png`
+                    : `/images/avatar/1.png`
+                }
                 alt="avatar"
                 width={40}
                 height={40}

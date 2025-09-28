@@ -126,10 +126,16 @@ const Message = ({
           >
             {isShowAvatar && (
               <Image
+                // src={
+                //   message.sender?.profile?.profilePic ||
+                //   "https://avatar.iran.liara.run/public/20.png"
+                // }
                 src={
-                  message.sender?.profile?.profilePic ||
-                  "https://avatar.iran.liara.run/public/20.png"
+                  message?.sender?.profile?.profilePic
+                    ? `/images/avatar/${message?.sender?.profile?.profilePic}.png`
+                    : `/images/avatar/1.png`
                 }
+                className="w-full h-full object-cover"
                 alt="avatar"
                 width={40}
                 height={40}

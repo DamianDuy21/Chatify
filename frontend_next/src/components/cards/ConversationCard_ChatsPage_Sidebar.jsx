@@ -61,10 +61,16 @@ const ConversationCard_ChatsPage_Sidebar = ({
           <div className="w-10 rounded-full">
             {conversation.conversation?.type == "private" ? (
               <Image
+                // src={
+                //   conversation?.users[0]?.user?.profile?.profilePic ||
+                //   "https://avatar.iran.liara.run/public/20.png"
+                // }
                 src={
-                  conversation?.users[0]?.user?.profile?.profilePic ||
-                  "https://avatar.iran.liara.run/public/20.png"
+                  conversation?.users[0]?.user?.profile?.profilePic
+                    ? `/images/avatar/${conversation?.users[0]?.user?.profile?.profilePic}.png`
+                    : `/images/avatar/1.png`
                 }
+                className="w-full h-full object-cover"
                 alt="avatar"
                 width={40}
                 height={40}

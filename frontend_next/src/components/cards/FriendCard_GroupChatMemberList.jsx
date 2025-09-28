@@ -96,7 +96,12 @@ const FriendCard_GroupChatMemberList = ({
           <div className="avatar">
             <div className="w-10 rounded-full">
               <Image
-                src={friend?.user?.profile?.profilePic}
+                // src={friend?.user?.profile?.profilePic}
+                src={
+                  friend?.user?.profile?.profilePic
+                    ? `/images/avatar/${friend?.user?.profile?.profilePic}.png`
+                    : `/images/avatar/1.png`
+                }
                 alt="avatar"
                 width={40}
                 height={40}

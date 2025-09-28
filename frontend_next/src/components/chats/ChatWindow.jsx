@@ -608,7 +608,10 @@ const ChatWindow = () => {
         {
           id: authUser?.user._id,
           name: authUser?.user.fullName,
-          image: authUser?.user?.profile?.profilePic,
+          // image: authUser?.user?.profile?.profilePic,
+          image: `/images/avatar/${
+            authUser?.user?.profile?.profilePic || 1
+          }.png`,
         },
         videoCallToken.data.token
       );
@@ -650,9 +653,15 @@ const ChatWindow = () => {
                 <div className="w-10 rounded-full">
                   {selectedConversation.conversation?.type == "private" ? (
                     <Image
+                      // src={
+                      //   selectedConversation?.users[0]?.user?.profile
+                      //     ?.profilePic
+                      // }
                       src={
                         selectedConversation?.users[0]?.user?.profile
                           ?.profilePic
+                          ? `/images/avatar/${selectedConversation?.users[0]?.user?.profile?.profilePic}.png`
+                          : `/images/avatar/1.png`
                       }
                       alt="avatar"
                       width={40}

@@ -70,9 +70,14 @@ const Navbar = () => {
                 <Link href={`/profile`} className="group">
                   <div className="size-8 rounded-full overflow-hidden mx-2 group-hover:scale-125 transition-transform">
                     <Image
+                      // src={
+                      //   authUser?.user?.profile?.profilePic ||
+                      //   "https://avatar.iran.liara.run/public/20.png"
+                      // }
                       src={
-                        authUser?.user?.profile?.profilePic ||
-                        "https://avatar.iran.liara.run/public/20.png"
+                        authUser?.user?.profile?.profilePic
+                          ? `/images/avatar/${authUser?.user?.profile?.profilePic}.png`
+                          : `/images/avatar/1.png`
                       }
                       alt=""
                       rel="noreferrer"

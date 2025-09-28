@@ -88,7 +88,12 @@ const FriendCard_NotificationsPage_IncomingRequest = ({
           <div className="avatar">
             <div className="w-10 rounded-full">
               <Image
-                src={friend.profile.profilePic}
+                // src={friend.profile.profilePic}
+                src={
+                  friend?.profile?.profilePic
+                    ? `/images/avatar/${friend?.profile?.profilePic}.png`
+                    : `/images/avatar/1.png`
+                }
                 alt={friend.fullName}
                 width={40}
                 height={40}

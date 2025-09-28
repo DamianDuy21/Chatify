@@ -34,7 +34,13 @@ const FriendCard_FriendSelectInModal = ({
           <div className="avatar">
             <div className="w-10 rounded-full">
               <Image
-                src={friend?.profile?.profilePic}
+                // src={friend?.profile?.profilePic}
+                src={
+                  friend?.profile?.profilePic
+                    ? `/images/avatar/${friend?.profile?.profilePic}.png`
+                    : `/images/avatar/1.png`
+                }
+                className="w-full h-full object-cover"
                 alt="avatar"
                 width={40}
                 height={40}
