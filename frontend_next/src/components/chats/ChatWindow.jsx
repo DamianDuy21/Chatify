@@ -552,6 +552,7 @@ const ChatWindow = () => {
       });
       // getMessages(selectedConversation.conversation._id);
     }
+    setIsOpenHeaderOptions(false);
     setText("");
   }, [selectedConversation.conversation._id]);
 
