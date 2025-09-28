@@ -644,7 +644,7 @@ const ChatWindow = () => {
 
   return (
     <>
-      <div className="h-[calc(100vh-64px)] !w-[calc(100vw-80px)] lg:w-[calc(100vw-256px)] flex relative overflow-x-hidden">
+      <div className="h-[calc(100vh-64px)] w-[calc(100vw-80px)] lg:w-[calc(100vw-256px)] flex relative overflow-x-hidden">
         <div className="flex-1">
           {/* Header */}
           <div className="h-16 flex items-center justify-between px-4 border-b border-base-300 gap-4">
