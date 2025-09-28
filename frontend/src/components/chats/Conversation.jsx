@@ -43,7 +43,8 @@ const Conversation = ({ translatedTo }) => {
   const messages = selectedConversation?.messages || [];
 
   const data = useMemo(() => {
-    return isChatbotResponding
+    return isChatbotResponding &&
+      selectedConversation?.conversation?.type === "chatbot"
       ? [...messages, { __typing: true, _id: "__typing" }]
       : messages;
   }, [messages, isChatbotResponding]);
