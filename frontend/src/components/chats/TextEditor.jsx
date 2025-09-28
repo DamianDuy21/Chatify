@@ -286,12 +286,7 @@ const TextEditor = ({
         </div>
       )}
 
-      <div
-        className={`flex items-center justify-between gap-4 ${
-          isChatbotResponding || isSendingMessage ? "pointer-events-none" : ""
-        }`}
-      >
-        {" "}
+      <div className={`flex items-center justify-between gap-4`}>
         {/* Utils */}
         <div className="flex items-center gap-2">
           <input

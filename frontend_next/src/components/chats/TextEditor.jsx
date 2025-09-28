@@ -287,12 +287,7 @@ const TextEditor = ({
         </div>
       )} */}
 
-      <div
-        className={`flex items-center justify-between gap-4 ${
-          isSendingMessage ? "pointer-events-none opacity-70" : ""
-        }`}
-      >
-        {" "}
+      <div className={`flex items-center justify-between gap-4`}>
         {/* Utils */}
         <div className="flex items-center gap-2">
           <input
