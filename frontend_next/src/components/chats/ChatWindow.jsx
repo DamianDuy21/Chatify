@@ -863,18 +863,21 @@ const ChatWindow = () => {
                     >
                       <X className="size-4" />
                     </CommonRoundedButton>
-                    <CommonRoundedButton
-                      className={` ${
-                        isOpenUtils ? "btn-secondary" : "btn-primary"
-                      }`}
-                      onClick={() => {
-                        setIsOpenUtils(!isOpenUtils);
-                        setIsOpenHeaderOptions(false);
-                        window.scrollTo({ top: 0, behavior: "smooth" });
-                      }}
-                    >
-                      <AppWindow className="size-4" />
-                    </CommonRoundedButton>
+
+                    {!isOpenUtils && (
+                      <CommonRoundedButton
+                        className={` ${
+                          isOpenUtils ? "btn-secondary" : "btn-primary"
+                        }`}
+                        onClick={() => {
+                          setIsOpenUtils(!isOpenUtils);
+                          setIsOpenHeaderOptions(false);
+                          window.scrollTo({ top: 0, behavior: "smooth" });
+                        }}
+                      >
+                        <AppWindow className="size-4" />
+                      </CommonRoundedButton>
+                    )}
 
                     {selectedConversation.conversation.type !== "chatbot" && (
                       <CommonRoundedButton
