@@ -289,9 +289,7 @@ const TextEditor = ({
 
       <div
         className={`flex items-center justify-between gap-4 ${
-          isChatbotResponding || isSendingMessage
-            ? "pointer-events-none opacity-70"
-            : ""
+          isSendingMessage ? "pointer-events-none opacity-70" : ""
         }`}
       >
         {" "}
