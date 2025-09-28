@@ -38,15 +38,16 @@ await i18next.use(Backend).init({
   debug: process.env.NODE_ENV !== "production",
 });
 
-app.use(
-  cors({
-    origin: true,
-    credentials: false,
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "X-Locale", "Accept"],
-  })
-);
-app.options("*", cors());
+const corsAllNoCred = {
+  origin: true,
+  credentials: false,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Locale", "Accept"],
+  exposedHeaders: ["Authorization"],
+};
+
+app.use(cors(corsAllNoCred));
+app.options("*", cors(corsAllNoCred));
 
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));

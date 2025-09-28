@@ -37,15 +37,16 @@ await i18next.use(Backend).init({
 
 const app = express();
 
-app.use(
-  cors({
-    origin: true,
-    credentials: false,
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization", "X-Locale", "Accept"],
-  })
-);
-app.options("*", cors());
+const corsAllNoCred = {
+  origin: true,
+  credentials: false,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization", "X-Locale", "Accept"],
+  exposedHeaders: ["Authorization"],
+};
+
+app.use(cors(corsAllNoCred));
+app.options("*", cors(corsAllNoCred));
 
 app.use(express.json());
 // app.use(cookieParser());

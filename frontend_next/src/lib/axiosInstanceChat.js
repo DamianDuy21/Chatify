@@ -10,7 +10,6 @@ export const axiosInstanceChat = axios.create({
     "Content-Type": "application/json",
     Accept: "application/json",
   },
-  withCredentials: false,
 });
 
 axiosInstanceChat.interceptors.request.use(async (config) => {
