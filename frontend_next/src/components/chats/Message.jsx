@@ -17,6 +17,7 @@ import CommonRoundedButton from "../buttons/CommonRoundedButton";
 import { showToast } from "../costumed/CostumedToast";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
+import { useAuthStore } from "@/stores/useAuthStore";
 
 const Message = ({
   ref,
@@ -29,6 +30,7 @@ const Message = ({
   isShowTime = false,
 }) => {
   const t = useTranslations("Components.message");
+  const authUser = useAuthStore((s) => s.authUser);
   const [images, setImages] = useState([]);
   const [videos, setVideos] = useState([]);
   const [otherFiles, setOtherFiles] = useState([]);
@@ -131,9 +133,9 @@ const Message = ({
                 //   "https://avatar.iran.liara.run/public/20.png"
                 // }
                 src={
-                  message?.sender?.profile?.profilePic
-                    ? `/images/avatar/${message?.sender?.profile?.profilePic}.png`
-                    : `/images/avatar/1.png`
+                  message?.sender?._id === authUser?.user?._id
+                    ? `/images/avatar/${authUser?.user?.profile?.profilePic}.png`
+                    : `/images/avatar/${message.sender?.profile?.profilePic}.png`
                 }
                 className="w-full h-full object-cover"
                 alt="avatar"

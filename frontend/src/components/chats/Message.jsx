@@ -20,6 +20,7 @@ import {
 import CommonRoundedButton from "../buttons/CommonRoundedButton";
 import { useTranslation } from "react-i18next";
 import { showToast } from "../costumed/CostumedToast";
+import { useAuthStore } from "../../stores/useAuthStore";
 
 const Message = ({
   ref,
@@ -32,6 +33,7 @@ const Message = ({
   isShowTime = false,
 }) => {
   const { t } = useTranslation("components", { keyPrefix: "message" });
+  const authUser = useAuthStore((s) => s.authUser);
   const [images, setImages] = useState([]);
   const [videos, setVideos] = useState([]);
   const [otherFiles, setOtherFiles] = useState([]);
@@ -128,7 +130,14 @@ const Message = ({
             // title={message.sender?.fullName}
           >
             {isShowAvatar && (
-              <img src={message.sender?.profile?.profilePic} alt="" />
+              <img
+                src={
+                  message?.sender?._id === authUser?.user?._id
+                    ? authUser?.user?.profile?.profilePic
+                    : message?.sender?.profile?.profilePic
+                }
+                alt=""
+              />
             )}
           </div>
         ) : (
