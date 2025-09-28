@@ -360,7 +360,9 @@ const ChatsPage = () => {
                       setIsLoadingByMoreConversations(true);
                     }}
                     className={`${
-                      isLoadingByMoreConversations ? "pointer-events-none" : ""
+                      isLoadingByMoreConversations
+                        ? "pointer-events-none opacity-70"
+                        : ""
                     }`}
                   >
                     {isLoadingByMoreConversations ? (
@@ -431,7 +433,7 @@ const ChatsPage = () => {
             <div>
               <div
                 className={`pb-6 text-sm ${
-                  isCreatingGroup ? "pointer-events-none" : ""
+                  isCreatingGroup ? "pointer-events-none opacity-70" : ""
                 }`}
               >
                 <div className="space-y-3 -mt-2">
@@ -488,10 +490,13 @@ const ChatsPage = () => {
               </div>
               <div className="">
                 <button
-                  className="btn btn-primary w-full hover:btn-primary"
+                  className={`btn btn-primary w-full hover:btn-primary ${
+                    isCreatingGroup ? "pointer-events-none opacity-70" : ""
+                  }`}
                   onClick={() => {
                     handleCreateGroup();
                   }}
+                  // disabled={isCreatingGroup}
                 >
                   {isCreatingGroup ? (
                     <LoaderIcon className="size-4 animate-spin" />

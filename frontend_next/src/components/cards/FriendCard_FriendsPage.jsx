@@ -215,7 +215,7 @@ const FriendCard_v2_FriendsPage = ({
             <div>
               <div
                 className={`pb-6 text-sm ${
-                  isDeleting ? "pointer-events-none" : ""
+                  isDeleting ? "pointer-events-none opacity-70" : ""
                 }`}
               >
                 {t("deleteFriendModal.subtitle")}{" "}
@@ -231,10 +231,13 @@ const FriendCard_v2_FriendsPage = ({
                   {t("deleteFriendModal.button.cancel")}
                 </button>
                 <button
-                  className="btn btn-primary w-full hover:btn-primary"
+                  className={`btn btn-primary w-full hover:btn-primary ${
+                    isDeleting ? "pointer-events-none opacity-70" : ""
+                  }`}
                   onClick={() => {
                     deleteFriendMutation(friend._id);
                   }}
+                  // disabled={isDeleting}
                 >
                   {isDeleting ? (
                     <LoaderIcon className="size-4 animate-spin" />

@@ -309,9 +309,11 @@ const SignUpPage = () => {
 
                     {/* SIGNUP BUTTON */}
                     <button
-                      className="btn btn-primary w-full"
+                      className={`btn btn-primary w-full ${
+                        isSigningUp ? "pointer-events-none opacity-70" : ""
+                      }`}
                       type="submit"
-                      disabled={isSigningUp}
+                      // disabled={isSigningUp}
                     >
                       {isSigningUp ? (
                         <>
@@ -421,9 +423,11 @@ const SignUpPage = () => {
                   </div>
 
                   <button
-                    className="btn btn-primary w-full !mt-6"
+                    className={`btn btn-primary w-full !mt-6 ${
+                      isVerifyingCode ? "pointer-events-none opacity-70" : ""
+                    }`}
                     type="submit"
-                    disabled={isVerifyingCode}
+                    // disabled={isVerifyingCode}
                   >
                     {!isVerifyingCode ? (
                       t("verificationStep.form.verifyButton.text")

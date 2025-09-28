@@ -322,8 +322,9 @@ const ProfilePage = () => {
 
               {/* SUBMIT BUTTON */}
               <button
-                className="btn btn-primary w-full !mt-6"
-                disabled={isUpdatingProfile}
+                className={`btn btn-primary w-full !mt-6 ${
+                  isUpdatingProfile ? "pointer-events-none opacity-70" : ""
+                }`}
                 type="submit"
               >
                 {!isUpdatingProfile ? (

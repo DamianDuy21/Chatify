@@ -183,9 +183,13 @@ const ForgotPasswordPage = () => {
 
                     {/* SIGNUP BUTTON */}
                     <button
-                      className="btn btn-primary w-full !mt-6"
+                      className={`btn btn-primary w-full !mt-6 ${
+                        isResettingPassword
+                          ? "pointer-events-none opacity-70"
+                          : ""
+                      }`}
                       type="submit"
-                      disabled={isResettingPassword}
+                      // disabled={isResettingPassword}
                     >
                       {!isResettingPassword ? (
                         t("emailStep.form.sendButton.text")
@@ -280,9 +284,13 @@ const ForgotPasswordPage = () => {
                     </div>
 
                     <button
-                      className="btn btn-primary w-full !mt-6"
+                      className={`btn btn-primary w-full !mt-6 ${
+                        isResetPasswordVerifying
+                          ? "pointer-events-none opacity-70"
+                          : ""
+                      }`}
                       type="submit"
-                      disabled={isResetPasswordVerifying}
+                      // disabled={isResetPasswordVerifying}
                     >
                       {!isResetPasswordVerifying ? (
                         t("verificationStep.form.verifyButton.text")

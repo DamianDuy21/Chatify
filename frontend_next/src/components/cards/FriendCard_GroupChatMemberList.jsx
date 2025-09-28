@@ -144,7 +144,11 @@ const FriendCard_GroupChatMemberList = ({
                 {!isSendFriendRequest ? (
                   <CommonRoundedButton
                     type="ghost"
-                    className={`border border-secondary`}
+                    className={`border border-secondary ${
+                      isSendingFriendRequest
+                        ? "pointer-events-none opacity-70"
+                        : ""
+                    }`}
                     onClick={() => {
                       sendFriendRequestMutation(friend?.user?._id);
                     }}
@@ -158,7 +162,7 @@ const FriendCard_GroupChatMemberList = ({
                 ) : (
                   <CommonRoundedButton
                     type="ghost"
-                    className={`border border-base-300 pointer-events-none`}
+                    className={`border border-base-300 pointer-events-none opacity-70`}
                     onClick={() => {}}
                   >
                     <UserRoundCheck className="size-4" />
@@ -170,7 +174,11 @@ const FriendCard_GroupChatMemberList = ({
             {isAbleEditMember && (
               <CommonRoundedButton
                 type="ghost"
-                className={` border border-base-300`}
+                className={` border border-base-300 ${
+                  isDeletingMemberFromGroup
+                    ? "pointer-events-none opacity-70"
+                    : ""
+                }`}
                 onClick={() =>
                   deleteMemberFromGroupMutation({
                     conversationId: selectedConversation?.conversation?._id,

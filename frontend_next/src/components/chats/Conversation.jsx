@@ -133,7 +133,7 @@ const Conversation = ({ translatedTo }) => {
         <CommonRoundedButton
           onClick={handleGetMessages}
           className={`${
-            isGettingMessages ? "pointer-events-none" : ""
+            isGettingMessages ? "pointer-events-none opacity-70" : ""
           } rounded-full`}
           type="secondary"
         >

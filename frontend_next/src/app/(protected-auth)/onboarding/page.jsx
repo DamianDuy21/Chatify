@@ -281,8 +281,10 @@ const OnboardingPage = () => {
 
               {/* SUBMIT BUTTON */}
               <button
-                className="btn btn-primary w-full !mt-6"
-                disabled={isOnboarding}
+                className={`btn btn-primary w-full !mt-6 ${
+                  isOnboarding ? "pointer-events-none opacity-70" : ""
+                }`}
+                // disabled={isOnboarding}
                 type="submit"
               >
                 {!isOnboarding ? (

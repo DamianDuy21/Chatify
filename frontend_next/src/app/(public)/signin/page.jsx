@@ -138,9 +138,11 @@ const SignInPage = () => {
 
                   {/* SIGNUP BUTTON */}
                   <button
-                    className="btn btn-primary w-full"
+                    className={`btn btn-primary w-full ${
+                      isLoggingIn ? "pointer-events-none opacity-70" : ""
+                    }`}
                     type="submit"
-                    disabled={isLoggingIn}
+                    // disabled={isLoggingIn}
                   >
                     {isLoggingIn ? (
                       <>

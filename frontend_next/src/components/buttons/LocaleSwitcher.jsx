@@ -100,7 +100,9 @@ export default function LocaleSwitcher({ bordered = true }) {
               aria-selected={locale === lang.locale}
             >
               <button
-                className="btn btn-ghost btn-circle"
+                className={`btn btn-ghost btn-circle ${
+                  locale === lang.locale ? "pointer-events-none opacity-70" : ""
+                }`}
                 type="button"
                 aria-label={lang.name}
                 disabled={locale === lang.locale}

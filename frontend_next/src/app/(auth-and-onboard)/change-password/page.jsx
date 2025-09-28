@@ -164,8 +164,11 @@ const ChangePasswordPage = () => {
                   </div>
 
                   <button
-                    className="btn btn-primary w-full !mt-6"
+                    className={`btn btn-primary w-full !mt-6 ${
+                      isChangingPassword ? "pointer-events-none opacity-70" : ""
+                    }`}
                     type="submit"
+                    // disabled={isChangingPassword}
                   >
                     {!isChangingPassword ? (
                       t("step1.form.submitButton.text")
@@ -226,8 +229,11 @@ const ChangePasswordPage = () => {
                   </div>
 
                   <button
-                    className="btn btn-primary w-full !mt-6"
+                    className={`btn btn-primary w-full !mt-6 ${
+                      isVerifyingCode ? "pointer-events-none opacity-70" : ""
+                    }`}
                     type="submit"
+                    // disabled={isVerifyingCode}
                   >
                     {!isVerifyingCode ? (
                       t("step2.form.submitButton.text")

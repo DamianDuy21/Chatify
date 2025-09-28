@@ -15,7 +15,9 @@ const CountAndMessageBadge = ({
       <div
         className={`btn btn-primary size-8 p-0 min-w-0 min-h-0 rounded-card cursor-pointer text-sm items-center justify-center ${
           count == 0 ? "" : "hidden"
-        } group-hover:flex ${isLoading ? "pointer-events-none" : ""}`}
+        } group-hover:flex ${
+          isLoading ? "pointer-events-none opacity-70" : ""
+        }`}
       >
         {isLoading ? (
           <LoaderIcon className="size-4 animate-spin" />

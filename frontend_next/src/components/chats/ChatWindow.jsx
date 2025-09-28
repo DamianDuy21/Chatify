@@ -1030,7 +1030,7 @@ const ChatWindow = () => {
                             className={
                               isUpdatingChatSettings ||
                               userSettings.getNotifications
-                                ? "pointer-events-none"
+                                ? "pointer-events-none opacity-70"
                                 : ""
                             }
                           >
@@ -1051,7 +1051,7 @@ const ChatWindow = () => {
                             className={
                               isUpdatingChatSettings ||
                               !userSettings.getNotifications
-                                ? "pointer-events-none"
+                                ? "pointer-events-none opacity-70"
                                 : ""
                             }
                           >
@@ -1082,7 +1082,7 @@ const ChatWindow = () => {
                             }
                             className={
                               isUpdatingChatSettings || userSettings.isPinned
-                                ? "pointer-events-none"
+                                ? "pointer-events-none opacity-70"
                                 : ""
                             }
                           >
@@ -1102,7 +1102,7 @@ const ChatWindow = () => {
                             }
                             className={
                               isUpdatingChatSettings || !userSettings.isPinned
-                                ? "pointer-events-none"
+                                ? "pointer-events-none opacity-70"
                                 : ""
                             }
                           >
@@ -1411,7 +1411,7 @@ const ChatWindow = () => {
             <div>
               <div
                 className={`pb-6 text-sm ${
-                  isAddingMembersToGroup ? "pointer-events-none" : ""
+                  isAddingMembersToGroup ? "pointer-events-none opacity-70" : ""
                 }`}
               >
                 <div className="space-y-3 -mt-2">
@@ -1446,8 +1446,13 @@ const ChatWindow = () => {
               </div>
               <div className="">
                 <button
-                  className="btn btn-primary w-full hover:btn-primary"
+                  className={`btn btn-primary w-full hover:btn-primary ${
+                    isAddingMembersToGroup
+                      ? "pointer-events-none opacity-70"
+                      : ""
+                  }`}
                   onClick={handleAddMembersToGroup}
+                  // disabled={isAddingMembersToGroup}
                 >
                   {isAddingMembersToGroup ? (
                     <LoaderIcon className="size-4 animate-spin" />
@@ -1507,8 +1512,13 @@ const ChatWindow = () => {
                   {t("deleteConversationModal.button.cancel")}
                 </button>
                 <button
-                  className="btn btn-primary w-full hover:btn-primary"
+                  className={`btn btn-primary w-full hover:btn-primary ${
+                    isDeletingConversation
+                      ? "pointer-events-none opacity-70"
+                      : ""
+                  }`}
                   onClick={handleDeleteConversation}
+                  // disabled={isDeletingConversation}
                 >
                   {isDeletingConversation ? (
                     <LoaderIcon className="size-4 animate-spin" />
@@ -1573,7 +1583,7 @@ const ChatWindow = () => {
                 </button>
                 <button
                   className={`btn btn-primary w-full hover:btn-primary  ${
-                    isLeavingGroup ? "pointer-events-none" : ""
+                    isLeavingGroup ? "pointer-events-none opacity-70" : ""
                   }`}
                   onClick={handleLeaveGroup}
                 >
@@ -1632,8 +1642,11 @@ const ChatWindow = () => {
                   {t("leaveGroupModal.button.isKeyMember.false.cancel")}
                 </button>
                 <button
-                  className="btn btn-primary w-full hover:btn-primary"
+                  className={`btn btn-primary w-full hover:btn-primary ${
+                    isLeavingGroup ? "pointer-events-none opacity-70" : ""
+                  }`}
                   onClick={handleLeaveGroup}
+                  // disabled={isLeavingGroup}
                 >
                   {isLeavingGroup ? (
                     <LoaderIcon className="size-4 animate-spin" />

@@ -80,7 +80,7 @@ const FriendCard_NotificationsPage_IncomingRequest = ({
     <div
       key={friend._id}
       className={`card bg-base-200 hover:shadow-lg transition-all duration-300 relative h-full ${
-        isAccepting || isRejecting ? "pointer-events-none" : ""
+        isAccepting || isRejecting ? "pointer-events-none opacity-70" : ""
       }`}
     >
       <div className="card-body p-4 space-y-2">
@@ -177,7 +177,11 @@ const FriendCard_NotificationsPage_IncomingRequest = ({
       >
         {({ close }) => {
           return (
-            <div className={`${isRejecting ? "pointer-events-none" : ""}`}>
+            <div
+              className={`${
+                isRejecting ? "pointer-events-none opacity-70" : ""
+              }`}
+            >
               <div className={`pb-6 text-sm `}>
                 {t("rejectFriendRequestModal.subtitle")}{" "}
                 <span className="font-semibold">{friend.fullName}</span>?

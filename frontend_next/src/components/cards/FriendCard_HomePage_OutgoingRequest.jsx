@@ -137,7 +137,9 @@ const FriendCard_HomePage_OutgoingRequest = ({
           return (
             <div
               className={`${
-                isCancellingFriendRequest ? "pointer-events-none" : ""
+                isCancellingFriendRequest
+                  ? "pointer-events-none opacity-70"
+                  : ""
               }`}
             >
               <div className={`pb-6 text-sm `}>
@@ -154,10 +156,15 @@ const FriendCard_HomePage_OutgoingRequest = ({
                   {t("cancelRequestModal.button.cancel")}
                 </button>
                 <button
-                  className="btn btn-primary w-full hover:btn-primary"
+                  className={`btn btn-primary w-full hover:btn-primary ${
+                    isCancellingFriendRequest
+                      ? "pointer-events-none opacity-70"
+                      : ""
+                  }`}
                   onClick={() => {
                     cancelFriendRequestMutation(request._id);
                   }}
+                  // disabled={isCancellingFriendRequest}
                 >
                   {isCancellingFriendRequest ? (
                     <LoaderIcon className="size-4 animate-spin" />

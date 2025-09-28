@@ -289,7 +289,9 @@ const TextEditor = ({
 
       <div
         className={`flex items-center justify-between gap-4 ${
-          isChatbotResponding || isSendingMessage ? "pointer-events-none" : ""
+          isChatbotResponding || isSendingMessage
+            ? "pointer-events-none opacity-70"
+            : ""
         }`}
       >
         {" "}
@@ -338,7 +340,7 @@ const TextEditor = ({
         {/* Send button */}
         {isSendingMessage ? (
           <div
-            className={`btn btn-primary size-10 p-0 min-w-0 min-h-0 rounded-full pointer-events-none  text-sm flex items-center justify-center hover:btn-secondary `}
+            className={`btn btn-primary size-10 p-0 min-w-0 min-h-0 rounded-full pointer-events-none opacity-70 text-sm flex items-center justify-center hover:btn-secondary `}
           >
             <LoaderIcon className="animate-spin size-6" />
           </div>
