@@ -128,7 +128,7 @@ const Conversation = ({ translatedTo }) => {
           isCalm
             ? "absolute"
             : "hidden"
-        } top-8 left-1/2 -translate-x-1/2 z-10 `}
+        } top-8 left-1/2 -translate-x-1/2 z-[1]`}
       >
         <CommonRoundedButton
           onClick={handleGetMessages}
@@ -148,7 +148,7 @@ const Conversation = ({ translatedTo }) => {
       <div
         className={`${
           showScrollBottomBtn && isCalm ? "absolute" : "hidden"
-        } bottom-0 left-1/2 -translate-x-1/2 z-10 `}
+        } bottom-0 left-1/2 -translate-x-1/2 z-[1]`}
       >
         <CommonRoundedButton
           onClick={() =>

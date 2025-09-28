@@ -114,7 +114,7 @@ const App = () => {
   return (
     <>
       <div
-        className="min-h-screen bg-base-100 text-base-content"
+        className="min-h-screen w-screen bg-base-100 text-base-content"
         data-theme={theme}
       >
         <Routes>

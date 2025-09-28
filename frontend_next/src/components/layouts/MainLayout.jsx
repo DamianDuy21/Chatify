@@ -17,7 +17,7 @@ const MainLayout = ({ children }) => {
 
   return (
     <>
-      <div className="min-h-screen">
+      <div className="min-h-screen w-screen">
         <div className="flex">
           {/* SIDEBAR */}
           {isChatPage || isProfilePage || isChangePasswordPage ? null : (

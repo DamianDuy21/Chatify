@@ -68,7 +68,7 @@ const Sidebar = () => {
 
   return (
     <>
-      <aside className="w-20 lg:w-64 bg-base-200 border-r border-base-300 flex flex-col h-screen sticky top-0">
+      <aside className="h-screen w-20 lg:w-64 bg-base-200 border-r border-base-300 flex flex-col sticky top-0">
         <div className="w-full px-4 lg:px-8 h-16 border-b border-base-300 flex items-center justify-center lg:justify-start">
           {!isProfilePage && !isChatPage && !isChangePasswordPage ? (
             windowWidth > 1024 ? (

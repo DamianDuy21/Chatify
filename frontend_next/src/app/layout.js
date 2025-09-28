@@ -82,7 +82,7 @@ export default async function RootLayout({ children }) {
         <script dangerouslySetInnerHTML={{ __html: themeInit }} />
         <meta name="color-scheme" content="light dark" />
       </head>
-      <body className="h-screen bg-base-100 text-base-content">
+      <body className="h-screen w-screen bg-base-100 text-base-content">
         <NextIntlClientProvider>
           <TanstackReactQueryProvider>
             <ToastProvider>{children}</ToastProvider>

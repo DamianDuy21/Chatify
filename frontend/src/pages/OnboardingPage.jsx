@@ -132,7 +132,7 @@ const OnboardingPage = () => {
 
   return (
     <>
-      <div className="min-h-screen flex items-center justify-center p-4 sm:p-6 lg:p-8">
+      <div className="min-h-screen w-screen flex items-center justify-center p-4 sm:p-6 lg:p-8">
         <div className="card bg-base-200 w-full max-w-3xl shadow-lg">
           <div className="card-body p-8 pb-4">
             <h1 className="text-3xl font-bold text-center mb-4">

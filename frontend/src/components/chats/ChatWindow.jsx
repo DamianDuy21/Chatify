@@ -639,8 +639,8 @@ const ChatWindow = () => {
 
   return (
     <>
-      <div className="h-[calc(100vh-64px)] flex relative">
-        <div className="flex-1 ">
+      <div className="h-[calc(100vh-64px)] !w-[calc(100vw-80px)] lg:w-[calc(100vw-256px)] flex relative overflow-x-hidden">
+        <div className="flex-1">
           {/* Header */}
           <div className="h-16 flex items-center justify-between px-4 border-b border-base-300 gap-4">
             <div className="flex gap-3 items-center relative">
@@ -664,6 +664,7 @@ const ChatWindow = () => {
                 </div>
               </div>
 
+              {/* Name */}
               <div className="hidden sm:block">
                 <h3 className="font-semibold text-sm line-clamp-1">
                   {selectedConversation?.conversation?.type == "private"
@@ -745,7 +746,9 @@ const ChatWindow = () => {
 
             <div className={`flex ${isOpenUtils ? "pr-64 lg:pr-0" : ""}`}>
               <div
-                className={`flex gap-4 ${isOpenUtils ? "hidden sm:flex" : ""}`}
+                className={`gap-4 hidden sm:flex ${
+                  isOpenUtils ? "sm:flex" : "hidden"
+                }`}
               >
                 <div className="flex gap-2">
                   {selectedConversation.conversation.type == "group" && (
@@ -815,8 +818,8 @@ const ChatWindow = () => {
 
               {/* Option when the utils panel is open and screen is small */}
               <div
-                className={`flex flex-col relative ${
-                  isOpenUtils ? "block sm:hidden" : "hidden"
+                className={`flex flex-col relative sm:hidden ${
+                  isOpenUtils ? "sm:hidden" : ""
                 }`}
               >
                 <CommonRoundedButton
@@ -955,6 +958,19 @@ const ChatWindow = () => {
 
             <div className="h-[calc(100vh-64px-64px)] overflow-y-auto flex flex-col justify-between border-l border-base-300">
               <div>
+                <div className="sm:hidden h-16 flex items-center justify-center border-b border-base-300">
+                  <CommonRoundedButton
+                    className={`${
+                      isOpenUtils ? "btn-secondary" : "btn-primary"
+                    }`}
+                    onClick={() => {
+                      setIsOpenUtils(!isOpenUtils);
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                    }}
+                  >
+                    <AppWindow className="size-4" />
+                  </CommonRoundedButton>
+                </div>
                 {/* Settings */}
                 <div className="flex flex-col">
                   <div

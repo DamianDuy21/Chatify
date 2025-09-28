@@ -80,7 +80,7 @@ const VideoCallPage = () => {
 
   return (
     //  flex flex-col items-center justify-center
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen w-screen flex flex-col">
       <div className="bg-base-200 border-b border-base-300 sticky top-0 z-30 h-16 flex items-center" />
 
       {client && call ? (
