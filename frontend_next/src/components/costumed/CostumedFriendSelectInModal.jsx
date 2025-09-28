@@ -25,7 +25,7 @@ const CostumedFriendSelectInModal = ({
       </div>
 
       {friends.length > 0 && !isLoadingGetFriends ? (
-        <div className="flex flex-col gap-1 max-h-50 overflow-y-auto">
+        <div className="flex flex-col gap-1 max-h-[200px] overflow-y-auto">
           {friends.map((friend) => (
             <div key={friend?.user?._id}>
               <FriendCard_FriendSelectInModal

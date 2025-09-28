@@ -39,7 +39,7 @@ const CostumedGroupChatUpdateMemberRoleList = ({
       </div>
 
       {displayedFriends.length > 0 && (
-        <div className="flex flex-col gap-1 max-h-50 overflow-y-auto">
+        <div className="flex flex-col gap-1 max-h-[200px] overflow-y-auto">
           {displayedFriends.map((friend, idx) => (
             <div key={friend?.user?._id || idx}>
               <FriendCard_FriendSelectInModal
