@@ -78,14 +78,14 @@ const TextEditor = ({
       videos.forEach((it) => form.append("videos", it.file));
       others.forEach((it) => form.append("files", it.file));
 
+      setText("");
+      setPendingFile([]);
+
       await sendMessage(form);
 
       pendingFile.forEach(
         (it) => it.previewUrl && URL.revokeObjectURL(it.previewUrl)
       );
-
-      setText("");
-      setPendingFile([]);
 
       // Clear form
       if (fileInputRef.current) {
@@ -121,14 +121,14 @@ const TextEditor = ({
       videos.forEach((it) => form.append("videos", it.file));
       others.forEach((it) => form.append("files", it.file));
 
+      setText("");
+      setPendingFile([]);
+
       await sendMessageChatbot(form);
 
       pendingFile.forEach(
         (it) => it.previewUrl && URL.revokeObjectURL(it.previewUrl)
       );
-
-      setText("");
-      setPendingFile([]);
 
       // Clear form
       if (fileInputRef.current) {
