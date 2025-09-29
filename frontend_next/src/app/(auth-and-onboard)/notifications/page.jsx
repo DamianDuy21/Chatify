@@ -17,6 +17,10 @@ import { isConversationFitFilter } from "@/lib/utils.js";
 import { useNotificationStore } from "@/stores/useNotificationStore.js";
 import { useTranslations } from "next-intl";
 
+// count của noti dùng global và request lại dùng local
+// vì noti chỉ đếm những cái chưa đọc
+// còn request thì coi như cái nào cũng chưa đọc hết
+
 const NotificationsPage = () => {
   const t = useTranslations("NotificationsPage");
 
@@ -80,11 +84,16 @@ const NotificationsPage = () => {
   const [notificationsQuantity, setNotificationsQuantity] = useState(0);
   const [isLoadingNotifications, setIsLoadingNotifications] = useState(false);
 
+  const [preloadedNotifications, setPreloadedNotifications] = useState([]);
+
   const [incomingFriendRequests, setIncomingFriendRequests] = useState([]);
   const [incomingFriendRequestsQuantity, setIncomingFriendRequestsQuantity] =
     useState(0);
   const [isLoadingIncomingFriendRequests, setIsLoadingIncomingFriendRequests] =
     useState(false);
+
+  const [preloadedIncomingFriendRequests, setPreloadedIncomingFriendRequests] =
+    useState([]);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [
@@ -196,7 +205,27 @@ const NotificationsPage = () => {
         setTotalIncomingRequestQuantity(totalIncomingRequestQuantity - 1);
       }
     } else {
-      fetchIncomingFriendRequests({ page: currentPage });
+      // fetchIncomingFriendRequests({ page: currentPage });
+      const removeId = otherUserId;
+      const first = preloadedIncomingFriendRequests[0];
+      setIncomingFriendRequests((prev) =>
+        prev.filter((r) => r.user._id != removeId).concat(first ? [first] : [])
+      );
+      const preloadedIncomingFriendRequestsLength =
+        preloadedIncomingFriendRequests.length;
+      if (first) {
+        setPreloadedIncomingFriendRequests((prev) => prev.slice(1));
+      }
+      if (preloadedIncomingFriendRequestsLength == 1) {
+        setTotalIncomingFriendRequestsPages(
+          Math.ceil((incomingFriendRequestsQuantity - 1) / pageSize)
+        );
+        if (currentPage < totalIncomingFriendRequestsPages - 1) {
+          fetchPreloadedIncomingFriendRequests({ page: currentPage + 1 });
+        }
+      }
+      setIncomingFriendRequestsQuantity((prev) => prev - 1);
+      setTotalIncomingRequestQuantity(totalIncomingRequestQuantity - 1);
     }
   };
 
@@ -210,9 +239,11 @@ const NotificationsPage = () => {
         fetchIncomingFriendRequests({ page: currentPage - 1 });
       }
       fetchNotifications({ page: 1 });
+      fetchPreloadedNotifications({ page: 2 });
     } else {
       fetchIncomingFriendRequests({ page: currentPage });
       fetchNotifications({ page: 1 });
+      fetchPreloadedNotifications({ page: 2 });
     }
   };
 
@@ -250,7 +281,29 @@ const NotificationsPage = () => {
         setNotificationsQuantity((prev) => prev - 1);
       }
     } else {
-      fetchNotifications({ page: currentPage });
+      // fetchNotifications({ page: currentPage });
+      const removeId = data.data.notification._id;
+      const first = preloadedNotifications[0];
+
+      setNotifications((prev) =>
+        prev
+          .filter((n) => n.notification._id != removeId)
+          .concat(first ? [first] : [])
+      );
+
+      const preloadedNotificationsLength = preloadedNotifications.length;
+      if (first) {
+        setPreloadedNotifications((prev) => prev.slice(1));
+      }
+      if (preloadedNotificationsLength == 1) {
+        setTotalNotificationsPages(
+          Math.ceil((notificationsQuantity - 1) / pageSize)
+        );
+        if (currentPage < totalNotificationsPages - 1) {
+          fetchPreloadedNotifications({ page: currentPage + 1 });
+        }
+      }
+      setNotificationsQuantity((prev) => prev - 1);
     }
   };
 
@@ -263,8 +316,12 @@ const NotificationsPage = () => {
       if (!isShowMoreNotifications) {
         fetchNotifications({ page: currentPage - 1 });
       }
+      fetchIncomingFriendRequests({ page: 1 });
+      fetchPreloadedIncomingFriendRequests({ page: 2 });
     } else {
       fetchNotifications({ page: currentPage });
+      fetchIncomingFriendRequests({ page: 1 });
+      fetchPreloadedIncomingFriendRequests({ page: 2 });
     }
   };
 
@@ -281,6 +338,7 @@ const NotificationsPage = () => {
       fetchIncomingFriendRequests({
         page: 1,
       });
+      fetchPreloadedIncomingFriendRequests({ page: 2 });
     }
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -298,6 +356,7 @@ const NotificationsPage = () => {
       fetchNotifications({
         page: 1,
       });
+      fetchPreloadedNotifications({ page: 2 });
     }
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -325,6 +384,21 @@ const NotificationsPage = () => {
     }
   };
 
+  const fetchPreloadedIncomingFriendRequests = async (args = {}) => {
+    try {
+      const { data } = await getIncomingFriendRequestsAPI(args);
+      setPreloadedIncomingFriendRequests(data.requests);
+    } catch (error) {
+      console.error("Failed to fetch incoming friend requests:", error);
+      showToast({
+        message:
+          error?.response?.data?.message ||
+          t("toast.fetchIncomingFriendRequests.error"),
+        type: "error",
+      });
+    }
+  };
+
   const fetchNotifications = async (args = {}) => {
     setIsLoadingNotifications(true);
     try {
@@ -344,9 +418,25 @@ const NotificationsPage = () => {
     }
   };
 
+  const fetchPreloadedNotifications = async (args = {}) => {
+    try {
+      const { data } = await getNotificationsAPI(args);
+      setPreloadedNotifications(data.notifications);
+    } catch (error) {
+      console.error("Failed to fetch notifications:", error);
+      showToast({
+        message:
+          error?.response?.data?.message || t("toast.fetchNotifications.error"),
+        type: "error",
+      });
+    }
+  };
+
   useEffect(() => {
     fetchNotifications();
+    fetchPreloadedNotifications({ page: 2 });
     fetchIncomingFriendRequests();
+    fetchPreloadedIncomingFriendRequests({ page: 2 });
   }, []);
 
   useEffect(() => {
@@ -354,6 +444,9 @@ const NotificationsPage = () => {
       fetchIncomingFriendRequests({
         page: currentPage,
       });
+      if (currentPage < totalIncomingFriendRequestsPages) {
+        fetchPreloadedIncomingFriendRequests({ page: currentPage + 1 });
+      }
       setPendingIncomingRequests([]);
       return;
     }
@@ -361,6 +454,9 @@ const NotificationsPage = () => {
       fetchNotifications({
         page: currentPage,
       });
+      if (currentPage < totalNotificationsPages) {
+        fetchPreloadedNotifications({ page: currentPage + 1 });
+      }
       setPendingNotifications([]);
       return;
     }
@@ -390,7 +486,6 @@ const NotificationsPage = () => {
             return [request, ...prev];
           });
           setIncomingFriendRequestsQuantity((prev) => prev + 1);
-          // setTotalIncomingRequestQuantity(totalIncomingRequestQuantity + 1);
           setTotalIncomingFriendRequestsPages(
             Math.ceil((incomingFriendRequestsQuantity + 1) / pageSize)
           );
@@ -414,9 +509,6 @@ const NotificationsPage = () => {
             prev.filter((n) => n.notification._id !== exists.notification._id)
           );
           setNotifications((prev) => [request, ...prev]);
-          // if (exists.notification.status !== "pending") {
-          //   setTotalNotificationQuantity(totalNotificationQuantity + 1);
-          // }
         } else if (!exists) {
           setNotifications((prev) => {
             if (prev.length >= pageSize) {
@@ -425,7 +517,6 @@ const NotificationsPage = () => {
             return [request, ...prev];
           });
           setNotificationsQuantity((prev) => prev + 1);
-          // setTotalNotificationQuantity(totalNotificationQuantity + 1);
           setTotalNotificationsPages(
             Math.ceil((notificationsQuantity + 1) / pageSize)
           );

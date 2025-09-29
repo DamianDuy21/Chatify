@@ -54,12 +54,17 @@ const HomePage = () => {
   const [recommendedUserQuantity, setRecommendedUserQuantity] = useState(0);
   const [isLoadingGetRecommendedUsers, setIsLoadingGetRecommendedUsers] =
     useState(false);
+  const [preloadedRecommendedUsers, setPreloadedRecommendedUsers] = useState(
+    []
+  );
 
   const [outgoingFriendRequests, setOutgoingFriendRequests] = useState([]);
   const [outgoingFriendRequestsQuantity, setOutgoingFriendRequestsQuantity] =
     useState(0);
   const [isLoadingOutgoingFriendRequests, setIsLoadingOutgoingFriendRequests] =
     useState(false);
+  const [preloadedOutgoingFriendRequests, setPreloadedOutgoingFriendRequests] =
+    useState([]);
 
   const [totalRecommendedUsersPages, setTotalRecommendedUsersPages] =
     useState(1);
@@ -86,6 +91,12 @@ const HomePage = () => {
         nativeLanguage,
         learningLanguage,
         currentPage: currentPage,
+      });
+      fetchPreloadedRecommendedUsers({
+        fullName,
+        nativeLanguage,
+        learningLanguage,
+        page: currentPage + 1,
       });
     } else {
       setCurrentPage(1);
@@ -139,18 +150,43 @@ const HomePage = () => {
         // fetchOutgoingFriendRequests({ page: 1 });
       } else {
         setRecommendedUsers((prev) =>
-          prev.filter((user) => user.user._id !== otherUserId)
+          prev.filter((user) => user.user._id != otherUserId)
         );
         setRecommendedUserQuantity((prev) => prev - 1);
         // fetchOutgoingFriendRequests({ page: 1 });
       }
     } else {
-      fetchRecommendedUsers({
-        fullName,
-        nativeLanguage,
-        learningLanguage,
-        page: currentPage,
-      });
+      // fetchRecommendedUsers({
+      //   fullName,
+      //   nativeLanguage,
+      //   learningLanguage,
+      //   page: currentPage,
+      // });
+      const removeId = otherUserId;
+      const first = preloadedRecommendedUsers[0];
+      setRecommendedUsers((prev) =>
+        prev
+          .filter((user) => user.user._id != removeId)
+          .concat(first ? [first] : [])
+      );
+      const preloadedRecommendedUsersLength = preloadedRecommendedUsers.length;
+      if (first) {
+        setPreloadedRecommendedUsers((prev) => prev.slice(1));
+      }
+      if (preloadedRecommendedUsersLength == 1) {
+        setTotalRecommendedUsersPages(
+          Math.ceil((recommendedUserQuantity - 1) / pageSize)
+        );
+        if (currentPage < totalRecommendedUsersPages - 1) {
+          fetchPreloadedRecommendedUsers({
+            fullName,
+            nativeLanguage,
+            learningLanguage,
+            page: currentPage + 1,
+          });
+        }
+      }
+      setRecommendedUserQuantity((prev) => prev - 1);
     }
 
     // thêm vào outgoingFriendRequests nếu đang ở trang 1
@@ -186,6 +222,7 @@ const HomePage = () => {
     ) {
       setCurrentPage(currentPage - 1);
       fetchOutgoingFriendRequests({ page: 1 });
+      fetchPreloadedOutgoingFriendRequests({ page: 2 });
       if (!isShowMoreRecommendedUsers) {
         fetchRecommendedUsers({
           fullName,
@@ -202,6 +239,7 @@ const HomePage = () => {
         page: currentPage,
       });
       fetchOutgoingFriendRequests({ page: 1 });
+      fetchPreloadedOutgoingFriendRequests({ page: 2 });
     }
   };
 
@@ -251,7 +289,7 @@ const HomePage = () => {
         // });
       } else {
         setOutgoingFriendRequests((prev) =>
-          prev.filter((request) => request.user._id !== otherUserId)
+          prev.filter((request) => request.user._id != otherUserId)
         );
         setOutgoingFriendRequestsQuantity((prev) => prev - 1);
         //  fetchRecommendedUsers({
@@ -262,7 +300,30 @@ const HomePage = () => {
         // });
       }
     } else {
-      fetchOutgoingFriendRequests({ page: currentPage });
+      // fetchOutgoingFriendRequests({ page: currentPage });
+      const removeId = otherUserId;
+      const first = preloadedOutgoingFriendRequests[0];
+      setOutgoingFriendRequests((prev) =>
+        prev
+          .filter((request) => request.user._id != removeId)
+          .concat(first ? [first] : [])
+      );
+      const preloadedOutgoingFriendRequestsLength =
+        preloadedOutgoingFriendRequests.length;
+      if (first) {
+        setPreloadedOutgoingFriendRequests((prev) => prev.slice(1));
+      }
+      if (preloadedOutgoingFriendRequestsLength == 1) {
+        setTotalOutgoingFriendRequestsPages(
+          Math.ceil((outgoingFriendRequestsQuantity - 1) / pageSize)
+        );
+        if (currentPage < totalOutgoingFriendRequestsPages - 1) {
+          fetchPreloadedOutgoingFriendRequests({
+            page: currentPage + 1,
+          });
+        }
+      }
+      setOutgoingFriendRequestsQuantity((prev) => prev - 1);
     }
 
     // socket emit
@@ -289,12 +350,24 @@ const HomePage = () => {
         learningLanguage,
         page: 1,
       });
+      fetchPreloadedRecommendedUsers({
+        fullName,
+        nativeLanguage,
+        learningLanguage,
+        page: 2,
+      });
     } else {
       fetchRecommendedUsers({
         fullName,
         nativeLanguage,
         learningLanguage,
         page: 1,
+      });
+      fetchPreloadedRecommendedUsers({
+        fullName,
+        nativeLanguage,
+        learningLanguage,
+        page: 2,
       });
       fetchOutgoingFriendRequests({ page: currentPage });
     }
@@ -321,6 +394,15 @@ const HomePage = () => {
     }
   };
 
+  const fetchPreloadedRecommendedUsers = async (args = {}) => {
+    try {
+      const { data } = await getRecommendedUsersAPI(args);
+      setPreloadedRecommendedUsers(data?.users || []);
+    } catch (error) {
+      console.log("Error preloading recommended users:", error);
+    }
+  };
+
   const fetchOutgoingFriendRequests = async (args = {}) => {
     try {
       setIsLoadingOutgoingFriendRequests(true);
@@ -341,6 +423,15 @@ const HomePage = () => {
     }
   };
 
+  const fetchPreloadedOutgoingFriendRequests = async (args = {}) => {
+    try {
+      const { data } = await getOutgoingFriendRequestsAPI(args);
+      setPreloadedOutgoingFriendRequests(data?.requests || []);
+    } catch (error) {
+      console.log("Error preloading outgoing friend requests:", error);
+    }
+  };
+
   const handleClickShuffleButton = () => {
     setFilterData({
       fullName: "",
@@ -349,9 +440,10 @@ const HomePage = () => {
     });
     setIsOpenFilter(false);
     setCurrentPage(1);
-    if (!isShowMoreRecommendedUsers) {
-      fetchRecommendedUsers();
-    }
+    // if (!isShowMoreRecommendedUsers) {
+    fetchRecommendedUsers();
+    fetchPreloadedRecommendedUsers({ page: 2 });
+    // }
 
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -382,6 +474,7 @@ const HomePage = () => {
       });
       setIsOpenFilter(false);
       fetchRecommendedUsers();
+      fetchPreloadedRecommendedUsers({ page: 2 });
     } else {
       setFilterData({
         fullName: "",
@@ -390,6 +483,7 @@ const HomePage = () => {
       });
       setIsOpenFilter(false);
       fetchRecommendedUsers();
+      fetchPreloadedRecommendedUsers({ page: 2 });
     }
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -414,6 +508,12 @@ const HomePage = () => {
         nativeLanguage,
         learningLanguage,
         page: 1,
+      });
+      fetchPreloadedRecommendedUsers({
+        fullName,
+        nativeLanguage,
+        learningLanguage,
+        page: 2,
       });
     }
 
@@ -444,13 +544,16 @@ const HomePage = () => {
       fetchOutgoingFriendRequests({
         page: 1,
       });
+      fetchPreloadedOutgoingFriendRequests({ page: 2 });
     }
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   useEffect(() => {
     fetchRecommendedUsers();
+    fetchPreloadedRecommendedUsers({ page: 2 });
     fetchOutgoingFriendRequests();
+    fetchPreloadedOutgoingFriendRequests({ page: 2 });
   }, []);
 
   useEffect(() => {
@@ -462,11 +565,24 @@ const HomePage = () => {
         learningLanguage,
         page: currentPage,
       });
+      if (currentPage < totalRecommendedUsersPages) {
+        fetchPreloadedRecommendedUsers({
+          fullName,
+          nativeLanguage,
+          learningLanguage,
+          page: currentPage + 1,
+        });
+      }
+      return;
     }
     if (isShowMoreFriendRequests) {
       fetchOutgoingFriendRequests({
         page: currentPage,
       });
+      if (currentPage < totalOutgoingFriendRequestsPages) {
+        fetchPreloadedOutgoingFriendRequests({ page: currentPage + 1 });
+      }
+      return;
     }
   }, [currentPage]);
 

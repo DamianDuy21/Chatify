@@ -36,6 +36,7 @@ const FriendsPage = () => {
   const [friends, setFriends] = useState([]);
   const [isLoadingGetFriends, setIsLoadingGetFriends] = useState(false);
   const [friendQuantity, setFriendQuantity] = useState(0);
+  const [preloadedFriends, setPreloadedFriends] = useState([]);
 
   const [totalPages, setTotalPages] = useState(1);
   const [currentPage, setCurrentPage] = useState(1);
@@ -86,12 +87,35 @@ const FriendsPage = () => {
         setFriendQuantity((prev) => prev - 1);
       }
     } else {
-      fetchFriends({
-        fullName,
-        nativeLanguage,
-        learningLanguage,
-        page: currentPage,
-      });
+      // fetchFriends({
+      //   fullName,
+      //   nativeLanguage,
+      //   learningLanguage,
+      //   page: currentPage,
+      // });
+      const removeId = otherUserId;
+      const first = preloadedFriends[0];
+      setFriends((prev) =>
+        prev
+          .filter((user) => user.user._id != removeId)
+          .concat(first ? [first] : [])
+      );
+      const preloadedFriendsLength = preloadedFriends.length;
+      if (first) {
+        setPreloadedFriends((prev) => prev.slice(1));
+      }
+      if (preloadedFriendsLength == 1) {
+        setTotalPages(Math.ceil((friendQuantity - 1) / pageSize));
+        if (currentPage < totalPages - 1) {
+          fetchPreloadedFriends({
+            fullName,
+            nativeLanguage,
+            learningLanguage,
+            page: currentPage + 1,
+          });
+        }
+      }
+      setFriendQuantity((prev) => prev - 1);
     }
 
     deleteFriend_NotificationStore({
@@ -135,6 +159,12 @@ const FriendsPage = () => {
         learningLanguage,
         page: currentPage,
       });
+      fetchPreloadedFriends({
+        fullName,
+        nativeLanguage,
+        learningLanguage,
+        page: currentPage + 1,
+      });
     } else {
       setCurrentPage(1);
     }
@@ -156,6 +186,7 @@ const FriendsPage = () => {
       });
       setIsOpenFilter(false);
       fetchFriends();
+      fetchPreloadedFriends({ page: 2 });
     } else {
       setFilterData({
         fullName: "",
@@ -164,6 +195,7 @@ const FriendsPage = () => {
       });
       setIsOpenFilter(false);
       fetchFriends();
+      fetchPreloadedFriends({ page: 2 });
     }
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -187,6 +219,15 @@ const FriendsPage = () => {
     }
   };
 
+  const fetchPreloadedFriends = async (args = {}) => {
+    try {
+      const { data } = await getFriendsAPI(args);
+      setPreloadedFriends(data.users);
+    } catch (error) {
+      console.error("Error fetching friends:", error);
+    }
+  };
+
   useEffect(() => {
     const { fullName, nativeLanguage, learningLanguage } = filterData;
     fetchFriends({
@@ -195,6 +236,14 @@ const FriendsPage = () => {
       learningLanguage,
       page: currentPage,
     });
+    if (currentPage < totalPages) {
+      fetchPreloadedFriends({
+        fullName,
+        nativeLanguage,
+        learningLanguage,
+        page: currentPage + 1,
+      });
+    }
     setPendingFriends([]);
   }, [currentPage]);
 

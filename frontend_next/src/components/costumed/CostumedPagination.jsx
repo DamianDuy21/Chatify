@@ -85,7 +85,9 @@ const CommonPagination = ({ totalPages, currentPage, setCurrentPage }) => {
       <CommonRoundedButton
         onClick={() => goTo(currentPage - 1)}
         type="outline"
-        disabled={currentPage === 1}
+        className={`${
+          currentPage === 1 ? "pointer-events-none opacity-70" : ""
+        }`}
       >
         <ChevronLeft className="w-4 h-4" />
       </CommonRoundedButton>
@@ -95,7 +97,9 @@ const CommonPagination = ({ totalPages, currentPage, setCurrentPage }) => {
       <CommonRoundedButton
         onClick={() => goTo(currentPage + 1)}
         type="outline"
-        disabled={currentPage === totalPages}
+        className={`${
+          currentPage === totalPages ? "pointer-events-none opacity-70" : ""
+        }`}
       >
         <ChevronRight className="w-4 h-4" />
       </CommonRoundedButton>
