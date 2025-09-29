@@ -143,7 +143,7 @@ const FriendCard_HomePage_OutgoingRequest = ({
               }`}
             >
               <div className={`pb-6 text-sm `}>
-                {t("cancelRequestModal.subtitle")}
+                {t("cancelRequestModal.subtitle")}{" "}
                 <span className="font-semibold">{friend.fullName}</span>?
               </div>
               <div className="grid grid-cols-2 gap-4">
