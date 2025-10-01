@@ -30,6 +30,7 @@ const Message = ({
   translatedTo,
   isShowAvatar = false,
   isShowTime = false,
+  isShowName = false,
 }) => {
   const { t } = useTranslation("components", { keyPrefix: "message" });
   const authUser = useAuthStore((s) => s.authUser);
@@ -125,7 +126,9 @@ const Message = ({
       <div className={`avatar ${side === "left" ? "order-1" : "order-3"}`}>
         {message.sender?.profile?.profilePic ? (
           <div
-            className="w-10 h-10 rounded-full relative top-6"
+            className={`w-10 h-10 rounded-full ${
+              isShowName ? "relative top-6" : ""
+            }`}
             // title={message.sender?.fullName}
           >
             {isShowAvatar && (
@@ -151,7 +154,7 @@ const Message = ({
         }`}
         ref={ref}
       >
-        {isShowAvatar && (
+        {isShowName && (
           <div
             className={`text-xs opacity-70 line-clamp-1 ${
               side === "right" ? "ml-auto" : ""

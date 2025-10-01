@@ -252,6 +252,10 @@ const Conversation = ({ translatedTo }) => {
                   translatedTo={translatedTo}
                   isShowAvatar={isGroupHead || currDate !== prevDate}
                   isShowTime={isGroupTail || currDate !== nextDate}
+                  isShowName={
+                    selectedConversation?.conversation?.type === "group" &&
+                    (isGroupHead || currDate !== prevDate)
+                  }
                 />
               </div>
             </div>
