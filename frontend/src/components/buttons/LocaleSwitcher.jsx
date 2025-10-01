@@ -90,9 +90,9 @@ export default function LocaleSwitcher({ bordered = true }) {
           tabIndex={-1}
           className={`${
             bordered ? "border border-primary/25" : ""
-          } dropdown-content bg-base-200 rounded-card shadow-lg p-2 ${
+          } dropdown-content bg-base-200 rounded-card shadow-md p-2 ${
             dropUp ? "bottom-14" : "top-14"
-          } -right-2 flex flex-col gap-1`}
+          } -right-2 flex flex-col gap-1 z-50`}
           role="listbox"
         >
           {locales.map((lang) => (

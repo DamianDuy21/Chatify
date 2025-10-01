@@ -116,7 +116,7 @@ const FriendCard_NotificationsPage_IncomingRequest = ({
 
         {/* Languages with flags */}
         <div className="flex flex-wrap gap-2">
-          <span className="badge badge-secondary h-8 px-4 flex items-center gap-1 relative -top-[1px]">
+          <span className="badge badge-secondary h-8 px-4 flex items-center gap-1 relative -top-[1px] whitespace-nowrap line-clamp-1">
             {getLanguageFlag(getLocaleById(friend.profile.nativeLanguage))}
             {t("languages.native")}:{" "}
             {capitalize(
@@ -126,7 +126,7 @@ const FriendCard_NotificationsPage_IncomingRequest = ({
               )
             )}
           </span>
-          <span className="badge badge-outline h-8 px-4 flex items-center gap-1 relative -top-[1px]">
+          <span className="badge badge-outline h-8 px-4 flex items-center gap-1 relative -top-[1px] whitespace-nowrap line-clamp-1">
             {getLanguageFlag(getLocaleById(friend.profile.learningLanguage))}
             {t("languages.learning")}:{" "}
             {capitalize(
@@ -138,33 +138,50 @@ const FriendCard_NotificationsPage_IncomingRequest = ({
           </span>
         </div>
 
-        <CommonRoundedButton
-          className={`absolute top-2 right-14 ${
-            isAccepting ? "pointer-events-none opacity-70" : ""
-          }`}
-          onClick={(e) => {
-            acceptFriendRequestMutation(request._id);
-            e.stopPropagation();
-          }}
-        >
-          {isAccepting ? (
-            <LoaderIcon className="size-4 animate-spin" />
-          ) : (
-            <Check className="size-4" />
-          )}
-        </CommonRoundedButton>
+        {/* Accept & Reject buttons */}
+        {/* Accept button */}
+        <div className="absolute top-2 right-14">
+          <CommonRoundedButton
+            className={`${isAccepting ? "pointer-events-none opacity-70" : ""}`}
+            onClick={(e) => {
+              acceptFriendRequestMutation(request._id);
+              e.stopPropagation();
+            }}
+            tooltip={{
+              isShowTooltip: true,
+              positionTooltip: "bottom-end",
+              classNameTooltip: "",
+              idTooltip: "tooltip-accept-friend-request",
+              contentTooltip: "Accept friend request",
+            }}
+          >
+            {isAccepting ? (
+              <LoaderIcon className="size-4 animate-spin" />
+            ) : (
+              <Check className="size-4" />
+            )}
+          </CommonRoundedButton>
+        </div>
 
-        <CommonRoundedButton
-          className={`absolute top-2 right-4 ${
-            isRejecting ? "pointer-events-none opacity-70" : ""
-          }`}
-          onClick={(e) => {
-            setIsOpenRejectRequestModal(true);
-            e.stopPropagation();
-          }}
-        >
-          <X className="size-4" />
-        </CommonRoundedButton>
+        {/* Reject button */}
+        <div className="absolute top-2 right-4">
+          <CommonRoundedButton
+            className={`${isRejecting ? "pointer-events-none opacity-70" : ""}`}
+            onClick={(e) => {
+              setIsOpenRejectRequestModal(true);
+              e.stopPropagation();
+            }}
+            tooltip={{
+              isShowTooltip: true,
+              positionTooltip: "bottom-end",
+              classNameTooltip: "",
+              idTooltip: "tooltip-reject-friend-request",
+              contentTooltip: "Reject friend request",
+            }}
+          >
+            <X className="size-4" />
+          </CommonRoundedButton>
+        </div>
       </div>
 
       {/* REJECT FRIEND REQUEST MODAL */}

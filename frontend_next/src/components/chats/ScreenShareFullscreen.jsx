@@ -58,6 +58,13 @@ export default function ScreenShareFullscreen() {
           "btn-primary absolute top-[26px] right-[26px] lg:top-4 lg:right-4 z-50"
         }
         onClick={openFullscreen}
+        tooltip={{
+          isShowTooltip: true,
+          positionTooltip: "left",
+          classNameTooltip: "",
+          idTooltip: "tooltip-fullscreen",
+          contentTooltip: "Open fullscreen",
+        }}
       >
         <ExternalLink className="size-4" />
       </CommonRoundedButton>

@@ -311,6 +311,13 @@ const ChatsPage = () => {
                 onClick={() => {
                   setIsOpenModalCreateGroup(true);
                 }}
+                tooltip={{
+                  isShowTooltip: true,
+                  positionTooltip: "bottom-end",
+                  classNameTooltip: "",
+                  idTooltip: "tooltip-create-group",
+                  contentTooltip: "Create new group",
+                }}
               >
                 <Plus className="size-4" />
               </CommonRoundedButton>
@@ -322,6 +329,13 @@ const ChatsPage = () => {
                   setIsOpenSearchFriendsInSmallScreen(true);
                 }}
                 className={"flex lg:hidden"}
+                tooltip={{
+                  isShowTooltip: true,
+                  positionTooltip: "right",
+                  classNameTooltip: "",
+                  idTooltip: "tooltip-chat-sidebar-open",
+                  contentTooltip: "Open chat sidebar",
+                }}
               >
                 <ChevronRight className="size-4" />
               </CommonRoundedButton>
@@ -332,6 +346,13 @@ const ChatsPage = () => {
                   setIsOpenSearchFriendsInSmallScreen(false);
                 }}
                 className={"flex lg:hidden"}
+                tooltip={{
+                  isShowTooltip: true,
+                  positionTooltip: "bottom-end",
+                  classNameTooltip: "",
+                  idTooltip: "tooltip-chat-sidebar-close",
+                  contentTooltip: "Close chat sidebar",
+                }}
               >
                 <ChevronLeft className="size-4" />
               </CommonRoundedButton>
@@ -364,6 +385,13 @@ const ChatsPage = () => {
                         ? "pointer-events-none opacity-70"
                         : ""
                     }`}
+                    tooltip={{
+                      isShowTooltip: true,
+                      positionTooltip: "top",
+                      classNameTooltip: "",
+                      idTooltip: "tooltip-load-more-conversations",
+                      contentTooltip: "Load more conversations",
+                    }}
                   >
                     {isLoadingByMoreConversations ? (
                       <LoaderIcon className="size-4 animate-spin" />
@@ -377,20 +405,38 @@ const ChatsPage = () => {
           ) : (
             <div className="flex flex-col items-center justify-center">
               {!isOpenSearchFriendsInSmallScreen ? (
-                <div className="h-16 flex items-center justify-center">
+                <>
                   {isGettingConversations ? (
-                    <LoaderIcon className="size-6 animate-spin" />
+                    <div className="h-16 flex items-center justify-center lg:hidden">
+                      <LoaderIcon className="size-6 animate-spin" />
+                    </div>
                   ) : (
-                    <MessageCircleOff className="size-6" />
+                    <>
+                      <div className="hidden lg:block">
+                        <NoDataCommon
+                          title={t("sidebar.noMatch.title")}
+                          content={t("sidebar.noMatch.subtitle")}
+                          classNameTitle={"text-sm"}
+                          classNameContent={"text-xs"}
+                        />
+                      </div>
+                      <div className="flex h-16 items-center justify-center lg:hidden ">
+                        <MessageCircleOff className="size-6"></MessageCircleOff>
+                      </div>
+                    </>
                   )}
-                </div>
+                </>
               ) : (
-                <NoDataCommon
-                  title={t("sidebar.noMatch.title")}
-                  content={t("sidebar.noMatch.subtitle")}
-                  classNameTitle={"text-sm"}
-                  classNameContent={"text-xs"}
-                />
+                <>
+                  {isGettingConversations ? null : (
+                    <NoDataCommon
+                      title={t("sidebar.noMatch.title")}
+                      content={t("sidebar.noMatch.subtitle")}
+                      classNameTitle={"text-sm"}
+                      classNameContent={"text-xs"}
+                    />
+                  )}
+                </>
               )}
             </div>
           )}

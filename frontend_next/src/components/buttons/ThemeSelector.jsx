@@ -75,7 +75,7 @@ const ThemeSelector = () => {
         <div
           ref={ulRef}
           className={`
-        absolute z-50 w-56 mt-2 p-2 right-0 shadow-lg bg-base-200 backdrop-blur-lg rounded-card border border-primary/25
+        absolute z-50 w-56 mt-2 p-2 right-0 shadow-md bg-base-200 backdrop-blur-lg rounded-card border border-primary/25
         max-h-[218px] overflow-y-auto costumedScrollbar transition-all
         ${dropUp ? "bottom-full mb-2" : "top-full mt-2"}
       `}

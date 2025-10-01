@@ -240,3 +240,8 @@ export const getUserLocaleClient = () => {
   if (typeof window === "undefined") return "vi";
   return Cookies.get("NEXT_LOCALE") || "vi";
 };
+
+export const getUserTooltipStatusClient = () => {
+  if (typeof window === "undefined") return "on";
+  return Cookies.get("tooltip_status_chatify") || "on";
+};

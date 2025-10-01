@@ -123,7 +123,7 @@ const Message = ({
       <div className={`avatar ${side === "left" ? "order-1" : "order-3"}`}>
         {message.sender?.profile?.profilePic ? (
           <div
-            className="w-10 h-10 rounded-full"
+            className="w-10 h-10 rounded-full relative top-6"
             // title={message.sender?.fullName}
           >
             {isShowAvatar && (
@@ -156,6 +156,15 @@ const Message = ({
         }`}
         ref={ref}
       >
+        {isShowAvatar && (
+          <div
+            className={`text-xs opacity-70 line-clamp-1 ${
+              side === "right" ? "ml-auto" : ""
+            }`}
+          >
+            {message.sender?.fullName}
+          </div>
+        )}
         {message.message?.content && message.message?.content.trim() !== "" && (
           <div className="flex flex-col" ref={ref}>
             <div

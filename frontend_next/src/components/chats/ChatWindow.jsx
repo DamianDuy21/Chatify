@@ -776,6 +776,13 @@ const ChatWindow = () => {
                         onClick={() => {
                           setIsOpenModalMemberList(true);
                         }}
+                        tooltip={{
+                          isShowTooltip: true,
+                          positionTooltip: "bottom-end",
+                          classNameTooltip: "",
+                          idTooltip: "tooltip-member-list",
+                          contentTooltip: "Member list",
+                        }}
                       >
                         <UsersRound className="size-4" />
                       </CommonRoundedButton>
@@ -792,6 +799,13 @@ const ChatWindow = () => {
                           onClick={() => {
                             setIsOpenModalAddMember(true);
                           }}
+                          tooltip={{
+                            isShowTooltip: true,
+                            positionTooltip: "bottom-end",
+                            classNameTooltip: "",
+                            idTooltip: "tooltip-add-member",
+                            contentTooltip: "Add member",
+                          }}
                         >
                           <UserRoundPlus className="size-4" />
                         </CommonRoundedButton>
@@ -803,6 +817,13 @@ const ChatWindow = () => {
                     <CommonRoundedButton
                       onClick={handleClickVideoCallButton}
                       className={`${!channel ? "opacity-70" : ""}`}
+                      tooltip={{
+                        isShowTooltip: true,
+                        positionTooltip: "bottom-end",
+                        classNameTooltip: "",
+                        idTooltip: "tooltip-video-call",
+                        contentTooltip: "Video call",
+                      }}
                     >
                       <Video className="size-4" />
                     </CommonRoundedButton>
@@ -816,6 +837,15 @@ const ChatWindow = () => {
                       setIsOpenUtils(!isOpenUtils);
                       window.scrollTo({ top: 0, behavior: "smooth" });
                     }}
+                    tooltip={{
+                      isShowTooltip: true,
+                      positionTooltip: "bottom-end",
+                      classNameTooltip: "",
+                      idTooltip: "tooltip-utils",
+                      contentTooltip: isOpenUtils
+                        ? "Close conversation information"
+                        : "Conversation information",
+                    }}
                   >
                     <AppWindow className="size-4" />
                   </CommonRoundedButton>
@@ -824,6 +854,13 @@ const ChatWindow = () => {
                   onClick={() => {
                     setSelectedConversation(null);
                     window.scrollTo({ top: 0, behavior: "smooth" });
+                  }}
+                  tooltip={{
+                    isShowTooltip: true,
+                    positionTooltip: "bottom-end",
+                    classNameTooltip: "",
+                    idTooltip: "tooltip-close-chat",
+                    contentTooltip: "Close chat",
                   }}
                 >
                   <X className="size-4" />
@@ -840,6 +877,15 @@ const ChatWindow = () => {
                   onClick={() => {
                     setIsOpenHeaderOptions(!isOpenHeaderOptions);
                     window.scrollTo({ top: 0, behavior: "smooth" });
+                  }}
+                  tooltip={{
+                    isShowTooltip: true,
+                    positionTooltip: "bottom-end",
+                    classNameTooltip: "",
+                    idTooltip: "tooltip-chat-utils",
+                    contentTooltip: isOpenHeaderOptions
+                      ? "Close options"
+                      : "Open options",
                   }}
                 >
                   {isOpenHeaderOptions ? (
@@ -861,6 +907,13 @@ const ChatWindow = () => {
                         setIsOpenHeaderOptions(false);
                         window.scrollTo({ top: 0, behavior: "smooth" });
                       }}
+                      tooltip={{
+                        isShowTooltip: true,
+                        positionTooltip: "left",
+                        classNameTooltip: "",
+                        idTooltip: "tooltip-close-chat-utils",
+                        contentTooltip: "Close chat",
+                      }}
                     >
                       <X className="size-4" />
                     </CommonRoundedButton>
@@ -875,6 +928,13 @@ const ChatWindow = () => {
                           setIsOpenHeaderOptions(false);
                           window.scrollTo({ top: 0, behavior: "smooth" });
                         }}
+                        tooltip={{
+                          isShowTooltip: true,
+                          positionTooltip: "left",
+                          classNameTooltip: "",
+                          idTooltip: "tooltip-conversation-information-utils",
+                          contentTooltip: "Conversation information",
+                        }}
                       >
                         <AppWindow className="size-4" />
                       </CommonRoundedButton>
@@ -887,6 +947,13 @@ const ChatWindow = () => {
                           handleClickVideoCallButton();
                         }}
                         className={`${!channel ? "opacity-70" : ""}`}
+                        tooltip={{
+                          isShowTooltip: true,
+                          positionTooltip: "left",
+                          classNameTooltip: "",
+                          idTooltip: "tooltip-video-call-utils",
+                          contentTooltip: "Video call",
+                        }}
                       >
                         <Video className="size-4" />
                       </CommonRoundedButton>
@@ -908,6 +975,13 @@ const ChatWindow = () => {
                               setIsOpenHeaderOptions(false);
                               setIsOpenModalAddMember(true);
                             }}
+                            tooltip={{
+                              isShowTooltip: true,
+                              positionTooltip: "left",
+                              classNameTooltip: "",
+                              idTooltip: "tooltip-add-member-utils",
+                              contentTooltip: "Add member",
+                            }}
                           >
                             <UserRoundPlus className="size-4" />
                           </CommonRoundedButton>
@@ -921,6 +995,13 @@ const ChatWindow = () => {
                           onClick={() => {
                             setIsOpenHeaderOptions(false);
                             setIsOpenModalMemberList(true);
+                          }}
+                          tooltip={{
+                            isShowTooltip: true,
+                            positionTooltip: "left",
+                            classNameTooltip: "",
+                            idTooltip: "tooltip-member-list-utils",
+                            contentTooltip: "Member list",
                           }}
                         >
                           <UsersRound className="size-4" />
@@ -983,6 +1064,14 @@ const ChatWindow = () => {
                     onClick={() => {
                       setIsOpenUtils(!isOpenUtils);
                       window.scrollTo({ top: 0, behavior: "smooth" });
+                    }}
+                    tooltip={{
+                      isShowTooltip: true,
+                      positionTooltip: "bottom",
+                      classNameTooltip: "",
+                      idTooltip:
+                        "tooltip-app-window-utils-conversation-information",
+                      contentTooltip: "Close conversation information",
                     }}
                   >
                     <AppWindow className="size-4" />

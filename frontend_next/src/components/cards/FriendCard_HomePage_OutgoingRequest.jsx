@@ -91,7 +91,7 @@ const FriendCard_HomePage_OutgoingRequest = ({
 
         {/* Languages with flags */}
         <div className="flex flex-wrap gap-2">
-          <span className="badge badge-secondary h-8 px-4 flex items-center gap-1 relative -top-[1px]">
+          <span className="badge badge-secondary h-8 px-4 flex items-center gap-1 relative -top-[1px] whitespace-nowrap line-clamp-1">
             {getLanguageFlag(getLocaleById(friend.profile.nativeLanguage))}
             {t("languages.native")}:{" "}
             {capitalize(
@@ -101,7 +101,7 @@ const FriendCard_HomePage_OutgoingRequest = ({
               )
             )}
           </span>
-          <span className="badge badge-outline h-8 px-4 flex items-center gap-1 relative -top-[1px]">
+          <span className="badge badge-outline h-8 px-4 flex items-center gap-1 relative -top-[1px] whitespace-nowrap line-clamp-1">
             {getLanguageFlag(getLocaleById(friend.profile.learningLanguage))}
             {t("languages.learning")}:{" "}
             {capitalize(
@@ -113,16 +113,26 @@ const FriendCard_HomePage_OutgoingRequest = ({
           </span>
         </div>
 
-        <CommonRoundedButton
-          className={`absolute top-2 right-4 ${
-            isCancellingFriendRequest ? "pointer-events-none opacity-70" : ""
-          }`}
-          onClick={() => {
-            setIsOpenCancelRequestModal(true);
-          }}
-        >
-          <Undo2 className="size-4" />
-        </CommonRoundedButton>
+        {/* CANCEL REQUEST BUTTON */}
+        <div className="absolute top-2 right-4">
+          <CommonRoundedButton
+            className={` ${
+              isCancellingFriendRequest ? "pointer-events-none opacity-70" : ""
+            }`}
+            onClick={() => {
+              setIsOpenCancelRequestModal(true);
+            }}
+            tooltip={{
+              isShowTooltip: true,
+              positionTooltip: "left",
+              classNameTooltip: "",
+              idTooltip: "tooltip-cancel-friend-request",
+              contentTooltip: "Cancel friend request",
+            }}
+          >
+            <Undo2 className="size-4" />
+          </CommonRoundedButton>
+        </div>
       </div>
 
       {/* CANCEL FRIEND REQUEST MODAL */}

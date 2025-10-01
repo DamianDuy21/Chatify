@@ -613,6 +613,13 @@ const HomePage = () => {
                         <CommonRoundedButton
                           onClick={handleClickShuffleButton}
                           type="primary"
+                          tooltip={{
+                            isShowTooltip: true,
+                            positionTooltip: "bottom-start",
+                            classNameTooltip: "",
+                            idTooltip: "tooltip-shuffle",
+                            contentTooltip: "Shuffle",
+                          }}
                         >
                           <ShuffleIcon className="size-4" />
                         </CommonRoundedButton>
@@ -621,6 +628,13 @@ const HomePage = () => {
                           <CommonRoundedButton
                             onClick={handleClickFilterOnButton}
                             type="primary"
+                            tooltip={{
+                              isShowTooltip: true,
+                              positionTooltip: "bottom-start",
+                              classNameTooltip: "",
+                              idTooltip: "tooltip-filter-on",
+                              contentTooltip: "Filter",
+                            }}
                           >
                             <Funnel className="size-4" />
                           </CommonRoundedButton>
@@ -628,6 +642,13 @@ const HomePage = () => {
                           <CommonRoundedButton
                             onClick={handleClickFilterOffButton}
                             type="primary"
+                            tooltip={{
+                              isShowTooltip: true,
+                              positionTooltip: "bottom-start",
+                              classNameTooltip: "",
+                              idTooltip: "tooltip-filter-off",
+                              contentTooltip: "Close filter",
+                            }}
                           >
                             <X className="size-4" />
                           </CommonRoundedButton>

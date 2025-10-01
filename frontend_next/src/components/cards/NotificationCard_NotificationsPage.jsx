@@ -155,21 +155,30 @@ const NotificationCard_NotificationsPage = ({
             </CommonRoundedButton>
           )} */}
 
-          <CommonRoundedButton
-            className={`absolute top-4 right-4 ${
-              isDeleting ? "pointer-events-none opacity-70" : ""
-            }`}
-            onClick={(e) => {
-              e.stopPropagation();
-              deleteNotificationMutation(notification._id);
-            }}
-          >
-            {isDeleting ? (
-              <LoaderIcon className="size-4 animate-spin" />
-            ) : (
-              <X className="size-4" />
-            )}
-          </CommonRoundedButton>
+          <div className="absolute top-4 right-4">
+            <CommonRoundedButton
+              className={`${
+                isDeleting ? "pointer-events-none opacity-70" : ""
+              }`}
+              onClick={(e) => {
+                e.stopPropagation();
+                deleteNotificationMutation(notification._id);
+              }}
+              tooltip={{
+                isShowTooltip: true,
+                positionTooltip: "left",
+                classNameTooltip: "",
+                idTooltip: "tooltip-delete-notification-button",
+                contentTooltip: "Delete notification",
+              }}
+            >
+              {isDeleting ? (
+                <LoaderIcon className="size-4 animate-spin" />
+              ) : (
+                <X className="size-4" />
+              )}
+            </CommonRoundedButton>
+          </div>
         </div>
       </div>
     </div>

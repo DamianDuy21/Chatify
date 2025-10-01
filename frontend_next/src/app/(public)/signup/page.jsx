@@ -374,7 +374,7 @@ const SignUpPage = () => {
             </div>
           </div>
         ) : (
-          <div className="flex flex-col lg:flex-row w-full max-w-xl mx-auto bg-base-200 rounded-card shadow-l">
+          <div className="flex flex-col lg:flex-row w-full max-w-xl mx-auto bg-base-200 rounded-card shadow-lg">
             <div className="w-full p-8 pb-4 flex flex-col">
               <form onSubmit={(e) => handleSignUpVerification(e)} action="">
                 <div className="space-y-4">

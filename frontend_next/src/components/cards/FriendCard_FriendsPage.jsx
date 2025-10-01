@@ -161,7 +161,7 @@ const FriendCard_v2_FriendsPage = ({
 
         {/* Languages with flags */}
         <div className="flex flex-wrap gap-2">
-          <span className="badge badge-secondary h-8 px-4 flex items-center gap-1 relative -top-[1px]">
+          <span className="badge badge-secondary h-8 px-4 flex items-center gap-1 relative -top-[1px] whitespace-nowrap line-clamp-1">
             {getLanguageFlag(getLocaleById(friend.profile.nativeLanguage))}
             {t("languages.native")}:{" "}
             {capitalize(
@@ -171,7 +171,7 @@ const FriendCard_v2_FriendsPage = ({
               )
             )}
           </span>
-          <span className="badge badge-outline h-8 px-4 flex items-center gap-1 relative -top-[1px]">
+          <span className="badge badge-outline h-8 px-4 flex items-center gap-1 relative -top-[1px] whitespace-nowrap line-clamp-1">
             {getLanguageFlag(getLocaleById(friend.profile.learningLanguage))}
             {t("languages.learning")}:{" "}
             {capitalize(
@@ -183,23 +183,40 @@ const FriendCard_v2_FriendsPage = ({
           </span>
         </div>
 
-        <CountAndMessageBadge
-          // conversation={conversation}
-          onClick={handleGetPrivateConversation}
-          isLoading={isLoading}
-          className={"absolute top-2 right-14"}
-        ></CountAndMessageBadge>
+        {/* MESSAGE BUTTON */}
+        <div className="absolute top-2 right-14">
+          <CountAndMessageBadge
+            // conversation={conversation}
+            onClick={handleGetPrivateConversation}
+            isLoading={isLoading}
+            tooltip={{
+              isShowTooltip: true,
+              positionTooltip: "bottom-end",
+              classNameTooltip: "",
+              idTooltip: "tooltip-message-badge",
+              contentTooltip: "Message",
+            }}
+          />
+        </div>
 
-        <CommonRoundedButton
-          className={`absolute top-2 right-4 ${
-            isDeleting ? "pointer-events-none opacity-70" : ""
-          }`}
-          onClick={() => {
-            setIsOpenDeleteFriendModal(true);
-          }}
-        >
-          <X className="size-4" />
-        </CommonRoundedButton>
+        {/* DELETE FRIEND BUTTON */}
+        <div className="absolute top-2 right-4">
+          <CommonRoundedButton
+            className={` ${isDeleting ? "pointer-events-none opacity-70" : ""}`}
+            onClick={() => {
+              setIsOpenDeleteFriendModal(true);
+            }}
+            tooltip={{
+              isShowTooltip: true,
+              positionTooltip: "bottom-end",
+              classNameTooltip: "",
+              idTooltip: "tooltip-delete-friend-button",
+              contentTooltip: "Delete friend",
+            }}
+          >
+            <X className="size-4" />
+          </CommonRoundedButton>
+        </div>
       </div>
 
       {/* DELETE FRIEND MODAL */}

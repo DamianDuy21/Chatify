@@ -153,7 +153,7 @@ const FriendCard_v2_FriendsPage = ({
 
         {/* Languages with flags */}
         <div className="flex flex-wrap gap-2">
-          <span className="badge badge-secondary h-8 px-4 flex items-center gap-1 relative -top-[1px]">
+          <span className="badge badge-secondary h-8 px-4 flex items-center gap-1 relative -top-[1px] whitespace-nowrap line-clamp-1">
             {getLanguageFlag(getLocaleById(friend.profile.nativeLanguage))}
             {t("languages.native")}:{" "}
             {capitalize(
@@ -163,7 +163,7 @@ const FriendCard_v2_FriendsPage = ({
               )
             )}
           </span>
-          <span className="badge badge-outline h-8 px-4 flex items-center gap-1 relative -top-[1px]">
+          <span className="badge badge-outline h-8 px-4 flex items-center gap-1 relative -top-[1px] whitespace-nowrap line-clamp-1">
             {getLanguageFlag(getLocaleById(friend.profile.learningLanguage))}
             {t("languages.learning")}:{" "}
             {capitalize(

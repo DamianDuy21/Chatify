@@ -136,6 +136,13 @@ const Conversation = ({ translatedTo }) => {
           className={`${
             isGettingMessages ? "pointer-events-none opacity-70" : ""
           } rounded-full`}
+          tooltip={{
+            isShowTooltip: isGettingMessages ? false : true,
+            positionTooltip: "bottom",
+            classNameTooltip: "",
+            idTooltip: "tooltip-load-more-messages",
+            contentTooltip: "Load more messages",
+          }}
           type="secondary"
         >
           {isGettingMessages ? (
@@ -160,6 +167,13 @@ const Conversation = ({ translatedTo }) => {
             })
           }
           className={`rounded-full`}
+          tooltip={{
+            isShowTooltip: true,
+            positionTooltip: "top",
+            classNameTooltip: "",
+            idTooltip: "tooltip-scroll-to-bottom",
+            contentTooltip: "Scroll to bottom",
+          }}
           type="secondary"
         >
           <ChevronsDown className="size-4" />

@@ -10,17 +10,16 @@ import {
   ThumbsUp,
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
+import { useTranslation } from "react-i18next";
 import { translateMessageAPI } from "../../lib/api";
 import {
   copyToClipboard,
   formatISOToParts,
   getLocaleById,
 } from "../../lib/utils";
-import CommonRoundedButton from "../buttons/CommonRoundedButton";
-import { useTranslation } from "react-i18next";
-import { showToast } from "../costumed/CostumedToast";
 import { useAuthStore } from "../../stores/useAuthStore";
+import CommonRoundedButton from "../buttons/CommonRoundedButton";
+import { showToast } from "../costumed/CostumedToast";
 
 const Message = ({
   ref,
@@ -126,7 +125,7 @@ const Message = ({
       <div className={`avatar ${side === "left" ? "order-1" : "order-3"}`}>
         {message.sender?.profile?.profilePic ? (
           <div
-            className="w-10 h-10 rounded-full"
+            className="w-10 h-10 rounded-full relative top-6"
             // title={message.sender?.fullName}
           >
             {isShowAvatar && (
@@ -152,6 +151,15 @@ const Message = ({
         }`}
         ref={ref}
       >
+        {isShowAvatar && (
+          <div
+            className={`text-xs opacity-70 line-clamp-1 ${
+              side === "right" ? "ml-auto" : ""
+            }`}
+          >
+            {message.sender?.fullName}
+          </div>
+        )}
         {message.message?.content && message.message?.content.trim() !== "" && (
           <div className="flex flex-col" ref={ref}>
             <div

@@ -3,6 +3,7 @@ import ToastProvider from "@/providers/ToastProvider";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, setRequestLocale } from "next-intl/server";
 import { cookies } from "next/headers";
+import "react-tooltip/dist/react-tooltip.css";
 import "./globals.css";
 import { getUserLocale } from "@/services/locale";
 

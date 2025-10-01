@@ -19,7 +19,7 @@ const CommonPagination = ({ totalPages, currentPage, setCurrentPage }) => {
             onClick={() => goTo(i)}
             type={currentPage === i ? "primary" : "outline"}
           >
-            {i}
+            <span className="relative -top-[0.5px]">{i}</span>
           </CommonRoundedButton>
         );
       }
@@ -32,7 +32,7 @@ const CommonPagination = ({ totalPages, currentPage, setCurrentPage }) => {
         onClick={() => goTo(1)}
         type={currentPage === 1 ? "primary" : "outline"}
       >
-        1
+        <span className="relative -top-[0.5px]">1</span>
       </CommonRoundedButton>
     );
 
@@ -54,7 +54,7 @@ const CommonPagination = ({ totalPages, currentPage, setCurrentPage }) => {
           onClick={() => goTo(i)}
           type={currentPage === i ? "primary" : "outline"}
         >
-          {i}
+          <span className="relative -top-[0.5px]">{i}</span>
         </CommonRoundedButton>
       );
     }
@@ -73,7 +73,7 @@ const CommonPagination = ({ totalPages, currentPage, setCurrentPage }) => {
         onClick={() => goTo(totalPages)}
         type={currentPage === totalPages ? "primary" : "outline"}
       >
-        {totalPages}
+        <span className="relative -top-[0.5px]">{totalPages}</span>
       </CommonRoundedButton>
     );
 
@@ -81,7 +81,7 @@ const CommonPagination = ({ totalPages, currentPage, setCurrentPage }) => {
   };
 
   return (
-    <div className="w-full flex justify-center mt-8 gap-2">
+    <div className="w-full flex justify-center mt-4 lg:mt-6 gap-2">
       <CommonRoundedButton
         onClick={() => goTo(currentPage - 1)}
         type="outline"

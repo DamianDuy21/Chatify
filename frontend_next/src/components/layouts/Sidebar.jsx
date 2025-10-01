@@ -1,4 +1,6 @@
 "use client";
+import { getUserTooltipStatusClient } from "@/lib/utils";
+import { setUserTooltipStatus } from "@/services/locale";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useChatStore } from "@/stores/useChatStore";
 import { useNotificationStore } from "@/stores/useNotificationStore";
@@ -6,6 +8,7 @@ import {
   Badge,
   BellIcon,
   Hexagon,
+  Lightbulb,
   LoaderIcon,
   MessageCircle,
   UsersRound,
@@ -15,6 +18,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { Tooltip } from "react-tooltip";
+import CommonRoundedButton from "../buttons/CommonRoundedButton";
 
 const Sidebar = () => {
   const t = useTranslations("Sidebar");
@@ -46,6 +51,12 @@ const Sidebar = () => {
 
   const [totalUnseenMessages, setTotalUnseenMessages] = useState(0);
 
+  const tooltipStatus = getUserTooltipStatusClient();
+  // show in small screen
+  const [isShowTooltip, setIsShowTooltip] = useState(false);
+  const [isClickAvatarToShowTooltip, setIsClickAvatarToShowTooltip] =
+    useState(false);
+
   useEffect(() => {
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
@@ -66,9 +77,20 @@ const Sidebar = () => {
     );
   }, [conversations]);
 
+  useEffect(() => {
+    if (!(isShowTooltip && isClickAvatarToShowTooltip)) return;
+
+    const t = setTimeout(() => {
+      setIsShowTooltip(false);
+      setIsClickAvatarToShowTooltip(false);
+    }, 2000);
+
+    return () => clearTimeout(t);
+  }, [isShowTooltip, isClickAvatarToShowTooltip]);
+
   return (
     <>
-      <aside className="h-screen w-20 lg:w-64 bg-base-200 border-r border-base-300 flex flex-col sticky top-0">
+      <aside className="h-screen w-20 z-50 lg:w-64 bg-base-200 border-r border-base-300 flex flex-col sticky top-0">
         <div className="w-full px-4 lg:px-8 h-16 border-b border-base-300 flex items-center justify-center lg:justify-start">
           {!isProfilePage && !isChatPage && !isChangePasswordPage ? (
             windowWidth > 1024 ? (
@@ -91,9 +113,12 @@ const Sidebar = () => {
         </div>
 
         <nav className="flex-1 p-4 space-y-2 overflow-y-auto">
+          {/* HOME */}
           <Link
             href="/"
-            className={`btn btn-ghost flex justify-center items-center lg:justify-start w-full px-0 lg:gap-4 lg:px-4 normal-case  ${
+            data-tooltip-id="tip-nav-home"
+            data-tooltip-content={t("pages.home")}
+            className={`btn btn-ghost flex justify-center items-center lg:justify-start w-full px-0 lg:gap-4 lg:px-4 normal-case ${
               currentPath === "/" ? "btn-active" : "hover:bg-base-300"
             }`}
           >
@@ -102,8 +127,24 @@ const Sidebar = () => {
               <span className="hidden lg:block">{t("pages.home")}</span>
             ) : null}
           </Link>
+          {tooltipStatus === "on" && (
+            <Tooltip
+              id="tip-nav-home"
+              place="right-start"
+              offset={8}
+              delayShow={100}
+              delayHide={80}
+              className={`!pointer-events-none !rounded-card !border !border-primary/25
+                      !bg-base-100 !h-8 !px-3 !text-xs !text-base-content
+                      !shadow-none !whitespace-nowrap !z-[999999999] lg:!hidden`}
+            />
+          )}
+
+          {/* FRIENDS */}
           <Link
             href="/friends"
+            data-tooltip-id="tip-nav-friends"
+            data-tooltip-content={t("pages.friends")}
             className={`btn btn-ghost flex justify-center items-center lg:justify-start w-full px-0 lg:gap-4 lg:px-4 normal-case ${
               currentPath === "/friends" ? "btn-active" : "hover:bg-base-300"
             }`}
@@ -114,8 +155,24 @@ const Sidebar = () => {
               <span className="hidden lg:block">{t("pages.friends")}</span>
             ) : null}
           </Link>
+          {tooltipStatus === "on" && (
+            <Tooltip
+              id="tip-nav-friends"
+              place="right-start"
+              offset={8}
+              delayShow={100}
+              delayHide={80}
+              className={`!pointer-events-none !rounded-card !border !border-primary/25
+                      !bg-base-100 !h-8 !px-3 !text-xs !text-base-content
+                      !shadow-none !whitespace-nowrap !z-[999999999] lg:!hidden`}
+            />
+          )}
+
+          {/* CHATS */}
           <Link
             href="/chats"
+            data-tooltip-id="tip-nav-chats"
+            data-tooltip-content={t("pages.chats")}
             className={`relative btn btn-ghost flex justify-center items-center lg:justify-start w-full px-0 lg:gap-4 lg:px-4 normal-case ${
               currentPath === "/chats" ? "btn-active" : "hover:bg-base-300"
             }`}
@@ -136,8 +193,23 @@ const Sidebar = () => {
               )
             )}
           </Link>
+          {tooltipStatus === "on" && (
+            <Tooltip
+              id="tip-nav-chats"
+              place="right-start"
+              offset={8}
+              delayShow={100}
+              delayHide={80}
+              className={`!pointer-events-none !rounded-card !border !border-primary/25
+                      !bg-base-100 !h-8 !px-3 !text-xs !text-base-content
+                      !shadow-none !whitespace-nowrap !z-[999999999] lg:!hidden`}
+            />
+          )}
+          {/* NOTIFICATIONS */}
           <Link
             href="/notifications"
+            data-tooltip-id="tip-nav-notifications"
+            data-tooltip-content={t("pages.notifications")}
             className={`relative btn btn-ghost flex justify-center items-center lg:justify-start w-full px-0 lg:gap-4 lg:px-4 normal-case ${
               currentPath === "/notifications"
                 ? "btn-active"
@@ -156,11 +228,31 @@ const Sidebar = () => {
               </div>
             )}
           </Link>
+          {tooltipStatus === "on" && (
+            <Tooltip
+              id="tip-nav-notifications"
+              place="right-start"
+              offset={8}
+              delayShow={100}
+              delayHide={80}
+              className={`!pointer-events-none !rounded-card !border !border-primary/25
+                      !bg-base-100 !h-8 !px-3 !text-xs !text-base-content
+                      !shadow-none !whitespace-nowrap !z-[999999999] lg:!hidden`}
+            />
+          )}
         </nav>
 
         {/* USER PROFILE SECTION */}
-        <div className="h-16 border-t border-base-300 mt-auto flex items-center justify-center lg:justify-start px-4">
-          <div className="flex items-center gap-3 relative">
+        <div className="relative h-16 border-t border-base-300 mt-auto flex items-center justify-center lg:justify-between px-4">
+          <div
+            className={`${
+              isShowTooltip ? "hidden" : ""
+            } flex items-center gap-3 relative cursor-pointer lg:cursor-default`}
+            onClick={() => {
+              setIsShowTooltip(true);
+              setIsClickAvatarToShowTooltip(true);
+            }}
+          >
             <div className="avatar">
               <div className="w-10 rounded-full">
                 <Image
@@ -195,6 +287,81 @@ const Sidebar = () => {
               </div>
             ) : null}
           </div>
+          {isShowTooltip && (
+            <CommonRoundedButton
+              className={`!bg-transparent`}
+              onClick={() => {
+                setUserTooltipStatus(tooltipStatus === "on" ? "off" : "on");
+                setIsClickAvatarToShowTooltip(false);
+                setTimeout(() => setIsShowTooltip(false), 2000);
+              }}
+              type="ghost"
+              tooltip={{
+                isShowTooltip: true,
+                positionTooltip: "top-end",
+                classNameTooltip: "",
+                idTooltip: "tooltip",
+                contentTooltip: "Turn off tooltips",
+                offsetTooltip: 2,
+              }}
+            >
+              {tooltipStatus === "on" ? (
+                <Lightbulb
+                  className="
+                size-4
+                [&_path]:fill-primary 
+                !text-primary      
+              "
+                />
+              ) : (
+                <Lightbulb
+                  className="
+                size-4
+                !text-base-content
+                [&_path]:stroke-current                 
+                [&_path]:fill-transparent              
+                  
+              "
+                />
+              )}
+            </CommonRoundedButton>
+          )}
+
+          <CommonRoundedButton
+            className={`hidden lg:flex !bg-transparent`}
+            onClick={() => {
+              setUserTooltipStatus(tooltipStatus === "on" ? "off" : "on");
+            }}
+            type="ghost"
+            tooltip={{
+              isShowTooltip: true,
+              positionTooltip: "top-end",
+              classNameTooltip: "",
+              idTooltip: "tooltip",
+              contentTooltip: "Turn off tooltips",
+              offsetTooltip: 2,
+            }}
+          >
+            {tooltipStatus === "on" ? (
+              <Lightbulb
+                className="
+                size-4
+                [&_path]:fill-primary 
+                !text-primary      
+              "
+              />
+            ) : (
+              <Lightbulb
+                className="
+                size-4
+                !text-base-content
+                [&_path]:stroke-current                 
+                [&_path]:fill-transparent              
+                  
+              "
+              />
+            )}
+          </CommonRoundedButton>
         </div>
       </aside>
     </>

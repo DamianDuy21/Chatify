@@ -289,11 +289,29 @@ const FriendsPage = () => {
 
               <div>
                 {!isOpenFilter ? (
-                  <CommonRoundedButton onClick={handleClickFilterOnButton}>
+                  <CommonRoundedButton
+                    onClick={handleClickFilterOnButton}
+                    tooltip={{
+                      isShowTooltip: true,
+                      positionTooltip: "left",
+                      classNameTooltip: "",
+                      idTooltip: "tooltip-filter-on",
+                      contentTooltip: "Filter",
+                    }}
+                  >
                     <Funnel className="size-4" />
                   </CommonRoundedButton>
                 ) : (
-                  <CommonRoundedButton onClick={handleClickFilterOffButton}>
+                  <CommonRoundedButton
+                    onClick={handleClickFilterOffButton}
+                    tooltip={{
+                      isShowTooltip: true,
+                      positionTooltip: "left",
+                      classNameTooltip: "",
+                      idTooltip: "tooltip-filter-off",
+                      contentTooltip: "Close filter",
+                    }}
+                  >
                     <X className="size-4" />
                   </CommonRoundedButton>
                 )}
