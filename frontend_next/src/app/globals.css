@@ -108,7 +108,10 @@ a {
 }
 
 /* layout user */
-.str-video__speaker-layout__participants-bar-buttons-wrapper,
+.str-video__speaker-layout__participants-bar-buttons-wrapper {
+  max-height: calc(50vh - 64px - 64px) !important;
+}
+
 .str-video__speaker-layout__participants-bar-wrapper,
 .str-video__speaker-layout__participants-bar,
 .str-video__speaker-layout__participant-tile,

@@ -21,6 +21,7 @@ import ScreenShareFullscreen from "@/components/chats/ScreenShareFullscreen";
 import CommonPageLoader from "@/components/loaders/CommonPageLoader";
 import { useParams, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import { getUserLocaleClient } from "@/lib/utils";
 
 const STREAM_API_KEY = process.env.NEXT_PUBLIC_STREAM_API_KEY;
 
@@ -30,6 +31,15 @@ const CallPage = () => {
   const [client, setClient] = useState(null);
   const [call, setCall] = useState(null);
   const [isConnecting, setIsConnecting] = useState(true);
+  const NEXT_LOCALE = getUserLocaleClient() || "vi";
+  const translations = {
+    vi: {
+      "Stop Screen Sharing": "Dừng chia sẻ màn hình",
+    },
+    en: {
+      "Stop Screen Sharing": "Stop Screen Sharing",
+    },
+  };
 
   const authUser = useAuthStore((s) => s.authUser);
 
@@ -88,7 +98,11 @@ const CallPage = () => {
       <div className="bg-base-200 border-b border-base-300 sticky top-0 z-30 h-16 w-screen flex items-center" />
       {client && call ? (
         <div className="relative h-[calc(100vh-64px)] flex items-center justify-center">
-          <StreamVideo client={client}>
+          <StreamVideo
+            client={client}
+            language={NEXT_LOCALE}
+            translationsOverrides={translations}
+          >
             <StreamCall call={call}>
               <div className="bg-base-100 pb-0 p-4 w-full h-full">
                 <CallContent />
