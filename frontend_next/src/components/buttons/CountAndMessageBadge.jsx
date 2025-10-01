@@ -70,7 +70,7 @@ const CountAndMessageBadge = ({
           offset={8}
           delayShow={100}
           delayHide={80}
-          className={`!pointer-events-none !rounded-card !border !border-primary/25
+          className={`!flex !items-center !pointer-events-none !rounded-card !border !border-primary/25
                       !bg-base-100 !h-8 !px-3 !text-xs !text-base-content
                       !shadow-none !whitespace-nowrap !z-[999999999] ${classNameTooltip}`}
         />
