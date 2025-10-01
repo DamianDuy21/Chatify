@@ -87,7 +87,7 @@ const VideoCallPage = () => {
         <div className="relative h-[calc(100vh-64px)] flex items-center justify-center">
           <StreamVideo client={client}>
             <StreamCall call={call}>
-              <div className="bg-base-300 pb-0 p-4 w-full h-full">
+              <div className="bg-base-100 pb-0 p-4 w-full h-full">
                 <CallContent />
               </div>
             </StreamCall>

@@ -7,8 +7,12 @@ import {
 } from "@stream-io/video-react-sdk";
 import { ExternalLink } from "lucide-react";
 import CommonRoundedButton from "../buttons/CommonRoundedButton";
+import { useTranslations } from "next-intl";
+
+// str-video__screen-share-overlay__button
 
 export default function ScreenShareFullscreen() {
+  const t = useTranslations("Components.screenShareFullscreen");
   const { useParticipants, useHasOngoingScreenShare } = useCallStateHooks();
   const participants = useParticipants();
   const hasShare = useHasOngoingScreenShare();
@@ -63,7 +67,7 @@ export default function ScreenShareFullscreen() {
           positionTooltip: "left",
           classNameTooltip: "",
           idTooltip: "tooltip-fullscreen",
-          contentTooltip: "Open fullscreen",
+          contentTooltip: t("tooltip.openFullscreen"),
         }}
       >
         <ExternalLink className="size-4" />

@@ -275,7 +275,7 @@ const ChatsPage = () => {
   return (
     <>
       {/* p-4 sm:p-6 lg:p-6  */}
-      <div className="min-h-[calc(100vh-64px)] relative flex">
+      <div className="h-[calc(100vh-64px)] relative flex">
         <div
           className={`${
             totalConversationQuantityAboveFilter === 0 ? "hidden" : ""
@@ -316,7 +316,7 @@ const ChatsPage = () => {
                   positionTooltip: "bottom-end",
                   classNameTooltip: "",
                   idTooltip: "tooltip-create-group",
-                  contentTooltip: "Create new group",
+                  contentTooltip: t("tooltip.createGroup"),
                 }}
               >
                 <Plus className="size-4" />
@@ -334,7 +334,7 @@ const ChatsPage = () => {
                   positionTooltip: "right",
                   classNameTooltip: "",
                   idTooltip: "tooltip-chat-sidebar-open",
-                  contentTooltip: "Open chat sidebar",
+                  contentTooltip: t("tooltip.openChatSidebar"),
                 }}
               >
                 <ChevronRight className="size-4" />
@@ -351,7 +351,7 @@ const ChatsPage = () => {
                   positionTooltip: "bottom-end",
                   classNameTooltip: "",
                   idTooltip: "tooltip-chat-sidebar-close",
-                  contentTooltip: "Close chat sidebar",
+                  contentTooltip: t("tooltip.closeChatSidebar"),
                 }}
               >
                 <ChevronLeft className="size-4" />
@@ -390,7 +390,7 @@ const ChatsPage = () => {
                       positionTooltip: "top",
                       classNameTooltip: "",
                       idTooltip: "tooltip-load-more-conversations",
-                      contentTooltip: "Load more conversations",
+                      contentTooltip: t("tooltip.loadMoreConversations"),
                     }}
                   >
                     {isLoadingByMoreConversations ? (

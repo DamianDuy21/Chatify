@@ -1,10 +1,20 @@
 {
   "Components": {
+    "screenShareFullscreen": {
+      "tooltip": {
+        "openFullscreen": "Mở toàn màn hình",
+        "exitFullscreen": "Thoát toàn màn hình"
+      }
+    },
     "conversation": {
       "toast": {
         "getMessages": {
           "error": "Không thể tải tin nhắn. Vui lòng thử lại sau."
         }
+      },
+      "tooltip": {
+        "loadMoreMessages": "Tải thêm tin nhắn",
+        "scrollToBottom": "Xem tin nhắn mới nhất"
       }
     },
     "message": {
@@ -64,6 +74,9 @@
           "success": "Gửi lời mời kết bạn thành công",
           "error": "Gửi lời mời kết bạn thất bại. Vui lòng thử lại sau"
         }
+      },
+      "tooltip": {
+        "sendFriendRequest": "Gửi lời mời kết bạn"
       }
     },
     "friendCard_HomePage_OutgoingRequest": {
@@ -84,6 +97,9 @@
           "success": "Hủy yêu cầu kết bạn thành công",
           "error": "Hủy yêu cầu kết bạn thất bại. Vui lòng thử lại sau"
         }
+      },
+      "tooltip": {
+        "cancelRequest": "Hủy lời mời"
       }
     },
     "friendCard_FriendsPage": {
@@ -111,6 +127,10 @@
         "handleGetPrivateConversation": {
           "error": "Lấy cuộc trò chuyện riêng tư thất bại. Vui lòng thử lại sau"
         }
+      },
+      "tooltip": {
+        "message": "Trò chuyện ngay",
+        "deleteFriend": "Xóa bạn"
       }
     },
     "notificationCard_notificationsPage": {
@@ -130,6 +150,10 @@
           "success": "Thông báo đã được xóa",
           "error": "Xóa thông báo thất bại. Vui lòng thử lại sau"
         }
+      },
+      "tooltip": {
+        "acceptNotification": "Chấp nhận thông báo",
+        "deleteNotification": "Xóa thông báo"
       }
     },
     "friendCard_NotificationsPage_IncomingRequest": {
@@ -154,6 +178,10 @@
           "success": "Từ chối yêu cầu kết bạn thành công",
           "error": "Từ chối yêu cầu kết bạn thất bại. Vui lòng thử lại sau"
         }
+      },
+      "tooltip": {
+        "acceptRequest": "Chấp nhận lời mời",
+        "rejectRequest": "Từ chối lời mời"
       }
     },
     "conversationCard_ChatsPage_Sidebar": {
@@ -299,6 +327,16 @@
         "initChat": {
           "error": "Khởi tạo trò chuyện thất bại. Vui lòng thử lại sau"
         }
+      },
+      "tooltip": {
+        "memberList": "Danh sách thành viên",
+        "addMember": "Thêm thành viên",
+        "videoCall": "Bắt đầu cuộc gọi video",
+        "openUtils": "Mở thông tin cuộc trò chuyện",
+        "closeUtils": "Đóng thông tin cuộc trò chuyện",
+        "closeConversation": "Đóng cuộc trò chuyện",
+        "openOptions": "Mở tùy chọn",
+        "closeOptions": "Đóng tùy chọn"
       }
     },
     "textEditor": {
@@ -734,6 +772,10 @@
       "status": {
         "online": "Trực tuyến"
       }
+    },
+    "tooltip": {
+      "turnOnTooltip": "Bật gợi ý",
+      "turnOffTooltip": "Tắt gợi ý"
     }
   },
   "HomePage": {
@@ -770,6 +812,13 @@
       "fetchOutgoingFriendRequests": {
         "error": "Không thể lấy danh sách lời mời kết bạn đã gửi. Vui lòng thử lại sau."
       }
+    },
+    "tooltip": {
+      "recommendedUsers": {
+        "shuffle": "Làm mới",
+        "filter": "Bộ lọc",
+        "closeFilter": "Đóng bộ lọc"
+      }
     }
   },
   "FriendsPage": {
@@ -788,6 +837,10 @@
       "fetchFriends": {
         "error": "Lỗi khi tải danh sách bạn bè. Vui lòng thử lại sau."
       }
+    },
+    "tooltip": {
+      "filter": "Bộ lọc",
+      "closeFilter": "Đóng bộ lọc"
     }
   },
   "NotificationsPage": {
@@ -864,6 +917,12 @@
         "selectedFriendLengthMax": "Số lượng thành viên trong nhóm không được vượt quá 20",
         "emptyGroupName": "Vui lòng nhập tên nhóm"
       }
+    },
+    "tooltip": {
+      "createGroup": "Tạo nhóm trò chuyện",
+      "openChatSidebar": "Mở thanh bên trò chuyện",
+      "closeChatSidebar": "Đóng thanh bên trò chuyện",
+      "loadMoreConversations": "Tải thêm cuộc trò chuyện"
     }
   }
 }

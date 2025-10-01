@@ -46,10 +46,12 @@ a {
   }
 }
 
+/* REACT TOOLTIP */
 .react-tooltip-arrow {
   display: none !important;
 }
 
+/* STR VIDEO */
 .str-video {
   height: 100% !important;
   display: flex !important;
@@ -58,7 +60,7 @@ a {
 
 /* avatar người dùng khi không bật video */
 .str-video__video-placeholder__avatar {
-  width: 40px !important  ;
+  width: 40px !important;
   height: 40px !important;
 }
 
@@ -67,15 +69,15 @@ a {
 .str-video__video {
   --tw-bg-opacity: 1;
   background-color: var(
-    --fallback-b1,
-    oklch(var(--b1) / var(--tw-bg-opacity, 1))
+    --fallback-b2,
+    oklch(var(--b2) / var(--tw-bg-opacity, 1))
   ) !important;
 }
 
 /* layout  */
 .str-video__speaker-layout {
   display: flex !important;
-  flex-direction: row !important;
+  flex-direction: column !important;
   height: 100% !important;
 }
 
@@ -88,7 +90,7 @@ a {
 /* border của frame */
 .str-video__participant-view.str-video__participant-view--no-video.str-video__participant-view--no-audio,
 .str-video__video.str-video__video--mirror {
-  border-radius: var(--rounded-box, 1rem /* 16px */ /* 16px */) !important;
+  border-radius: var(--rounded-box, 0.5rem /* 8px */) !important;
 }
 
 /* gap khi có hơn 2 người và share màn hình */
@@ -106,9 +108,13 @@ a {
 }
 
 /* layout user */
-.str-video__speaker-layout__participants-bar-buttons-wrapper
-  > div:nth-of-type(1) {
-  width: 100% !important;
+.str-video__speaker-layout__participants-bar-buttons-wrapper,
+.str-video__speaker-layout__participants-bar-wrapper,
+.str-video__speaker-layout__participants-bar,
+.str-video__speaker-layout__participant-tile,
+.str-video__participant-view,
+.str-video__video-placeholder {
+  height: 100% !important;
 }
 
 /* layout user */
@@ -117,7 +123,7 @@ a {
   max-width: 100% !important;
   min-width: none;
   width: 100% !important;
-  border-radius: var(--rounded-box, 1rem /* 16px */ /* 16px */) !important;
+  border-radius: var(--rounded-box, 0.5rem /* 8px */) !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -216,7 +222,7 @@ button.str-video__call-controls__button.str-video__call-controls__button--varian
 }
 
 .str-video__participant-view.str-video__participant-view--dominant-speaker.str-video__participant-view--no-video.str-video__participant-view--no-audio {
-  border-radius: var(--rounded-box, 1rem /* 16px */ /* 16px */) !important;
+  border-radius: var(--rounded-box, 0.5rem /* 8px */) !important;
   overflow: hidden !important;
 }
 
@@ -245,7 +251,7 @@ button.str-video__call-controls__button.str-video__call-controls__button--varian
   gap: 8px !important;
   left: 8px !important;
   bottom: 8px !important;
-  border-radius: var(--rounded-box, 1rem /* 16px */ /* 16px */) !important;
+  border-radius: var(--rounded-btn, 0.5rem /* 8px */) !important;
 }
 
 /* tên user */
@@ -278,7 +284,7 @@ button.str-video__call-controls__button.str-video__call-controls__button--varian
 
 /* css cái nút dừng chia sẻ */
 .str-video__screen-share-overlay__button {
-  height: 40px !important;
+  height: 48px !important;
   font-size: 14px !important;
   background-color: var(--str-video__button-tertiary-base) !important;
 }

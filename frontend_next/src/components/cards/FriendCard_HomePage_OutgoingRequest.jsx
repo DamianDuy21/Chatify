@@ -127,7 +127,7 @@ const FriendCard_HomePage_OutgoingRequest = ({
               positionTooltip: "left",
               classNameTooltip: "",
               idTooltip: "tooltip-cancel-friend-request",
-              contentTooltip: "Cancel friend request",
+              contentTooltip: t("tooltip.cancelRequest"),
             }}
           >
             <Undo2 className="size-4" />

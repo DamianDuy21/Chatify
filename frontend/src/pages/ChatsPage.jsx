@@ -271,7 +271,7 @@ const ChatsPage = () => {
   return (
     <>
       {/* p-4 sm:p-6 lg:p-6  */}
-      <div className="min-h-[calc(100vh-64px)] relative flex">
+      <div className="h-[calc(100vh-64px)] relative flex">
         <div
           className={`${
             totalConversationQuantityAboveFilter === 0 ? "hidden" : ""

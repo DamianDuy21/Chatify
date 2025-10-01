@@ -1,10 +1,20 @@
 {
   "Components": {
+    "screenShareFullscreen": {
+      "tooltip": {
+        "openFullscreen": "Open fullscreen",
+        "exitFullscreen": "Exit fullscreen"
+      }
+    },
     "conversation": {
       "toast": {
         "getMessages": {
           "error": "Failed to fetch messages. Please try again later."
         }
+      },
+      "tooltip": {
+        "loadMoreMessages": "Load more messages",
+        "scrollToBottom": "Jump to latest message"
       }
     },
     "message": {
@@ -64,6 +74,9 @@
           "success": "Friend request sent successfully",
           "error": "Failed to send friend request. Please try again later"
         }
+      },
+      "tooltip": {
+        "sendFriendRequest": "Send friend request"
       }
     },
     "friendCard_HomePage_OutgoingRequest": {
@@ -84,6 +97,9 @@
           "success": "Cancel friend request successful",
           "error": "Cancel friend request failed. Please try again later"
         }
+      },
+      "tooltip": {
+        "cancelRequest": "Cancel request"
       }
     },
     "friendCard_FriendsPage": {
@@ -111,6 +127,10 @@
         "handleGetPrivateConversation": {
           "error": "Get private conversation failed. Please try again later"
         }
+      },
+      "tooltip": {
+        "message": "Chat now",
+        "deleteFriend": "Delete friend"
       }
     },
     "notificationCard_notificationsPage": {
@@ -130,6 +150,10 @@
           "success": "Notification has been deleted",
           "error": "Deleting notification failed. Please try again later"
         }
+      },
+      "tooltip": {
+        "acceptNotification": "Accept notification",
+        "deleteNotification": "Delete notification"
       }
     },
     "friendCard_NotificationsPage_IncomingRequest": {
@@ -154,6 +178,10 @@
           "success": "Rejecting friend request successful",
           "error": "Rejecting friend request failed. Please try again later"
         }
+      },
+      "tooltip": {
+        "acceptRequest": "Accept request",
+        "rejectRequest": "Reject request"
       }
     },
     "conversationCard_ChatsPage_Sidebar": {
@@ -299,6 +327,16 @@
         "initChat": {
           "error": "Failed to initialize chat. Please try again later"
         }
+      },
+      "tooltip": {
+        "memberList": "View members",
+        "addMember": "Add member",
+        "videoCall": "Start video call",
+        "openUtils": "Open conversation information",
+        "closeUtils": "Close conversation information",
+        "closeConversation": "Close conversation",
+        "openOptions": "Open options",
+        "closeOptions": "Close options"
       }
     },
     "textEditor": {
@@ -733,6 +771,10 @@
       "status": {
         "online": "Online"
       }
+    },
+    "tooltip": {
+      "turnOnTooltip": "Turn on tooltip",
+      "turnOffTooltip": "Turn off tooltip"
     }
   },
   "HomePage": {
@@ -769,6 +811,13 @@
       "fetchOutgoingFriendRequests": {
         "error": "Failed to fetch outgoing friend requests. Please try again later."
       }
+    },
+    "tooltip": {
+      "recommendedUsers": {
+        "shuffle": "Shuffle",
+        "filter": "Filter",
+        "closeFilter": "Close filter"
+      }
     }
   },
   "FriendsPage": {
@@ -787,6 +836,10 @@
       "fetchFriends": {
         "error": "Error fetching friends. Please try again later."
       }
+    },
+    "tooltip": {
+      "filter": "Filter",
+      "closeFilter": "Close filter"
     }
   },
   "NotificationsPage": {
@@ -864,6 +917,12 @@
         "selectedFriendLengthMax": "The number of members in the group must not exceed 20",
         "emptyGroupName": "Please enter a group name"
       }
+    },
+    "tooltip": {
+      "createGroup": "Create group chat",
+      "openChatSidebar": "Open chat sidebar",
+      "closeChatSidebar": "Close chat sidebar",
+      "loadMoreConversations": "Load more conversations"
     }
   }
 }

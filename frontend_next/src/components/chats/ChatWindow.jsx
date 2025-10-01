@@ -781,7 +781,7 @@ const ChatWindow = () => {
                           positionTooltip: "bottom-end",
                           classNameTooltip: "",
                           idTooltip: "tooltip-member-list",
-                          contentTooltip: "Member list",
+                          contentTooltip: t("tooltip.memberList"),
                         }}
                       >
                         <UsersRound className="size-4" />
@@ -804,7 +804,7 @@ const ChatWindow = () => {
                             positionTooltip: "bottom-end",
                             classNameTooltip: "",
                             idTooltip: "tooltip-add-member",
-                            contentTooltip: "Add member",
+                            contentTooltip: t("tooltip.addMember"),
                           }}
                         >
                           <UserRoundPlus className="size-4" />
@@ -822,7 +822,7 @@ const ChatWindow = () => {
                         positionTooltip: "bottom-end",
                         classNameTooltip: "",
                         idTooltip: "tooltip-video-call",
-                        contentTooltip: "Video call",
+                        contentTooltip: t("tooltip.videoCall"),
                       }}
                     >
                       <Video className="size-4" />
@@ -843,8 +843,8 @@ const ChatWindow = () => {
                       classNameTooltip: "",
                       idTooltip: "tooltip-utils",
                       contentTooltip: isOpenUtils
-                        ? "Close conversation information"
-                        : "Conversation information",
+                        ? t("tooltip.closeUtils")
+                        : t("tooltip.openUtils"),
                     }}
                   >
                     <AppWindow className="size-4" />
@@ -859,8 +859,8 @@ const ChatWindow = () => {
                     isShowTooltip: true,
                     positionTooltip: "bottom-end",
                     classNameTooltip: "",
-                    idTooltip: "tooltip-close-chat",
-                    contentTooltip: "Close chat",
+                    idTooltip: "tooltip-close-conversation",
+                    contentTooltip: t("tooltip.closeConversation"),
                   }}
                 >
                   <X className="size-4" />
@@ -884,8 +884,8 @@ const ChatWindow = () => {
                     classNameTooltip: "",
                     idTooltip: "tooltip-chat-utils",
                     contentTooltip: isOpenHeaderOptions
-                      ? "Close options"
-                      : "Open options",
+                      ? t("tooltip.closeOptions")
+                      : t("tooltip.openOptions"),
                   }}
                 >
                   {isOpenHeaderOptions ? (
@@ -911,8 +911,8 @@ const ChatWindow = () => {
                         isShowTooltip: true,
                         positionTooltip: "left",
                         classNameTooltip: "",
-                        idTooltip: "tooltip-close-chat-utils",
-                        contentTooltip: "Close chat",
+                        idTooltip: "tooltip-close-conversation-utils",
+                        contentTooltip: t("tooltip.closeConversation"),
                       }}
                     >
                       <X className="size-4" />
@@ -933,7 +933,7 @@ const ChatWindow = () => {
                           positionTooltip: "left",
                           classNameTooltip: "",
                           idTooltip: "tooltip-conversation-information-utils",
-                          contentTooltip: "Conversation information",
+                          contentTooltip: t("tooltip.openUtils"),
                         }}
                       >
                         <AppWindow className="size-4" />
@@ -952,7 +952,7 @@ const ChatWindow = () => {
                           positionTooltip: "left",
                           classNameTooltip: "",
                           idTooltip: "tooltip-video-call-utils",
-                          contentTooltip: "Video call",
+                          contentTooltip: t("tooltip.videoCall"),
                         }}
                       >
                         <Video className="size-4" />
@@ -980,7 +980,7 @@ const ChatWindow = () => {
                               positionTooltip: "left",
                               classNameTooltip: "",
                               idTooltip: "tooltip-add-member-utils",
-                              contentTooltip: "Add member",
+                              contentTooltip: t("tooltip.addMember"),
                             }}
                           >
                             <UserRoundPlus className="size-4" />
@@ -1001,7 +1001,7 @@ const ChatWindow = () => {
                             positionTooltip: "left",
                             classNameTooltip: "",
                             idTooltip: "tooltip-member-list-utils",
-                            contentTooltip: "Member list",
+                            contentTooltip: t("tooltip.memberList"),
                           }}
                         >
                           <UsersRound className="size-4" />
@@ -1071,7 +1071,7 @@ const ChatWindow = () => {
                       classNameTooltip: "",
                       idTooltip:
                         "tooltip-app-window-utils-conversation-information",
-                      contentTooltip: "Close conversation information",
+                      contentTooltip: t("tooltip.closeUtils"),
                     }}
                   >
                     <AppWindow className="size-4" />

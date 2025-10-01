@@ -618,7 +618,9 @@ const HomePage = () => {
                             positionTooltip: "bottom-start",
                             classNameTooltip: "",
                             idTooltip: "tooltip-shuffle",
-                            contentTooltip: "Shuffle",
+                            contentTooltip: t(
+                              "tooltip.recommendedUsers.shuffle"
+                            ),
                           }}
                         >
                           <ShuffleIcon className="size-4" />
@@ -633,7 +635,9 @@ const HomePage = () => {
                               positionTooltip: "bottom-start",
                               classNameTooltip: "",
                               idTooltip: "tooltip-filter-on",
-                              contentTooltip: "Filter",
+                              contentTooltip: t(
+                                "tooltip.recommendedUsers.filter"
+                              ),
                             }}
                           >
                             <Funnel className="size-4" />
@@ -647,7 +651,9 @@ const HomePage = () => {
                               positionTooltip: "bottom-start",
                               classNameTooltip: "",
                               idTooltip: "tooltip-filter-off",
-                              contentTooltip: "Close filter",
+                              contentTooltip: t(
+                                "tooltip.recommendedUsers.closeFilter"
+                              ),
                             }}
                           >
                             <X className="size-4" />

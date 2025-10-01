@@ -296,7 +296,7 @@ const FriendsPage = () => {
                       positionTooltip: "left",
                       classNameTooltip: "",
                       idTooltip: "tooltip-filter-on",
-                      contentTooltip: "Filter",
+                      contentTooltip: t("tooltip.filter"),
                     }}
                   >
                     <Funnel className="size-4" />
@@ -309,7 +309,7 @@ const FriendsPage = () => {
                       positionTooltip: "left",
                       classNameTooltip: "",
                       idTooltip: "tooltip-filter-off",
-                      contentTooltip: "Close filter",
+                      contentTooltip: t("tooltip.closeFilter"),
                     }}
                   >
                     <X className="size-4" />

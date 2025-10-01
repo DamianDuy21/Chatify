@@ -152,7 +152,7 @@ const FriendCard_NotificationsPage_IncomingRequest = ({
               positionTooltip: "bottom-end",
               classNameTooltip: "",
               idTooltip: "tooltip-accept-friend-request",
-              contentTooltip: "Accept friend request",
+              contentTooltip: t("tooltip.acceptRequest"),
             }}
           >
             {isAccepting ? (
@@ -176,7 +176,7 @@ const FriendCard_NotificationsPage_IncomingRequest = ({
               positionTooltip: "bottom-end",
               classNameTooltip: "",
               idTooltip: "tooltip-reject-friend-request",
-              contentTooltip: "Reject friend request",
+              contentTooltip: t("tooltip.rejectRequest"),
             }}
           >
             <X className="size-4" />

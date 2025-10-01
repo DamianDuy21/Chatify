@@ -301,7 +301,7 @@ const Sidebar = () => {
                 positionTooltip: "top-end",
                 classNameTooltip: "",
                 idTooltip: "tooltip",
-                contentTooltip: "Turn off tooltips",
+                contentTooltip: t("tooltip.turnOffTooltip"),
                 offsetTooltip: 2,
               }}
             >
@@ -331,6 +331,8 @@ const Sidebar = () => {
             className={`hidden lg:flex !bg-transparent`}
             onClick={() => {
               setUserTooltipStatus(tooltipStatus === "on" ? "off" : "on");
+              setIsClickAvatarToShowTooltip(false);
+              setTimeout(() => setIsShowTooltip(false), 2000);
             }}
             type="ghost"
             tooltip={{
@@ -338,7 +340,7 @@ const Sidebar = () => {
               positionTooltip: "top-end",
               classNameTooltip: "",
               idTooltip: "tooltip",
-              contentTooltip: "Turn off tooltips",
+              contentTooltip: t("tooltip.turnOffTooltip"),
               offsetTooltip: 2,
             }}
           >

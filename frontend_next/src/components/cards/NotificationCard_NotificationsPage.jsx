@@ -169,7 +169,7 @@ const NotificationCard_NotificationsPage = ({
                 positionTooltip: "left",
                 classNameTooltip: "",
                 idTooltip: "tooltip-delete-notification-button",
-                contentTooltip: "Delete notification",
+                contentTooltip: t("tooltip.deleteNotification"),
               }}
             >
               {isDeleting ? (

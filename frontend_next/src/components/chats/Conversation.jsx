@@ -141,7 +141,7 @@ const Conversation = ({ translatedTo }) => {
             positionTooltip: "bottom",
             classNameTooltip: "",
             idTooltip: "tooltip-load-more-messages",
-            contentTooltip: "Load more messages",
+            contentTooltip: t("tooltip.loadMoreMessages"),
           }}
           type="secondary"
         >
@@ -172,7 +172,7 @@ const Conversation = ({ translatedTo }) => {
             positionTooltip: "top",
             classNameTooltip: "",
             idTooltip: "tooltip-scroll-to-bottom",
-            contentTooltip: "Scroll to bottom",
+            contentTooltip: t("tooltip.scrollToBottom"),
           }}
           type="secondary"
         >

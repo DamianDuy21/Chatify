@@ -118,7 +118,7 @@ const RecommendedUserCard_HomePage = ({ user, onSuccess, onError }) => {
               positionTooltip: "left",
               classNameTooltip: "",
               idTooltip: "tooltip-send-friend-request",
-              contentTooltip: "Send friend request",
+              contentTooltip: t("tooltip.sendFriendRequest"),
             }}
           >
             {isSendingFriendRequest ? (

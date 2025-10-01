@@ -194,7 +194,7 @@ const FriendCard_v2_FriendsPage = ({
               positionTooltip: "bottom-end",
               classNameTooltip: "",
               idTooltip: "tooltip-message-badge",
-              contentTooltip: "Message",
+              contentTooltip: t("tooltip.message"),
             }}
           />
         </div>
@@ -211,7 +211,7 @@ const FriendCard_v2_FriendsPage = ({
               positionTooltip: "bottom-end",
               classNameTooltip: "",
               idTooltip: "tooltip-delete-friend-button",
-              contentTooltip: "Delete friend",
+              contentTooltip: t("tooltip.deleteFriend"),
             }}
           >
             <X className="size-4" />
