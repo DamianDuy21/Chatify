@@ -120,7 +120,7 @@ const ConversationCard_ChatsPage_Sidebar = ({
         </div>
       </div>
 
-      <div className="absolute right-2 top-2">
+      <div className="absolute right-2 top-2 pointer-events-none">
         {conversation?.unSeenMessageQuantity > 0 &&
           (conversation?.unSeenMessageQuantity < 10 ? (
             <div className="text-xs btn btn-secondary btn-xs rounded-full size-6">
