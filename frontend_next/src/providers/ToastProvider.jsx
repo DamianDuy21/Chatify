@@ -9,6 +9,7 @@ export default function ToastProvider({ children }) {
       <Toaster
         position="top-right"
         toastOptions={{
+          removeDelay: 100,
           duration: 3000,
           style: {
             fontSize: "14px",

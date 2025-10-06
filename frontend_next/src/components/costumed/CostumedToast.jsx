@@ -38,7 +38,12 @@ export function showToast({ message, type = "success" }) {
             </div>
             <div
               className="flex justify-center items-center p-4 cursor-pointer"
-              onClick={() => toast.dismiss(t.id)}
+              onClick={() => {
+                toast.remove(t.id);
+                toast.dismiss(t.id);
+                toastQueue = toastQueue.filter((i) => i !== t.id);
+                pruneToastQueue();
+              }}
             >
               <X className="size-4 text-gray-600" />
             </div>
@@ -63,7 +68,12 @@ export function showToast({ message, type = "success" }) {
             </div>
             <div
               className="flex justify-center items-center p-4 cursor-pointer"
-              onClick={() => toast.dismiss(t.id)}
+              onClick={() => {
+                toast.remove(t.id);
+                toast.dismiss(t.id);
+                toastQueue = toastQueue.filter((i) => i !== t.id);
+                pruneToastQueue();
+              }}
             >
               <X className="size-4 text-gray-600" />
             </div>
