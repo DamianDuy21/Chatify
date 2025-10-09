@@ -32,7 +32,10 @@ import { useEffect, useState } from "react";
 import { StreamChat } from "stream-chat";
 import {
   formatRelativeTime,
+  getUserLocaleClient,
   isConversationFitFilter,
+  pluralToSingular,
+  singularToPlural,
 } from "../../lib/utils.js";
 import { useAuthStore } from "../../stores/useAuthStore.js";
 import { useChatStore } from "../../stores/useChatStore";
@@ -53,6 +56,7 @@ const STREAM_API_KEY = process.env.NEXT_PUBLIC_STREAM_API_KEY;
 
 const ChatWindow = () => {
   const t = useTranslations("Components.chatWindow");
+  const NEXT_LOCALE = getUserLocaleClient() || "vi";
   const deleteConversation_NotificationStore = useNotificationStore(
     (s) => s.deleteConversation_NotificationStore
   );
@@ -1488,7 +1492,15 @@ const ChatWindow = () => {
                     </label>
                     <span className="label-text-alt">
                       {selectedConversation.users.length}{" "}
-                      {t("memberListModal.quantity")}
+                      {selectedConversation.users.length > 1
+                        ? singularToPlural(
+                            t("memberListModal.quantity"),
+                            NEXT_LOCALE
+                          )
+                        : pluralToSingular(
+                            t("memberListModal.quantity"),
+                            NEXT_LOCALE
+                          )}
                     </span>
                   </div>
 
@@ -1663,9 +1675,20 @@ const ChatWindow = () => {
                                         ?.fullName
                                     :  */}
                   {selectedConversation?.conversation?.name}
-                </span>{" "}
-                ({selectedConversation.users.length}{" "}
-                {t("leaveGroupModal.subtitle.isKeyMember.true.quantity")})
+                </span>
+                {/* {" "} */}
+                {/* ({selectedConversation.users.length - 1} */}
+                {/* {" "} */}
+                {/* {selectedConversation.users.length - 1 > 1
+                  ? singularToPlural(
+                      t("leaveGroupModal.subtitle.isKeyMember.true.quantity"),
+                      NEXT_LOCALE
+                    )
+                  : pluralToSingular(
+                      t("leaveGroupModal.subtitle.isKeyMember.true.quantity"),
+                      NEXT_LOCALE
+                    )} */}
+                {/* ) */}
               </div>
               <div className={`pb-6 text-sm`}>
                 <div className="space-y-3 -mt-2">

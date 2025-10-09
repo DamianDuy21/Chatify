@@ -102,6 +102,8 @@ const Conversation = ({ translatedTo }) => {
       didMountRef.current = true;
     }
 
+    setOpenedIndex(-1);
+
     virtuosoRef.current.scrollToIndex({
       index: Math.max(flat.length - 1, 0),
       align: "end",

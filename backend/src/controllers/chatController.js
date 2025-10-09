@@ -9,6 +9,7 @@ import MessageAttachment from "../models/MessageAttachment.js";
 import Profile from "../models/Profile.js";
 import SeenBy from "../models/SeenBy.js";
 import User from "../models/User.js";
+import ReactBy from "../models/ReactBy.js";
 
 export const createPrivateConversation = async (req, res) => {
   try {
@@ -377,6 +378,7 @@ export const getConversations = async (req, res) => {
                 status: "pending",
               });
 
+              // conversation is group
               if (keyMemberId) {
                 return {
                   user: {
@@ -444,6 +446,8 @@ export const getConversations = async (req, res) => {
             const fileAttachments = attachments.filter(
               (attachment) => attachment.type === "file"
             );
+
+            // seen by
             const seenBy = await SeenBy.find({ messageId: message._id });
             const fullDataSeenBy = await Promise.all(
               seenBy.map(async (seen) => {
@@ -464,6 +468,26 @@ export const getConversations = async (req, res) => {
                 };
               })
             );
+
+            // react by
+            const reactionTypes = ["like", "dislike", "heart"];
+            const reactionResults = await Promise.all(
+              reactionTypes.map((t) =>
+                ReactBy.find({ messageId: message._id, type: t }).lean()
+              )
+            );
+            const reactionQuantity = {};
+            const myReactionQuantity = {};
+            reactionTypes.forEach((t, index) => {
+              const arr = reactionResults[index] || [];
+
+              reactionQuantity[t] = arr;
+
+              myReactionQuantity[t] = arr.filter(
+                (r) => String(r.userId) === String(currentUserId)
+              ).length;
+            });
+
             if (!sender) {
               return {
                 sender: null,
@@ -476,6 +500,10 @@ export const getConversations = async (req, res) => {
                   },
                 },
                 seenBy: fullDataSeenBy,
+                reactions: {
+                  total: reactionQuantity,
+                  my: myReactionQuantity,
+                },
               };
             }
             return {
@@ -494,6 +522,10 @@ export const getConversations = async (req, res) => {
                 },
               },
               seenBy: fullDataSeenBy,
+              reactions: {
+                total: reactionQuantity,
+                my: myReactionQuantity,
+              },
             };
           })
         );

@@ -185,6 +185,10 @@
       "offline": "Ngoại tuyến",
       "chatbot": "Sẵn sàng trò chuyện"
     },
+    "reactionsModal": {
+      "title": "Cảm xúc",
+      "quantity": "cảm xúc"
+    },
     "memberListModal": {
       "title": "Thành viên nhóm",
       "quantity": "thành viên"

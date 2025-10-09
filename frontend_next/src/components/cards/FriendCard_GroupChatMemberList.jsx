@@ -88,7 +88,7 @@ const FriendCard_GroupChatMemberList = ({
       className={`h-16 w-full
         border
         !border-base-300 flex items-center
-        px-4 cursor-pointer relative gap-6
+        px-4 relative gap-6
       `}
     >
       <div className="flex justify-between items-center flex-1">

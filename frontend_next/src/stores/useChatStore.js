@@ -558,6 +558,223 @@ export const useChatStore = create((set, get) => ({
         }
       }
     });
+
+    socketChat.on("newReaction", (reactionData) => {
+      const { selectedConversation, conversations } = get();
+      const currentUserId = String(useAuthStore.getState().authUser?.user?._id);
+      const reactionConversationId = reactionData.conversationId;
+      const messageId = reactionData.messageId;
+      const serverReact = reactionData.reactBy;
+      const reaction = reactionData.reaction; // type
+      const createUpdateUserId = reactionData.createUpdateUserId;
+      const reactionTypes = ["like", "dislike", "heart"];
+
+      set((state) => {
+        const isReactionConversationInList = conversations.some(
+          (c) => c.conversation._id === reactionConversationId
+        );
+        if (!isReactionConversationInList) return state;
+
+        const makeNewReactionsTotal = (targetMsg) => {
+          const base = {
+            ...(targetMsg?.reactions?.total || {}),
+          };
+
+          reactionTypes.forEach((t) => {
+            if (!Array.isArray(base[t])) base[t] = [];
+          });
+
+          const cleaned = {};
+          reactionTypes.forEach((t) => {
+            cleaned[t] = base[t].filter(
+              (r) => String(r.userId) !== createUpdateUserId
+            );
+          });
+
+          if (serverReact) {
+            cleaned[reaction] = [...cleaned[reaction], serverReact];
+          }
+
+          return cleaned;
+        };
+
+        const makeNewReactionsMy = (targetMsg) => {
+          const prevMy = targetMsg?.reactions?.my || {
+            like: 0,
+            dislike: 0,
+            heart: 0,
+          };
+          const newMy = Object.keys(prevMy).reduce((acc, k) => {
+            acc[k] = 0;
+            return acc;
+          }, {});
+          newMy[reaction] = 1;
+          return newMy;
+        };
+
+        const shouldUpdateMy = createUpdateUserId == currentUserId;
+        let newSelectedConversation = selectedConversation;
+        if (
+          selectedConversation &&
+          selectedConversation.conversation._id === reactionConversationId
+        ) {
+          newSelectedConversation = {
+            ...selectedConversation,
+            messages: selectedConversation.messages.map((m) =>
+              m.message._id === messageId
+                ? {
+                    ...m,
+                    reactions: {
+                      ...m.reactions,
+                      my: shouldUpdateMy
+                        ? { ...m.reactions.my, ...makeNewReactionsMy(m) }
+                        : { ...m.reactions.my },
+                      total: {
+                        ...m.reactions.total,
+                        ...makeNewReactionsTotal(m),
+                      },
+                    },
+                  }
+                : m
+            ),
+          };
+        }
+        const newConversations = conversations.map((c) =>
+          c.conversation._id === reactionConversationId
+            ? {
+                ...c,
+                messages: c.messages.map((m) =>
+                  m.message._id === messageId
+                    ? {
+                        ...m,
+                        reactions: {
+                          ...m.reactions,
+                          my: shouldUpdateMy
+                            ? { ...m.reactions.my, ...makeNewReactionsMy(m) }
+                            : { ...m.reactions.my },
+                          total: {
+                            ...m.reactions.total,
+                            ...makeNewReactionsTotal(m),
+                          },
+                        },
+                      }
+                    : m
+                ),
+              }
+            : c
+        );
+
+        return {
+          ...state,
+          selectedConversation: newSelectedConversation,
+          conversations: newConversations,
+        };
+      });
+    });
+
+    socketChat.on("deleteReaction", (reactionData) => {
+      const { selectedConversation, conversations } = get();
+      const currentUserId = String(useAuthStore.getState().authUser?.user?._id);
+      const reactionConversationId = reactionData.conversationId;
+      const messageId = reactionData.messageId;
+      const serverReact = reactionData.reactBy;
+      const reaction = reactionData.reaction; // type
+      const deleteUserId = reactionData.deleteUserId;
+      const reactionTypes = ["like", "dislike", "heart"];
+
+      set((state) => {
+        const isReactionConversationInList = conversations.some(
+          (c) => c.conversation._id === reactionConversationId
+        );
+
+        if (!isReactionConversationInList) return state;
+
+        const makeNewReactionsTotal = (targetMsg) => {
+          const base = {
+            ...(targetMsg?.reactions?.total || {}),
+          };
+
+          reactionTypes.forEach((t) => {
+            if (!Array.isArray(base[t])) base[t] = [];
+          });
+
+          const cleaned = {};
+          reactionTypes.forEach((t) => {
+            cleaned[t] = base[t].filter(
+              (r) => String(r.userId) !== deleteUserId
+            );
+          });
+
+          return cleaned;
+        };
+
+        const shouldUpdateMy = deleteUserId == currentUserId;
+
+        let newSelectedConversation = selectedConversation;
+        if (
+          selectedConversation &&
+          selectedConversation.conversation._id === reactionConversationId
+        ) {
+          newSelectedConversation = {
+            ...selectedConversation,
+            messages: selectedConversation.messages.map((m) =>
+              m.message._id === messageId
+                ? {
+                    ...m,
+                    reactions: {
+                      ...m.reactions,
+                      my: shouldUpdateMy
+                        ? {
+                            ...m.reactions.my,
+                            [reaction]: 0,
+                          }
+                        : { ...m.reactions.my },
+                      total: {
+                        ...m.reactions.total,
+                        ...makeNewReactionsTotal(m),
+                      },
+                    },
+                  }
+                : m
+            ),
+          };
+        }
+
+        const newConversations = conversations.map((c) =>
+          c.conversation._id === reactionConversationId
+            ? {
+                ...c,
+                messages: c.messages.map((m) =>
+                  m.message._id === messageId
+                    ? {
+                        ...m,
+                        reactions: {
+                          ...m.reactions,
+                          my: shouldUpdateMy
+                            ? {
+                                ...m.reactions.my,
+                                [reaction]: 0,
+                              }
+                            : { ...m.reactions.my },
+                          total: {
+                            ...m.reactions.total,
+                            ...makeNewReactionsTotal(m),
+                          },
+                        },
+                      }
+                    : m
+                ),
+              }
+            : c
+        );
+
+        return {
+          ...state,
+          selectedConversation: newSelectedConversation,
+          conversations: newConversations,
+        };
+      });
+    });
   },
 
   unsubscribeFromMessages: () => {

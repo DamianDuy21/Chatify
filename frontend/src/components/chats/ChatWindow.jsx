@@ -43,6 +43,8 @@ import { StreamChat } from "stream-chat";
 import {
   formatRelativeTime,
   isConversationFitFilter,
+  pluralToSingular,
+  singularToPlural,
 } from "../../lib/utils.js";
 import { useAuthStore } from "../../stores/useAuthStore.js";
 import { useNotificationStore } from "../../stores/useNotificationStore.js";
@@ -52,6 +54,12 @@ const STREAM_API_KEY = import.meta.env.VITE_STREAM_API_KEY;
 
 const ChatWindow = () => {
   const { t } = useTranslation("components", { keyPrefix: "chatWindow" });
+  const { i18n } = useTranslation();
+  const getUserLocaleClient = () => {
+    if (typeof window === "undefined") return "vi";
+    return i18n.language || "vi";
+  };
+  const userLocale = getUserLocaleClient();
   const deleteConversation_NotificationStore = useNotificationStore(
     (s) => s.deleteConversation_NotificationStore
   );
@@ -1375,7 +1383,15 @@ const ChatWindow = () => {
                     </label>
                     <span className="label-text-alt">
                       {selectedConversation.users.length}{" "}
-                      {t("memberListModal.quantity")}
+                      {selectedConversation.users.length > 1
+                        ? singularToPlural(
+                            t("memberListModal.quantity"),
+                            userLocale
+                          )
+                        : pluralToSingular(
+                            t("memberListModal.quantity"),
+                            userLocale
+                          )}
                     </span>
                   </div>
 
@@ -1540,9 +1556,10 @@ const ChatWindow = () => {
                                         ?.fullName
                                     :  */}
                   {selectedConversation?.conversation?.name}
-                </span>{" "}
+                </span>
+                {/* {" "}
                 ({selectedConversation.users.length}{" "}
-                {t("leaveGroupModal.subtitle.isKeyMember.true.quantity")})
+                {t("leaveGroupModal.subtitle.isKeyMember.true.quantity")}) */}
               </div>
               <div className={`pb-6 text-sm`}>
                 <div className="space-y-3 -mt-2">

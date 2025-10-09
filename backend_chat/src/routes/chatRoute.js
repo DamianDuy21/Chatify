@@ -2,9 +2,12 @@ import express from "express";
 import {
   addMembersToGroup,
   createGroup,
+  createUpdateReactBy,
   deleteConversation,
   deleteMemberFromGroup,
+  deleteReactBy,
   getConversationMessages,
+  getReactMemberList,
   getVideoCallToken,
   leaveGroup,
   markAllMessagesAsSeen,
@@ -42,5 +45,10 @@ chatRoute.post("/group/members/:id", addMembersToGroup);
 chatRoute.delete("/group/member/:id", deleteMemberFromGroup);
 chatRoute.delete("/delete-conversation/:id", deleteConversation);
 chatRoute.post("/leave-group/:id", leaveGroup);
+
+// reaction
+chatRoute.post("/message/reaction/:id", createUpdateReactBy);
+chatRoute.delete("/message/reaction/:id", deleteReactBy);
+chatRoute.post("/message/reaction/members/:id", getReactMemberList);
 
 export default chatRoute;

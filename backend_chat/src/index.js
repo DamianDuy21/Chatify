@@ -69,22 +69,6 @@ app.use((req, _res, next) => {
 app.use("/api/chat", chatRoute);
 app.use("/api/openai", openaiRoute);
 
-// app.use((_req, res) => {
-//   res.status(404).json({
-//     code: "NOT_FOUND",
-//     message: "Endpoint not found",
-//     locale: "en"
-//   });
-// });
-// app.use((err, _req, res, _next) => {
-//   console.error(err);
-//   res.status(500).json({
-//     code: "INTERNAL_ERROR",
-//     message: "Internal server error",
-//     locale: "en"
-//   });
-// });
-
 // --- Start server ---
 server.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);

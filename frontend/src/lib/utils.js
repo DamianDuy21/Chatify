@@ -1,6 +1,15 @@
 import { LANGUAGES_DATA } from "../constants";
 
 export const capitalize = (str) => str.charAt(0).toUpperCase() + str.slice(1);
+export const pluralToSingular = (str, locale = "en") => {
+  if (locale === "vi") return str;
+  return str.replace(/s$/, "");
+};
+export const singularToPlural = (str, locale = "en") => {
+  if (locale === "vi") return str;
+  return str.endsWith("s") ? str : str + "s";
+};
+
 export const deepTrimObj = (obj) => {
   if (typeof obj !== "object" || obj === null) return obj;
 

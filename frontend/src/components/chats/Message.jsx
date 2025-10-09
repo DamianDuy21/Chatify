@@ -11,15 +11,21 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { translateMessageAPI } from "../../lib/api";
+import {
+  createUpdateReactionAPI,
+  deleteReactionAPI,
+  translateMessageAPI,
+} from "../../lib/api";
 import {
   copyToClipboard,
   formatISOToParts,
   getLocaleById,
 } from "../../lib/utils";
 import { useAuthStore } from "../../stores/useAuthStore";
+import { useChatStore } from "../../stores/useChatStore";
 import CommonRoundedButton from "../buttons/CommonRoundedButton";
 import { showToast } from "../costumed/CostumedToast";
+import CostumedMessageReactions from "../costumed/CostumedMessageReactions";
 
 const Message = ({
   ref,
@@ -33,6 +39,16 @@ const Message = ({
   isShowName = false,
 }) => {
   const { t } = useTranslation("components", { keyPrefix: "message" });
+  const { t: tReactionsModal } = useTranslation("components", {
+    keyPrefix: "chatWindow.reactionsModal",
+  });
+  const selectedConversation = useChatStore((s) => s.selectedConversation);
+  const setSelectedConversation = useChatStore(
+    (s) => s.setSelectedConversation
+  );
+  const conversations = useChatStore((s) => s.conversations);
+  const setConversations = useChatStore((s) => s.setConversations);
+
   const authUser = useAuthStore((s) => s.authUser);
   const [images, setImages] = useState([]);
   const [videos, setVideos] = useState([]);
@@ -43,11 +59,7 @@ const Message = ({
   const [translatedText, setTranslatedText] = useState("");
   const [showAllTranslations, setShowAllTranslations] = useState(true);
 
-  const [reactions, setReactions] = useState({
-    thumbsUp: 0,
-    thumbsDown: 0,
-    heart: 0,
-  });
+  const [isShowModalReactions, setIsShowModalReactions] = useState(false);
 
   useEffect(() => {
     if (
@@ -120,6 +132,29 @@ const Message = ({
     }
   };
 
+  const createUpdateReaction = async (reaction) => {
+    try {
+      const response = await createUpdateReactionAPI({
+        messageId: message.message._id,
+        reaction,
+        conversationId: selectedConversation.conversation._id,
+      });
+    } catch (error) {
+      console.error("Error creating/updating reaction:", error);
+    }
+  };
+  const deleteReaction = async (reaction) => {
+    try {
+      const response = await deleteReactionAPI({
+        messageId: message.message._id,
+        reaction,
+        conversationId: selectedConversation.conversation._id,
+      });
+    } catch (error) {
+      console.error("Error deleting reaction:", error);
+    }
+  };
+
   return (
     <>
       {/* avatar */}
@@ -132,13 +167,20 @@ const Message = ({
             // title={message.sender?.fullName}
           >
             {isShowAvatar && (
-              <img
+              <Image
+                // src={
+                //   message.sender?.profile?.profilePic ||
+                //   "https://avatar.iran.liara.run/public/20.png"
+                // }
                 src={
                   message?.sender?._id === authUser?.user?._id
-                    ? authUser?.user?.profile?.profilePic
-                    : message?.sender?.profile?.profilePic
+                    ? `/images/avatar/${authUser?.user?.profile?.profilePic}.png`
+                    : `/images/avatar/${message.sender?.profile?.profilePic}.png`
                 }
-                alt=""
+                className="w-full h-full object-cover"
+                alt="avatar"
+                width={40}
+                height={40}
               />
             )}
           </div>
@@ -180,7 +222,7 @@ const Message = ({
                   className="!w-[fit-content] bg-base-300 px-4 py-3 rounded-btn flex flex-col gap-2 cursor-pointer relative group"
                   onClick={onToggle}
                 >
-                  <div className="text-sm break-words whitespace-pre-wrap ">
+                  <div className="text-sm break-words whitespace-pre-wrap">
                     {message.message?.content}
                   </div>
 
@@ -205,7 +247,7 @@ const Message = ({
                     ) : (
                       <>
                         <Copy
-                          className="size-3 cursor-pointer hover:scale-105 transition-transform duration-200"
+                          className="size-3 cursor-pointer hover:scale-110 transition-transform duration-200"
                           title="Copy"
                         />
                       </>
@@ -236,7 +278,7 @@ const Message = ({
                       ) : (
                         <div className="border border-base-300 bg-base-100 px-2 py-1.5 rounded-card">
                           <Copy
-                            className="size-3 cursor-pointer hover:scale-105 transition-transform duration-200"
+                            className="size-3 cursor-pointer hover:scale-110 transition-transform duration-200"
                             title="Copy"
                             onClick={(e) => {
                               e.stopPropagation();
@@ -282,114 +324,90 @@ const Message = ({
                 side !== "left" ? "end" : "start"
               } ${
                 isOpen ||
-                reactions.heart > 0 ||
-                reactions.thumbsUp > 0 ||
-                reactions.thumbsDown > 0
+                message.reactions.total.heart.length > 0 ||
+                message.reactions.total.like.length > 0 ||
+                message.reactions.total.dislike.length > 0
                   ? "mt-1"
                   : ""
               }`}
             >
-              {reactions.heart > 0 && (
-                <div
-                  className={`border border-base-300 bg-base-100 px-2 py-1 rounded-card gap-1 flex items-center ${
-                    side !== "left" ? "order-1" : "order-2"
-                  }`}
-                >
-                  <Heart
-                    className="size-3 cursor-pointer hover:scale-105 transition-transform duration-200 fill-red-500 order-2"
-                    onClick={() =>
-                      setReactions({ ...reactions, heart: reactions.heart - 1 })
-                    }
-                  />
+              <div
+                className={`cursor-pointer border border-base-300 bg-base-100 px-2 py-1.5 rounded-card gap-2.5 flex items-center ${
+                  side !== "left" ? "order-1" : "order-2"
+                }  ${
+                  message.reactions.total.heart.length > 0 ||
+                  message.reactions.total.like.length > 0 ||
+                  message.reactions.total.dislike.length > 0
+                    ? "flex"
+                    : "hidden"
+                }`}
+                onClick={() => setIsShowModalReactions(true)}
+              >
+                {message.reactions.total.heart.length > 0 && (
+                  <Heart className="size-3 fill-red-500 order-2 text-transparent" />
+                )}
 
-                  <span className="text-xs opacity-70 order-2 relative -top-[0.5px]">
-                    {reactions.heart}
-                  </span>
-                </div>
-              )}
+                {message.reactions.total.like.length > 0 && (
+                  <ThumbsUp className="size-3 fill-[#fbcc3b] order-2 text-transparent" />
+                )}
 
-              {reactions.thumbsUp > 0 && (
-                <div
-                  className={`border border-base-300 bg-base-100 px-2 py-1 rounded-card gap-1 flex items-center ${
-                    side !== "left" ? "order-1" : "order-2"
-                  }`}
-                >
-                  <ThumbsUp
-                    className="size-3 cursor-pointer hover:scale-105 transition-transform duration-200 fill-primary/25 order-2"
-                    onClick={() =>
-                      setReactions({
-                        ...reactions,
-                        thumbsUp: reactions.thumbsUp - 1,
-                      })
-                    }
-                  />
-
-                  <span className="text-xs opacity-70 order-2 relative -top-[0.5px]">
-                    {reactions.thumbsUp}
-                  </span>
-                </div>
-              )}
-
-              {reactions.thumbsDown > 0 && (
-                <div
-                  className={`border border-base-300 bg-base-100 px-2 py-1 rounded-card gap-1 flex items-center ${
-                    side !== "left" ? "order-1" : "order-2"
-                  }`}
-                >
-                  <ThumbsDown
-                    className="size-3 cursor-pointer hover:scale-105 transition-transform duration-200 fill-primary/25 order-2"
-                    onClick={() =>
-                      setReactions({
-                        ...reactions,
-                        thumbsDown: reactions.thumbsDown - 1,
-                      })
-                    }
-                  />
-
-                  <span className="text-xs opacity-70 order-2 relative -top-[0.5px]">
-                    {reactions.thumbsDown}
-                  </span>
-                </div>
-              )}
+                {message.reactions.total.dislike.length > 0 && (
+                  <ThumbsDown className="size-3 fill-[#fbcc3b] order-2 text-transparent" />
+                )}
+              </div>
 
               <div
                 className={`border border-base-300 bg-base-100 px-2 py-1.5 rounded-card gap-2.5 ${
                   side !== "left" ? "order-2" : "order-1"
                 }  ${isOpen ? "flex" : "hidden"}`}
               >
-                <div className="group flex gap-2.5">
+                <div className="flex gap-2.5">
                   <Heart
-                    className={`size-3 cursor-pointer hover:scale-105 transition-transform duration-200 hover:fill-red-500 order-${
-                      side === "left" ? "1" : "0"
+                    className={`size-3 cursor-pointer hover:scale-110 hover:text-transparent transition-transform duration-200 hover:fill-red-500 ${
+                      message.reactions.my.heart > 0
+                        ? "fill-red-500 text-transparent"
+                        : ""
                     }`}
-                    onClick={() =>
-                      setReactions({ ...reactions, heart: reactions.heart + 1 })
-                    }
+                    onClick={() => {
+                      if (message.reactions.my.heart > 0) {
+                        deleteReaction("heart");
+                        return;
+                      }
+                      createUpdateReaction("heart");
+                    }}
                   />
 
-                  {/* <div className="hidden group-hover:flex gap-2.5">
+                  <div className="flex gap-2.5">
                     <ThumbsUp
-                      className={`size-3 cursor-pointer hover:scale-105 transition-transform duration-200 hover:fill-primary/25 order-${
-                        side === "left" ? "1" : "0"
+                      className={`size-3 cursor-pointer hover:scale-110 hover:text-transparent transition-transform duration-200 fill-base-100 hover:fill-[#fbcc3b] ${
+                        message.reactions.my.like > 0
+                          ? "!fill-[#fbcc3b] text-transparent"
+                          : ""
                       }`}
-                      onClick={() =>
-                        setReactions({
-                          ...reactions,
-                          thumbsUp: reactions.thumbsUp + 1,
-                        })
-                      }
+                      onClick={() => {
+                        if (message.reactions.my.like > 0) {
+                          deleteReaction("like");
+                          return;
+                        }
+                        createUpdateReaction("like");
+                      }}
                     />
 
                     <ThumbsDown
-                      className="size-3 cursor-pointer hover:scale-105 transition-transform duration-200 hover:fill-primary/25"
-                      onClick={() =>
-                        setReactions({
-                          ...reactions,
-                          thumbsDown: reactions.thumbsDown + 1,
-                        })
-                      }
+                      className={`size-3 cursor-pointer hover:scale-110 hover:text-transparent transition-transform duration-200 fill-base-100 hover:fill-[#fbcc3b] ${
+                        message.reactions.my.dislike > 0
+                          ? "!fill-[#fbcc3b] text-transparent"
+                          : ""
+                      }`}
+                      onClick={() => {
+                        if (message.reactions.my.dislike > 0) {
+                          deleteReaction("dislike");
+                          return;
+                        }
+                        createUpdateReaction("dislike");
+                      }}
                     />
-                  </div> */}
+                  </div>
                 </div>
 
                 {isTranslatingText ? (
@@ -398,7 +416,7 @@ const Message = ({
                   </>
                 ) : (
                   <Languages
-                    className="size-3 cursor-pointer hover:scale-105 transition-transform duration-200"
+                    className="size-3 cursor-pointer hover:scale-110 transition-transform duration-200"
                     onClick={() => {
                       handleTranslateTextOpenaiAPI(
                         message.message?.content,
@@ -574,6 +592,37 @@ const Message = ({
           </div>
         )}
       </div>
+
+      {/* MEMBER LIST MODAL */}
+      <CostumedModal
+        open={isShowModalReactions}
+        onClose={() => {
+          setIsShowModalReactions(false);
+        }}
+        title={tReactionsModal("title")}
+      >
+        {({ close }) => {
+          return (
+            <div className={`pb-0 text-sm`}>
+              <div className="space-y-3 -mt-2">
+                <div className="form-control w-full">
+                  <div className="flex items-center justify-between ">
+                    <label className="label">
+                      <span className="label-text line-clamp-1">
+                        {message.message.content}
+                      </span>
+                    </label>
+                  </div>
+
+                  <CostumedMessageReactions
+                    message={message}
+                  ></CostumedMessageReactions>
+                </div>
+              </div>
+            </div>
+          );
+        }}
+      </CostumedModal>
     </>
   );
 };

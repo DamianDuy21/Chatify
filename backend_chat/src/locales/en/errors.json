@@ -8,6 +8,27 @@
     }
   },
   "chatRoute": {
+    "createUpdateReactBy": {
+      "validation": {
+        "invalidReactionType": "Invalid reaction type.",
+        "messageNotFound": "Message not found in this conversation."
+      },
+      "error": "Failed to create/update reaction. Please try again later."
+    },
+    "deleteReactBy": {
+      "validation": {
+        "messageNotFound": "Message not found in this conversation.",
+        "reactionNotFound": "Reaction not found on this message."
+      },
+      "error": "Failed to delete reaction. Please try again later."
+    },
+    "getReactMemberList": {
+      "validation": {
+        "messageNotFound": "Message not found in this conversation.",
+        "reactionNotFound": "Reaction not found on this message."
+      },
+      "error": "Failed to fetch reaction member list. Please try again later."
+    },
     "getConversationMessages": {
       "validation": {
         "invalidLastMessageId": "Invalid last message ID.",

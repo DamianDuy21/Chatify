@@ -8,6 +8,27 @@
     }
   },
   "chatRoute": {
+    "createUpdateReactBy": {
+      "validation": {
+        "invalidReactionType": "Loại cảm xúc không hợp lệ.",
+        "messageNotFound": "Không tìm thấy tin nhắn trong cuộc trò chuyện này."
+      },
+      "error": "Tạo/Cập nhật cảm xúc không thành công. Vui lòng thử lại sau."
+    },
+    "deleteReactBy": {
+      "validation": {
+        "messageNotFound": "Không tìm thấy tin nhắn trong cuộc trò chuyện này.",
+        "reactionNotFound": "Không tìm thấy cảm xúc trên tin nhắn này."
+      },
+      "error": "Xóa cảm xúc không thành công. Vui lòng thử lại sau."
+    },
+    "getReactMemberList": {
+      "validation": {
+        "messageNotFound": "Không tìm thấy tin nhắn trong cuộc trò chuyện này.",
+        "reactionNotFound": "Không tìm thấy cảm xúc trên tin nhắn này."
+      },
+      "error": "Lấy danh sách thành viên cảm xúc không thành công. Vui lòng thử lại sau."
+    },
     "getConversationMessages": {
       "validation": {
         "invalidLastMessageId": "Tin nhắn cuối không hợp lệ.",

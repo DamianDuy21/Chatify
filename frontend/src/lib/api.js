@@ -438,3 +438,44 @@ export const leaveGroupAPI = async ({
   );
   return response.data;
 };
+
+export const createUpdateReactionAPI = async ({
+  messageId,
+  reaction,
+  conversationId,
+}) => {
+  const response = await axiosInstanceChat.post(
+    `/chat/message/reaction/${messageId}`,
+    { type: reaction, conversationId }
+  );
+  return response.data;
+};
+
+export const deleteReactionAPI = async ({
+  messageId,
+  reaction,
+  conversationId,
+}) => {
+  const response = await axiosInstanceChat.delete(
+    `/chat/message/reaction/${messageId}`,
+    { params: { type: reaction, conversationId } }
+  );
+  return response.data;
+};
+
+export const getReactMemberListAPI = async ({
+  messageId,
+  memberInGroupIds,
+  conversationType,
+  keyMemberId,
+}) => {
+  const response = await axiosInstanceChat.post(
+    `/chat/message/reaction/members/${messageId}`,
+    {
+      memberInGroupIds,
+      conversationType,
+      keyMemberId,
+    }
+  );
+  return response.data;
+};

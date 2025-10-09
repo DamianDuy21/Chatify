@@ -183,9 +183,9 @@ export const openaiSendMessageChatbot = async (req, res) => {
       stream.end(buffer);
     });
 
-  upload(req, res, async (multerErr) => {
-    if (multerErr) {
-      console.error("multer error:", multerErr);
+  upload(req, res, async (multerError) => {
+    if (multerError) {
+      console.error("multer error:", multerError);
       return res.status(400).json({ message: "Invalid upload." });
     }
     try {

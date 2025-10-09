@@ -19,7 +19,7 @@ export default function AuthAndOnboardClientProvider({ children }) {
 
   // ----- Chat -----
   const getConversations = useChatStore((s) => s.getConversations);
-  // const setConversations = useChatStore((s) => s.setConversations);
+  const setConversations = useChatStore((s) => s.setConversations);
   const subscribeToMessages = useChatStore((s) => s.subscribeToMessages);
   const unsubscribeFromMessages = useChatStore(
     (s) => s.unsubscribeFromMessages
@@ -88,6 +88,7 @@ export default function AuthAndOnboardClientProvider({ children }) {
   useEffect(() => {
     setConversationNameFilter("");
     setSelectedConversation(null);
+    setConversations([]);
   }, []);
 
   useEffect(() => {

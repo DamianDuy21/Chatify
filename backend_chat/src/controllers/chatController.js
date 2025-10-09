@@ -12,9 +12,13 @@ import Notification from "../models/Notification.js";
 import Profile from "../models/Profile.js";
 import SeenBy from "../models/SeenBy.js";
 import User from "../models/User.js";
+import ReactBy from "../models/ReactBy.js";
+import Friend from "../models/Friend.js";
+import FriendRequest from "../models/FriendRequest.js";
 
 export const getConversationMessages = async (req, res) => {
   try {
+    const currentUserId = req.user?._id;
     const conversationId = req.params.id;
 
     const page = Math.max(1, Number(req.query.page) || 1);
@@ -71,6 +75,7 @@ export const getConversationMessages = async (req, res) => {
           userId: message.senderId,
         }).select("-userId -_id -createdAt -updatedAt -__v");
 
+        // seen by
         const seenBy = await SeenBy.find({ messageId: message._id });
         const fullDataSeenBy = await Promise.all(
           seenBy.map(async (seen) => {
@@ -90,6 +95,26 @@ export const getConversationMessages = async (req, res) => {
             };
           })
         );
+
+        // react by
+        const reactionTypes = ["like", "dislike", "heart"];
+        const reactionResults = await Promise.all(
+          reactionTypes.map((t) =>
+            ReactBy.find({ messageId: message._id, type: t }).lean()
+          )
+        );
+        const reactionQuantity = {};
+        const myReactionQuantity = {};
+        reactionTypes.forEach((t, index) => {
+          const arr = reactionResults[index] || [];
+
+          reactionQuantity[t] = arr;
+
+          myReactionQuantity[t] = arr.filter(
+            (r) => String(r.userId) === String(currentUserId)
+          ).length;
+        });
+
         if (!sender) {
           return {
             sender: null,
@@ -102,6 +127,10 @@ export const getConversationMessages = async (req, res) => {
               },
             },
             seenBy: fullDataSeenBy,
+            reactions: {
+              total: reactionQuantity,
+              my: myReactionQuantity,
+            },
           };
         }
         return {
@@ -120,6 +149,10 @@ export const getConversationMessages = async (req, res) => {
             },
           },
           seenBy: fullDataSeenBy,
+          reactions: {
+            total: reactionQuantity,
+            my: myReactionQuantity,
+          },
         };
       })
     );
@@ -315,9 +348,9 @@ export const sendMessage = async (req, res) => {
       stream.end(buffer);
     });
 
-  upload(req, res, async (multerErr) => {
-    if (multerErr) {
-      console.error("multer error:", multerErr);
+  upload(req, res, async (multerError) => {
+    if (multerError) {
+      console.error("multer error:", multerError);
       return res.status(400).json({ message: "Invalid upload." });
     }
     try {
@@ -466,6 +499,10 @@ export const sendMessage = async (req, res) => {
         message: {
           ...newMessage.toObject(),
           attachments: { ...attachments },
+        },
+        reactions: {
+          total: { like: [], dislike: [], heart: [] },
+          my: { like: 0, dislike: 0, heart: 0 },
         },
       };
 
@@ -1276,5 +1313,252 @@ export const leaveGroup = async (req, res) => {
     return res.status(status).json({ message });
   } finally {
     session.endSession();
+  }
+};
+
+export const createUpdateReactBy = async (req, res) => {
+  try {
+    const { id: messageId } = req.params;
+    const { type, conversationId } = req.body;
+    const userId = req.user._id;
+    if (!["like", "dislike", "heart"].includes(type)) {
+      return res.status(400).json({
+        locale: req.i18n.language,
+        message: req.t(
+          "errors:chatRoute.createUpdateReactBy.validation.invalidReactionType"
+        ),
+      });
+    }
+    const message = await Message.findById(messageId);
+    if (!message) {
+      return res.status(404).json({
+        locale: req.i18n.language,
+        message: req.t(
+          "errors:chatRoute.createUpdateReactBy.validation.messageNotFound"
+        ),
+      });
+    }
+    const receiverSocketIds = await getReceiverSocketIds(conversationId);
+    console.log("receiverSocketIds", receiverSocketIds);
+    const existingReact = await ReactBy.findOne({ messageId, userId });
+    if (existingReact) {
+      existingReact.type = type;
+      await existingReact.save();
+      if (receiverSocketIds.length > 0) {
+        receiverSocketIds.forEach((socketId) => {
+          io.to(socketId).emit("newReaction", {
+            conversationId,
+            messageId,
+            reactBy: existingReact,
+            reaction: type,
+            createUpdateUserId: userId,
+          });
+        });
+      }
+      return res.status(200).json({
+        message: "",
+        data: { reactBy: existingReact },
+      });
+    } else {
+      const newReact = await ReactBy.create({ messageId, userId, type });
+
+      if (receiverSocketIds.length > 0) {
+        receiverSocketIds.forEach((socketId) => {
+          io.to(socketId).emit("newReaction", {
+            conversationId,
+            messageId,
+            reactBy: newReact,
+            reaction: type,
+            createUpdateUserId: userId,
+          });
+        });
+      }
+      return res.status(201).json({
+        message: "",
+        data: { reactBy: newReact },
+      });
+    }
+  } catch (error) {
+    console.error("Error in createUpdateReactBy:", error);
+    return res.status(500).json({
+      locale: req.i18n.language,
+      message: req.t("errors:chatRoute.createUpdateReactBy.error"),
+    });
+  }
+};
+export const deleteReactBy = async (req, res) => {
+  try {
+    const { id: messageId } = req.params;
+    const { type, conversationId } = req.query;
+    console.log("type", type);
+    console.log("conversationId", conversationId);
+    const userId = req.user._id;
+    const message = await Message.findById(messageId);
+    if (!message) {
+      return res.status(404).json({
+        locale: req.i18n.language,
+        message: req.t(
+          "errors:chatRoute.deleteReactBy.validation.messageNotFound"
+        ),
+      });
+    }
+    const receiverSocketIds = await getReceiverSocketIds(conversationId);
+    console.log("receiverSocketIds", receiverSocketIds);
+    const existingReact = await ReactBy.findOne({ messageId, userId });
+    if (!existingReact) {
+      return res.status(404).json({
+        locale: req.i18n.language,
+        message: req.t(
+          "errors:chatRoute.deleteReactBy.validation.reactionNotFound"
+        ),
+      });
+    }
+    await ReactBy.deleteOne({ _id: existingReact._id });
+    if (receiverSocketIds.length > 0) {
+      receiverSocketIds.forEach((socketId) => {
+        io.to(socketId).emit("deleteReaction", {
+          conversationId,
+          messageId,
+          reactBy: existingReact,
+          reaction: type,
+          deleteUserId: userId,
+        });
+      });
+    }
+    return res.status(200).json({
+      message: "",
+      data: {},
+    });
+  } catch (error) {
+    console.error("Error in deleteReactBy:", error);
+    return res.status(500).json({
+      locale: req.i18n.language,
+      message: req.t("errors:chatRoute.deleteReactBy.error"),
+    });
+  }
+};
+
+export const getReactMemberList = async (req, res) => {
+  try {
+    const currentUserId = req.user._id;
+    const { id: messageId } = req.params;
+    const { memberInGroupIds, conversationType, keyMemberId } = req.body;
+
+    const message = await Message.findById(messageId);
+    if (!message) {
+      throw {
+        status: 404,
+        locale: req.i18n.language,
+        message: req.t(
+          "errors:chatRoute.getReactMemberList.validation.messageNotFound"
+        ),
+      };
+    }
+
+    const reactions = await ReactBy.find({ messageId });
+    if (!reactions || reactions.length === 0) {
+      throw {
+        status: 404,
+        locale: req.i18n.language,
+        message: req.t(
+          "errors:chatRoute.getReactMemberList.validation.reactionNotFound"
+        ),
+      };
+    }
+
+    const memberInGroupIdSet = new Set(
+      (memberInGroupIds || []).map((id) => id && id.toString())
+    );
+
+    const grouped = {
+      like: [],
+      dislike: [],
+      heart: [],
+    };
+
+    await Promise.all(
+      reactions.map(async (reaction) => {
+        try {
+          if (!reaction.userId) return;
+
+          let userObj;
+
+          if (memberInGroupIdSet.has(reaction.userId.toString())) {
+            userObj = {
+              user: {
+                _id: reaction.userId.toString(),
+              },
+            };
+          } else {
+            const profile = await Profile.findOne({
+              userId: reaction.userId,
+            }).select("-userId -_id -createdAt -updatedAt -__v");
+            if (!profile) return null;
+
+            const user = await User.findById(reaction.userId).select(
+              "-password -createdAt -updatedAt -__v"
+            );
+            if (!user) return null;
+
+            let isFriend;
+            let isSendFriendRequest;
+
+            userObj = {
+              user: {
+                ...user.toObject(),
+                profile: {
+                  ...profile.toObject(),
+                },
+              },
+            };
+
+            if (conversationType === "group") {
+              isFriend = await Friend.findOne({
+                $or: [
+                  { firstId: currentUserId, secondId: reaction.userId },
+                  { firstId: reaction.userId, secondId: currentUserId },
+                ],
+              });
+              isSendFriendRequest = await FriendRequest.findOne({
+                $or: [
+                  { senderId: currentUserId, recipientId: reaction.userId },
+                  { senderId: reaction.userId, recipientId: currentUserId },
+                ],
+                status: "pending",
+              });
+
+              if (keyMemberId) {
+                userObj.isKeyMember = keyMemberId == reaction.userId.toString();
+                userObj.isFriend = Boolean(isFriend);
+                userObj.isSendFriendRequest = Boolean(isSendFriendRequest);
+              }
+            }
+          }
+
+          const type = (reaction.type || "").toString();
+          if (type === "like" || type === "dislike" || type === "heart") {
+            grouped[type].push(userObj);
+          } else {
+            grouped.heart.push(userObj);
+          }
+        } catch (innerError) {
+          console.error("Error processing reaction:", reaction._id, innerError);
+        }
+      })
+    );
+
+    return res.status(200).json({
+      message: "",
+      data: {
+        success: true,
+        users: grouped,
+      },
+    });
+  } catch (error) {
+    console.error("Error in getReactMemberList:", error);
+    return res.status(500).json({
+      locale: req.i18n.language,
+      message: req.t("errors:chatRoute.getReactMemberList.error"),
+    });
   }
 };

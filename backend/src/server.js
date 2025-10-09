@@ -68,21 +68,6 @@ app.use("/api/auth", authRoute);
 app.use("/api/user", userRoute);
 app.use("/api/chat", chatRoute);
 
-// app.use((_req, res) => {
-//   res
-//     .status(404)
-//     .json({ code: "NOT_FOUND", message: "Endpoint not found", locale: "en" });
-// });
-
-// app.use((err, _req, res, _next) => {
-//   console.error(err);
-//   res.status(500).json({
-//     code: "INTERNAL_ERROR",
-//     message: "Internal server error",
-//     locale: "en",
-//   });
-// });
-
 const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

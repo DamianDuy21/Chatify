@@ -20,7 +20,7 @@ export const protectedRoute = async (req, res, next) => {
     let decoded;
     try {
       decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
-    } catch (err) {
+    } catch (error) {
       try {
         await JWT.updateOne({ token }, { $set: { expire_at: new Date() } });
       } catch (_) {}
