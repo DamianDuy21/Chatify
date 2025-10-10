@@ -956,7 +956,7 @@ const ChatWindow = () => {
         {/* Utils Panel */}
         {isOpenUtils && (
           <div
-            className={`absolute top-0 right-0 lg:relative lg:flex lg:flex-col w-64 z-[1] bg-base-100`}
+            className={`absolute top-0 right-0 lg:relative lg:flex lg:flex-col w-64 z-[10] bg-base-100`}
           >
             <div className="border-l border-base-300">
               <div className="h-16 px-4 py-4 border-b border-base-300">
@@ -1546,33 +1546,28 @@ const ChatWindow = () => {
       >
         {({ close }) => {
           return (
-            <div>
-              <div className="pb-6 text-sm">
-                {t("leaveGroupModal.subtitle.isKeyMember.true.label")}{" "}
-                <span className="font-semibold">
-                  {/* {selectedConversation?.conversation?.type ==
-                                  "private"
-                                    ? selectedConversation?.users[0]?.user
-                                        ?.fullName
-                                    :  */}
-                  {selectedConversation?.conversation?.name}
+            <div className="-mt-2">
+              <div className="label">
+                <span className="label-text">
+                  {t("leaveGroupModal.subtitle.isKeyMember.true.label")}{" "}
+                  <span className="font-semibold">
+                    {selectedConversation?.conversation?.name}
+                  </span>
                 </span>
                 {/* {" "}
                 ({selectedConversation.users.length}{" "}
                 {t("leaveGroupModal.subtitle.isKeyMember.true.quantity")}) */}
               </div>
               <div className={`pb-6 text-sm`}>
-                <div className="space-y-3 -mt-2">
-                  <div className="form-control w-full">
-                    <CostumedGroupChatUpdateMemberRoleList
-                      friends={selectedConversation.users.filter(
-                        (user) => user.user._id !== authUser?.user?._id
-                      )}
-                      isLeaving={isLeavingGroup}
-                      selectedFriends={selectedFriendIds}
-                      onSelected={handleSelectedFriendLeaveGroup}
-                    ></CostumedGroupChatUpdateMemberRoleList>
-                  </div>
+                <div className="form-control w-full">
+                  <CostumedGroupChatUpdateMemberRoleList
+                    friends={selectedConversation.users.filter(
+                      (user) => user.user._id !== authUser?.user?._id
+                    )}
+                    isLeaving={isLeavingGroup}
+                    selectedFriends={selectedFriendIds}
+                    onSelected={handleSelectedFriendLeaveGroup}
+                  ></CostumedGroupChatUpdateMemberRoleList>
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-4">

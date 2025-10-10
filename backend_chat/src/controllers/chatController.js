@@ -507,7 +507,6 @@ export const sendMessage = async (req, res) => {
       };
 
       const receiverSocketIds = await getReceiverSocketIds(conversationId);
-
       if (receiverSocketIds.length > 0) {
         receiverSocketIds.forEach((socketId) => {
           io.to(socketId).emit("newMessage", fullDataNewMessage);
@@ -544,6 +543,20 @@ export const markMessageAsSeen = async (req, res) => {
       messageId,
       userId: req.user.id,
     });
+
+    const receiverSocketIds = await getReceiverSocketIds(
+      message.conversationId
+    );
+
+    if (receiverSocketIds.length > 0) {
+      receiverSocketIds.forEach((socketId) => {
+        io.to(socketId).emit("markMessageAsSeen", {
+          messageId,
+          userId: req.user.id,
+          conversationId: message.conversationId,
+        });
+      });
+    }
 
     return res.status(200).json({
       message: "",
@@ -666,6 +679,18 @@ export const markAllMessagesAsSeen = async (req, res) => {
       const result = await SeenBy.bulkWrite(slice, { ordered: false });
       insertedCount += result?.upsertedCount || 0;
     }
+
+    const receiverSocketIds = await getReceiverSocketIds(conversationId);
+
+    if (receiverSocketIds.length > 0) {
+      receiverSocketIds.forEach((socketId) => {
+        io.to(socketId).emit("markAllMessagesAsSeen", {
+          userId: req.user.id,
+          conversationId,
+        });
+      });
+    }
+
     return res.status(200).json({
       message: "",
       data: {
@@ -1339,7 +1364,6 @@ export const createUpdateReactBy = async (req, res) => {
       });
     }
     const receiverSocketIds = await getReceiverSocketIds(conversationId);
-    console.log("receiverSocketIds", receiverSocketIds);
     const existingReact = await ReactBy.findOne({ messageId, userId });
     if (existingReact) {
       existingReact.type = type;
@@ -1403,7 +1427,6 @@ export const deleteReactBy = async (req, res) => {
       });
     }
     const receiverSocketIds = await getReceiverSocketIds(conversationId);
-    console.log("receiverSocketIds", receiverSocketIds);
     const existingReact = await ReactBy.findOne({ messageId, userId });
     if (!existingReact) {
       return res.status(404).json({

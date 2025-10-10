@@ -214,6 +214,10 @@
         "offline": "Offline",
         "chatbot": "Ready to chat"
       },
+      "seenByModal": {
+        "title": "Seen by",
+        "quantity": "members"
+      },
       "reactionsModal": {
         "title": "Reactions",
         "quantity": "reactions"

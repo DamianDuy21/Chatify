@@ -130,7 +130,7 @@ const Conversation = ({ translatedTo }) => {
           isCalm
             ? "absolute"
             : "hidden"
-        } top-8 left-1/2 -translate-x-1/2 z-[1]`}
+        } top-8 left-1/2 -translate-x-1/2 z-[6]`}
       >
         <CommonRoundedButton
           onClick={handleGetMessages}
@@ -150,7 +150,7 @@ const Conversation = ({ translatedTo }) => {
       <div
         className={`${
           showScrollBottomBtn && isCalm ? "absolute" : "hidden"
-        } bottom-0 left-1/2 -translate-x-1/2 z-[1]`}
+        } bottom-0 left-1/2 -translate-x-1/2 z-[6]`}
       >
         <CommonRoundedButton
           onClick={() =>
@@ -186,7 +186,7 @@ const Conversation = ({ translatedTo }) => {
           const key = groupsSorted[groupIndex]?.key;
           const label = formatISOToParts(key).date;
           return (
-            <div className="sticky top-0 z-10 flex items-center gap-4 py-2 bg-base-100 backdrop-blur">
+            <div className="sticky top-0 z-[5] flex items-center gap-4 py-2 bg-base-100 backdrop-blur">
               <div className="flex-1 h-px border-t border-base-300" />
               <span className="mx-4 text-xs opacity-70">{label}</span>
               <div className="flex-1 h-px border-t border-base-300" />
@@ -228,6 +228,46 @@ const Conversation = ({ translatedTo }) => {
               ? formatISOToParts(next?.message?.createdAt).date
               : null;
 
+          // not included me in seenBy list
+          const authId = String(authUser?.user?._id ?? "");
+
+          const currSeenBy = item?.seenBy
+            ? item.seenBy.filter((u) => {
+                const userId = u?.user?._id ?? u?._id ?? null;
+                return userId ? String(userId) !== authId : true;
+              })
+            : [];
+
+          const nextSeenBy = next?.seenBy
+            ? next.seenBy.filter((u) => {
+                const userId = u?.user?._id ?? u?._id ?? null;
+                return userId ? String(userId) !== authId : true;
+              })
+            : [];
+
+          // not included  the next sender in seenBy list and also must be in selectedConversation members
+          const convUserIds = new Set(
+            (selectedConversation?.users ?? [])
+              .map((u) => String(u?.user?._id ?? u?._id ?? ""))
+              .filter(Boolean)
+          );
+
+          const seenByList =
+            nextSeenBy.length === 0
+              ? currSeenBy.filter(
+                  (u) =>
+                    convUserIds.has(String(u?.user?._id)) &&
+                    String(u?.user?._id) !== String(nextSender)
+                )
+              : currSeenBy.filter(
+                  (u) =>
+                    convUserIds.has(String(u?.user?._id)) &&
+                    !nextSeenBy.some(
+                      (n) => String(n?.user?._id) === String(u?.user?._id)
+                    ) &&
+                    String(u?.user?._id) !== String(nextSender)
+                );
+
           const isGroupHead =
             isFirst || prev?.__typing || prevSender !== currSender;
 
@@ -247,6 +287,7 @@ const Conversation = ({ translatedTo }) => {
                 <Message
                   side={mine ? "right" : "left"}
                   message={item}
+                  seenByList={seenByList}
                   isOpen={openedIndex === index}
                   onToggle={() =>
                     setOpenedIndex((prev) => (prev === index ? -1 : index))

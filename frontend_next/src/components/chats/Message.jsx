@@ -3,7 +3,14 @@ import {
   deleteReactionAPI,
   translateMessageAPI,
 } from "@/lib/api";
-import { copyToClipboard, formatISOToParts, getLocaleById } from "@/lib/utils";
+import {
+  copyToClipboard,
+  formatISOToParts,
+  getLocaleById,
+  getUserLocaleClient,
+  pluralToSingular,
+  singularToPlural,
+} from "@/lib/utils";
 import { useAuthStore } from "@/stores/useAuthStore";
 import { useChatStore } from "@/stores/useChatStore";
 import {
@@ -21,9 +28,11 @@ import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import CommonRoundedButton from "../buttons/CommonRoundedButton";
-import CostumedMessageReactions from "../costumed/CostumedMessageReactions";
+import CostumedMessageReactionsModal from "../costumed/CostumedMessageReactionsModal";
 import CostumedModal from "../costumed/CostumedModal";
 import { showToast } from "../costumed/CostumedToast";
+import CostumedAvatarSeenBy from "../costumed/CostumedAvatarSeenBy";
+import CostumedMessageSeenByList from "../costumed/CostumedMessageSeenByList";
 
 const Message = ({
   ref,
@@ -31,6 +40,7 @@ const Message = ({
   isOpen,
   onToggle,
   message,
+  seenByList = [],
   translatedTo,
   isShowAvatar = false,
   isShowTime = false,
@@ -40,7 +50,9 @@ const Message = ({
   const tReactionsModal = useTranslations(
     "Components.chatWindow.reactionsModal"
   );
+  const tSeenByModal = useTranslations("Components.chatWindow.seenByModal");
 
+  const NEXT_LOCALE = getUserLocaleClient() || "vi";
   const selectedConversation = useChatStore((s) => s.selectedConversation);
   const setSelectedConversation = useChatStore(
     (s) => s.setSelectedConversation
@@ -59,6 +71,7 @@ const Message = ({
   const [showAllTranslations, setShowAllTranslations] = useState(true);
 
   const [isShowModalReactions, setIsShowModalReactions] = useState(false);
+  const [isShowModalSeenBy, setIsShowModalSeenBy] = useState(false);
 
   useEffect(() => {
     if (
@@ -154,6 +167,47 @@ const Message = ({
     }
   };
 
+  const convUserIds = new Set(
+    (selectedConversation?.users ?? [])
+      .map((u) => u?.user?._id ?? u?._id)
+      .filter(Boolean)
+  );
+
+  const displayedSeenByList = (
+    Array.isArray(message?.seenBy) ? message.seenBy : []
+  ).filter((u) => {
+    const uid = u?.user?._id ?? u?._id;
+    return uid && convUserIds.has(uid) && uid !== authUser?.user?._id;
+  });
+
+  const reactionMap = {
+    heart: Heart,
+    like: ThumbsUp,
+    dislike: ThumbsDown,
+  };
+
+  const reactionsTotal = message?.reactions?.total ?? {
+    heart: [],
+    like: [],
+    dislike: [],
+  };
+
+  const reactionCounts = Object.fromEntries(
+    Object.keys(reactionMap).map((key) => {
+      const arr = reactionsTotal[key] ?? [];
+      const countInConv = arr.filter((r) => {
+        const rUserId = String(r?.userId ?? r?.user?._id ?? r?._id ?? "");
+        return rUserId && convUserIds.has(rUserId);
+      }).length;
+      return [key, countInConv];
+    })
+  );
+
+  const totalVisibleReaction = Object.values(reactionCounts).reduce(
+    (s, v) => s + v,
+    0
+  );
+
   return (
     <>
       {/* avatar */}
@@ -225,7 +279,8 @@ const Message = ({
                     {message.message?.content}
                   </div>
 
-                  <div
+                  {/* copy */}
+                  {/* <div
                     className={`hidden group-hover:flex absolute top-[9px] 
                   right-2 border border-base-300 bg-base-100 px-2 py-1.5 rounded-card`}
                     onClick={(e) => {
@@ -251,7 +306,7 @@ const Message = ({
                         />
                       </>
                     )}
-                  </div>
+                  </div> */}
                 </div>
                 {translatedText && (
                   <div className=" bg-base-100 border border-base-300 px-4 py-3 rounded-btn flex flex-col gap-2 relative group">
@@ -264,10 +319,11 @@ const Message = ({
                     </div>
 
                     <div
-                      className={`hidden group-hover:flex absolute top-[9px] 
-                  right-2 gap-1 items-center`}
+                      className={`hidden group-hover:flex absolute top-[12px] 
+                  right-[12px] items-center`}
                     >
-                      {isCopiedTranslation ? (
+                      {/* copy */}
+                      {/* {isCopiedTranslation ? (
                         <div className="border border-base-300 bg-base-100 px-2 py-1.5 rounded-card">
                           <CheckCheckIcon
                             className="size-3 text-green-500"
@@ -288,27 +344,27 @@ const Message = ({
                             }}
                           />
                         </div>
-                      )}
+                      )} */}
 
                       {translatedText && translatedText.length > 100 && (
                         <>
                           {showAllTranslations ? (
                             <CommonRoundedButton
-                              className=" rounded-full w-6 h-6"
+                              className="rounded-full w-5 h-5"
                               onClick={() => {
                                 setShowAllTranslations(false);
                               }}
                             >
-                              <ChevronUp className="size-4" />
+                              <ChevronUp className="size-3" />
                             </CommonRoundedButton>
                           ) : (
                             <CommonRoundedButton
-                              className="rounded-full w-6 h-6"
+                              className="rounded-full w-5 h-5"
                               onClick={() => {
                                 setShowAllTranslations(true);
                               }}
                             >
-                              <ChevronDown className="size-4" />
+                              <ChevronDown className="size-3" />
                             </CommonRoundedButton>
                           )}
                         </>
@@ -318,112 +374,175 @@ const Message = ({
                 )}
               </div>
             </div>
+
             <div
-              className={`flex gap-1 items-center justify-${
+              className={`flex justify-${
                 side !== "left" ? "end" : "start"
-              } ${
-                isOpen ||
-                message.reactions.total.heart.length > 0 ||
-                message.reactions.total.like.length > 0 ||
-                message.reactions.total.dislike.length > 0
-                  ? "mt-1"
-                  : ""
-              }`}
+              } items-center gap-2`}
             >
+              {/* time */}
+              {isShowTime && (
+                <div
+                  className={`text-xs opacity-70 mt-1 ${
+                    side === "left" ? "" : "order-3"
+                  }`}
+                >
+                  <span className="">
+                    {formatISOToParts(message.message?.createdAt).time}
+                  </span>
+                </div>
+              )}
+
+              {/* reactions */}
               <div
-                className={`cursor-pointer border border-base-300 bg-base-100 px-2 py-1.5 rounded-card gap-2.5 flex items-center ${
-                  side !== "left" ? "order-1" : "order-2"
-                }  ${
-                  message.reactions.total.heart.length > 0 ||
-                  message.reactions.total.like.length > 0 ||
-                  message.reactions.total.dislike.length > 0
-                    ? "flex"
-                    : "hidden"
-                }`}
-                onClick={() => setIsShowModalReactions(true)}
+                className={`flex gap-1 mt-1 items-center justify-${
+                  side !== "left" ? "end order-1" : "start order-2"
+                } ${isOpen || totalVisibleReaction > 0 ? "flex" : "hidden"}`}
               >
-                {message.reactions.total.heart.length > 0 && (
-                  <Heart className="size-3 fill-red-500 order-2 text-transparent" />
-                )}
+                <div
+                  className={`cursor-pointer border border-base-300 bg-base-100 px-2 py-1.5 rounded-card gap-2.5 flex items-center ${
+                    side !== "left" ? "order-1" : "order-2"
+                  } ${totalVisibleReaction > 0 ? "flex" : "hidden"}`}
+                  onClick={() => setIsShowModalReactions(true)}
+                >
+                  {Object.entries(reactionMap).map(([key, Icon]) => {
+                    const count = reactionCounts[key] || 0;
+                    if (!count) return null;
 
-                {message.reactions.total.like.length > 0 && (
-                  <ThumbsUp className="size-3 fill-[#fbcc3b] order-2 text-transparent" />
-                )}
+                    const iconClass =
+                      key === "heart"
+                        ? "size-3 fill-red-500 order-2 text-transparent"
+                        : "size-3 fill-[#fbcc3b] order-2 text-transparent";
 
-                {message.reactions.total.dislike.length > 0 && (
-                  <ThumbsDown className="size-3 fill-[#fbcc3b] order-2 text-transparent" />
-                )}
-              </div>
-
-              <div
-                className={`border border-base-300 bg-base-100 px-2 py-1.5 rounded-card gap-2.5 ${
-                  side !== "left" ? "order-2" : "order-1"
-                }  ${isOpen ? "flex" : "hidden"}`}
-              >
-                <div className="flex gap-2.5">
-                  <Heart
-                    className={`size-3 cursor-pointer hover:scale-110 hover:text-transparent transition-transform duration-200 hover:fill-red-500 ${
-                      message.reactions.my.heart > 0
-                        ? "fill-red-500 text-transparent"
-                        : ""
-                    }`}
-                    onClick={() => {
-                      if (message.reactions.my.heart > 0) {
-                        deleteReaction("heart");
-                        return;
-                      }
-                      createUpdateReaction("heart");
-                    }}
-                  />
-
-                  <div className="flex gap-2.5">
-                    <ThumbsUp
-                      className={`size-3 cursor-pointer hover:scale-110 hover:text-transparent transition-transform duration-200 fill-base-100 hover:fill-[#fbcc3b] ${
-                        message.reactions.my.like > 0
-                          ? "!fill-[#fbcc3b] text-transparent"
-                          : ""
-                      }`}
-                      onClick={() => {
-                        if (message.reactions.my.like > 0) {
-                          deleteReaction("like");
-                          return;
-                        }
-                        createUpdateReaction("like");
-                      }}
-                    />
-
-                    <ThumbsDown
-                      className={`size-3 cursor-pointer hover:scale-110 hover:text-transparent transition-transform duration-200 fill-base-100 hover:fill-[#fbcc3b] ${
-                        message.reactions.my.dislike > 0
-                          ? "!fill-[#fbcc3b] text-transparent"
-                          : ""
-                      }`}
-                      onClick={() => {
-                        if (message.reactions.my.dislike > 0) {
-                          deleteReaction("dislike");
-                          return;
-                        }
-                        createUpdateReaction("dislike");
-                      }}
-                    />
-                  </div>
+                    return <Icon key={key} className={iconClass} />;
+                  })}
                 </div>
 
-                {isTranslatingText ? (
-                  <>
-                    <LoaderIcon className="animate-spin size-3" />
-                  </>
-                ) : (
-                  <Languages
-                    className="size-3 cursor-pointer hover:scale-110 transition-transform duration-200"
-                    onClick={() => {
-                      handleTranslateTextOpenaiAPI(
-                        message.message?.content,
-                        getLocaleById(translatedTo) || "gb"
-                      );
-                    }}
-                  />
-                )}
+                <div
+                  className={`border border-base-300 bg-base-100 px-2 py-1.5 rounded-card gap-2.5 ${
+                    side !== "left" ? "order-2" : "order-1"
+                  }  ${isOpen ? "flex" : "hidden"}`}
+                >
+                  <div className="flex gap-2.5">
+                    <Heart
+                      className={`size-3 cursor-pointer hover:scale-110 hover:text-transparent transition-transform duration-200 hover:fill-red-500 ${
+                        message.reactions.my.heart > 0
+                          ? "fill-red-500 text-transparent"
+                          : ""
+                      }`}
+                      onClick={() => {
+                        if (message.reactions.my.heart > 0) {
+                          deleteReaction("heart");
+                          return;
+                        }
+                        createUpdateReaction("heart");
+                      }}
+                    />
+
+                    <div className="flex gap-2.5">
+                      <ThumbsUp
+                        className={`size-3 cursor-pointer hover:scale-110 hover:text-transparent transition-transform duration-200 fill-base-100 hover:fill-[#fbcc3b] ${
+                          message.reactions.my.like > 0
+                            ? "!fill-[#fbcc3b] text-transparent"
+                            : ""
+                        }`}
+                        onClick={() => {
+                          if (message.reactions.my.like > 0) {
+                            deleteReaction("like");
+                            return;
+                          }
+                          createUpdateReaction("like");
+                        }}
+                      />
+
+                      <ThumbsDown
+                        className={`size-3 cursor-pointer hover:scale-110 hover:text-transparent transition-transform duration-200 fill-base-100 hover:fill-[#fbcc3b] ${
+                          message.reactions.my.dislike > 0
+                            ? "!fill-[#fbcc3b] text-transparent"
+                            : ""
+                        }`}
+                        onClick={() => {
+                          if (message.reactions.my.dislike > 0) {
+                            deleteReaction("dislike");
+                            return;
+                          }
+                          createUpdateReaction("dislike");
+                        }}
+                      />
+                    </div>
+                  </div>
+
+                  {isTranslatingText ? (
+                    <>
+                      <LoaderIcon className="animate-spin size-3" />
+                    </>
+                  ) : (
+                    <Languages
+                      className="size-3 cursor-pointer hover:scale-110 transition-transform duration-200"
+                      onClick={() => {
+                        handleTranslateTextOpenaiAPI(
+                          message.message?.content,
+                          getLocaleById(translatedTo) || "gb"
+                        );
+                      }}
+                    />
+                  )}
+                  {isCopied ? (
+                    <CheckCheckIcon
+                      className="size-3 text-green-500"
+                      title="Check"
+                    />
+                  ) : (
+                    <div
+                      onClick={() => {
+                        if (message.message?.content && !isCopied) {
+                          copyToClipboard(message.message?.content);
+                          setIsCopied(true);
+                        }
+                      }}
+                    >
+                      <Copy
+                        className="size-3 cursor-pointer hover:scale-110 transition-transform duration-200"
+                        title="Copy"
+                      />
+                    </div>
+                  )}
+
+                  {translatedText &&
+                    (isCopiedTranslation ? (
+                      <CheckCheckIcon
+                        className="size-3 text-green-500"
+                        title="CheckTranslation"
+                      />
+                    ) : (
+                      <div
+                        onClick={() => {
+                          if (translatedText) {
+                            copyToClipboard(translatedText);
+                            setIsCopiedTranslation(true);
+                          }
+                        }}
+                      >
+                        <Copy
+                          className="size-3 cursor-pointer hover:scale-110 transition-transform duration-200"
+                          title="CopyTranslation"
+                        />
+                      </div>
+                    ))}
+                </div>
+              </div>
+
+              {/* seen */}
+              <div
+                className={`flex gap-1 mt-1 items-center justify-${
+                  side !== "left" ? "end order-2" : "start order-1"
+                } ${seenByList.length > 0 ? "" : "hidden"}`}
+              >
+                <CostumedAvatarSeenBy
+                  onClick={() => setIsShowModalSeenBy(true)}
+                  className={""}
+                  seenByList={seenByList}
+                />
               </div>
             </div>
           </div>
@@ -581,18 +700,9 @@ const Message = ({
           // </div>
           <></>
         )}
-        {isShowTime && (
-          <div
-            className={`flex items-end text-xs opacity-70 ${
-              side === "left" ? "order-3 justify-start" : "order-1 justify-end"
-            }`}
-          >
-            {formatISOToParts(message.message?.createdAt).time}
-          </div>
-        )}
       </div>
 
-      {/* MEMBER LIST MODAL */}
+      {/* REACTIONS MODAL */}
       <CostumedModal
         open={isShowModalReactions}
         onClose={() => {
@@ -605,17 +715,72 @@ const Message = ({
             <div className={`pb-0 text-sm`}>
               <div className="space-y-3 -mt-2">
                 <div className="form-control w-full">
-                  <div className="flex items-center justify-between ">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="label">
+                      <span className="label-text line-clamp-1">
+                        {message.message.content}
+                      </span>
+                    </div>
+                    <div className="text-end label-text-alt flex-1 min-w-[max-content]">
+                      {totalVisibleReaction}{" "}
+                      {totalVisibleReaction > 1
+                        ? singularToPlural(
+                            tReactionsModal("quantity"),
+                            NEXT_LOCALE
+                          )
+                        : pluralToSingular(
+                            tReactionsModal("quantity"),
+                            NEXT_LOCALE
+                          )}
+                    </div>
+                  </div>
+
+                  <CostumedMessageReactionsModal
+                    message={message}
+                  ></CostumedMessageReactionsModal>
+                </div>
+              </div>
+            </div>
+          );
+        }}
+      </CostumedModal>
+
+      {/* SEEN BY LIST MODAL */}
+      <CostumedModal
+        open={isShowModalSeenBy}
+        onClose={() => {
+          setIsShowModalSeenBy(false);
+        }}
+        title={tSeenByModal("title")}
+      >
+        {({ close }) => {
+          return (
+            <div className={`pb-0 text-sm`}>
+              <div className="space-y-3 -mt-2">
+                <div className="form-control w-full">
+                  <div className="flex items-center justify-between gap-2">
                     <label className="label">
                       <span className="label-text line-clamp-1">
                         {message.message.content}
                       </span>
                     </label>
+                    <span className="text-end label-text-alt flex-1 min-w-[max-content]">
+                      {displayedSeenByList.length}{" "}
+                      {displayedSeenByList.length > 1
+                        ? singularToPlural(
+                            tSeenByModal("quantity"),
+                            NEXT_LOCALE
+                          )
+                        : pluralToSingular(
+                            tSeenByModal("quantity"),
+                            NEXT_LOCALE
+                          )}
+                    </span>
                   </div>
 
-                  <CostumedMessageReactions
-                    message={message}
-                  ></CostumedMessageReactions>
+                  <CostumedMessageSeenByList
+                    seenByList={displayedSeenByList}
+                  ></CostumedMessageSeenByList>
                 </div>
               </div>
             </div>

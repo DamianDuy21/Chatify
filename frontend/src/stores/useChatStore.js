@@ -770,6 +770,127 @@ export const useChatStore = create((set, get) => ({
         };
       });
     });
+
+    socketChat.on("markMessageAsSeen", (seenData) => {
+      const { selectedConversation, conversations } = get();
+      const conversationId = seenData.conversationId;
+      const messageId = seenData.messageId;
+      const seenByUserId = seenData.userId;
+      if (!seenByUserId || !messageId || !conversationId) return;
+
+      const seenByUser = conversations
+        .flatMap((c) => c.users)
+        .find((u) => {
+          return String(u?.user?._id ?? u?._id) === String(seenByUserId);
+        });
+
+      set((state) => ({
+        conversations: state.conversations.map((conversation) => {
+          if (conversation.conversation._id === conversationId) {
+            return {
+              ...conversation,
+              messages: conversation.messages.map((m) => {
+                if (m.message._id === messageId) {
+                  const existingSeenBy = Array.isArray(m.seenBy)
+                    ? m.seenBy.map((u) => String(u?.user?._id ?? u?._id))
+                    : [];
+                  if (existingSeenBy.includes(String(seenByUserId))) {
+                    return m;
+                  }
+                  return {
+                    ...m,
+                    seenBy: [...(m.seenBy || []), { ...seenByUser }],
+                  };
+                }
+                return m;
+              }),
+            };
+          }
+          return conversation;
+        }),
+      }));
+
+      if (selectedConversation?.conversation._id !== conversationId) return;
+      set((state) => ({
+        selectedConversation: state.selectedConversation
+          ? {
+              ...state.selectedConversation,
+              messages: state.selectedConversation.messages.map((m) => {
+                if (m.message._id === messageId) {
+                  const existingSeenBy = Array.isArray(m.seenBy)
+                    ? m.seenBy.map((u) => String(u?.user?._id ?? u?._id))
+                    : [];
+                  if (existingSeenBy.includes(String(seenByUserId))) {
+                    return m;
+                  }
+                  return {
+                    ...m,
+                    seenBy: [...(m.seenBy || []), { ...seenByUser }],
+                  };
+                }
+                return m;
+              }),
+            }
+          : null,
+      }));
+    });
+
+    socketChat.on("markAllMessagesAsSeen", (seenData) => {
+      const { selectedConversation, conversations } = get();
+      const conversationId = seenData.conversationId;
+      const seenByUserId = seenData.userId;
+      if (!seenByUserId || !conversationId) return;
+
+      const seenByUser = conversations
+        .flatMap((c) => c.users)
+        .find((u) => {
+          return String(u?.user?._id ?? u?._id) === String(seenByUserId);
+        });
+
+      set((state) => ({
+        conversations: state.conversations.map((conversation) => {
+          if (conversation.conversation._id === conversationId) {
+            return {
+              ...conversation,
+              messages: conversation.messages.map((m) => {
+                const existingSeenBy = Array.isArray(m.seenBy)
+                  ? m.seenBy.map((u) => String(u?.user?._id ?? u?._id))
+                  : [];
+                if (existingSeenBy.includes(String(seenByUserId))) {
+                  return m;
+                }
+                return {
+                  ...m,
+                  seenBy: [...(m.seenBy || []), { ...seenByUser }],
+                };
+              }),
+            };
+          }
+          return conversation;
+        }),
+      }));
+
+      if (selectedConversation?.conversation._id !== conversationId) return;
+      set((state) => ({
+        selectedConversation: state.selectedConversation
+          ? {
+              ...state.selectedConversation,
+              messages: state.selectedConversation.messages.map((m) => {
+                const existingSeenBy = Array.isArray(m.seenBy)
+                  ? m.seenBy.map((u) => String(u?.user?._id ?? u?._id))
+                  : [];
+                if (existingSeenBy.includes(String(seenByUserId))) {
+                  return m;
+                }
+                return {
+                  ...m,
+                  seenBy: [...(m.seenBy || []), { ...seenByUser }],
+                };
+              }),
+            }
+          : null,
+      }));
+    });
   },
 
   unsubscribeFromMessages: () => {

@@ -6,7 +6,7 @@ import { useTranslation } from "react-i18next";
 import { getReactMemberListAPI } from "../../lib/api";
 import { pluralToSingular, singularToPlural } from "../../lib/utils";
 
-const CostumedMessageReactions = ({ message }) => {
+const CostumedMessageReactionsModal = ({ message }) => {
   const { t } = useTranslation("components", {
     keyPrefix: "chatWindow.reactionsModal",
   });
@@ -178,4 +178,4 @@ const CostumedMessageReactions = ({ message }) => {
   );
 };
 
-export default CostumedMessageReactions;
+export default CostumedMessageReactionsModal;

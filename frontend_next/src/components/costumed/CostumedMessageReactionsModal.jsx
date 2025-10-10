@@ -1,19 +1,11 @@
 "use client";
 import { getReactMemberListAPI } from "@/lib/api";
-import {
-  getUserLocaleClient,
-  pluralToSingular,
-  singularToPlural,
-} from "@/lib/utils";
 import { Heart, LoaderIcon, ThumbsDown, ThumbsUp } from "lucide-react";
-import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import { useChatStore } from "../../stores/useChatStore";
 import FriendCard_MessageReactions from "../cards/FriendCard_MessageReactions";
 
-const CostumedMessageReactions = ({ message }) => {
-  const t = useTranslations("Components.chatWindow.reactionsModal");
-  const NEXT_LOCALE = getUserLocaleClient() || "vi";
+const CostumedMessageReactionsModal = ({ message }) => {
   const selectedConversation = useChatStore((s) => s.selectedConversation);
 
   const [friends, setFriends] = useState([]);
@@ -22,58 +14,48 @@ const CostumedMessageReactions = ({ message }) => {
 
   const firstItemRef = useRef();
 
-  const getReactMemberList = async () => {
-    try {
-      const memberInGroupIds = selectedConversation.users.map(
-        (u) => u.user._id
-      );
-      const keyMemberId = selectedConversation.users.find((u) => u.isKeyMember)
-        ?.user._id;
-      const conversationType = selectedConversation.conversation.type;
-
-      const { data } = await getReactMemberListAPI({
-        messageId: message.message._id,
-        memberInGroupIds,
-        keyMemberId,
-        conversationType,
-      });
-
-      const reactionTypes = ["like", "dislike", "heart"];
-      const fullUserMap = new Map(
-        selectedConversation.users.map((usr) => [usr.user._id.toString(), usr])
-      );
-      const reactionMemberData = reactionTypes.map((type) => {
-        const apiUsers = Array.isArray(data.users?.[type])
-          ? data.users[type]
-          : [];
-
-        const users = apiUsers.map((u) => {
-          const userId = u?.user?._id ? u.user._id.toString() : null;
-          if (!userId) return u;
-
-          const full = fullUserMap.get(userId);
-          if (full) {
-            return full;
-          }
-          return u;
-        });
-
-        return { [type]: users };
-      });
-
-      setFriends({
-        like: reactionMemberData.find((r) => r.like)?.like || [],
-        dislike: reactionMemberData.find((r) => r.dislike)?.dislike || [],
-        heart: reactionMemberData.find((r) => r.heart)?.heart || [],
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   useEffect(() => {
-    getReactMemberList();
-  }, []);
+    if (!message || !selectedConversation?.users) {
+      setFriends({ heart: [], like: [], dislike: [] });
+      return;
+    }
+
+    const toId = (v) => (v == null ? "" : String(v));
+
+    const userMap = new Map(
+      (selectedConversation.users ?? [])
+        .map((userObj) => {
+          const id = toId(userObj?.user?._id ?? userObj?._id);
+          return id ? [id, userObj] : null;
+        })
+        .filter(Boolean)
+    );
+
+    const reactionsTotal = message?.reactions?.total ?? {};
+
+    const usersFromReacts = (key) => {
+      const arr = Array.isArray(reactionsTotal[key]) ? reactionsTotal[key] : [];
+      const reactedIds = [];
+      const seen = new Set();
+
+      arr.forEach((r) => {
+        const rid = toId(r?.userId ?? r?.user?._id ?? r?._id);
+        if (!rid) return;
+        if (!userMap.has(rid)) return;
+        if (seen.has(rid)) return;
+        seen.add(rid);
+        reactedIds.push(rid);
+      });
+
+      return reactedIds.map((id) => userMap.get(id)).filter(Boolean);
+    };
+
+    setFriends({
+      heart: usersFromReacts("heart"),
+      like: usersFromReacts("like"),
+      dislike: usersFromReacts("dislike"),
+    });
+  }, [message, selectedConversation]);
 
   useEffect(() => {
     if (friends && friends.heart && friends.heart.length > 0) {
@@ -152,12 +134,7 @@ const CostumedMessageReactions = ({ message }) => {
             />
           </div>
         </div>
-        <span className="label-text-alt">
-          {displayedFriends.length}{" "}
-          {displayedFriends.length > 1
-            ? singularToPlural(t("quantity"), NEXT_LOCALE)
-            : pluralToSingular(t("quantity"), NEXT_LOCALE)}
-        </span>
+        <span className="label-text-alt">({displayedFriends.length})</span>
       </div>
 
       {displayedFriends.length > 0 && (
@@ -175,4 +152,4 @@ const CostumedMessageReactions = ({ message }) => {
   );
 };
 
-export default CostumedMessageReactions;
+export default CostumedMessageReactionsModal;
