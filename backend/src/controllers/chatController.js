@@ -334,10 +334,7 @@ export const getConversations = async (req, res) => {
 
         const memberIds = await ConversationMember.find({
           conversationId: conversation._id,
-          userId:
-            conversation.type == "group"
-              ? { $ne: null }
-              : { $ne: currentUserId },
+          userId: conversation.type == "group" ? { $ne: null } : { $ne: null },
         }).select("userId");
 
         let keyMemberId;

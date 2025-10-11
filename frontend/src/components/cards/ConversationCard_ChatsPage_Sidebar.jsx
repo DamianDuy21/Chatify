@@ -24,6 +24,10 @@ const ConversationCard_ChatsPage_Sidebar = ({
     (s) => s.conversationsHaveUnSeenMessages
   );
 
+  const otherUser = conversation?.users?.find(
+    (user) => user?.user?._id !== authUser?.user._id
+  );
+
   const { t } = useTranslation("components", {
     keyPrefix: "conversationCard_ChatsPage_Sidebar",
   });
@@ -60,10 +64,7 @@ const ConversationCard_ChatsPage_Sidebar = ({
         <div className="avatar">
           <div className="w-10 rounded-full">
             {conversation.conversation?.type == "private" ? (
-              <img
-                src={conversation?.users[0]?.user?.profile?.profilePic}
-                alt=""
-              />
+              <img src={otherUser?.user?.profile?.profilePic} alt="" />
             ) : conversation.conversation.type == "group" ? (
               <CostumedAvatarGroupChat conversation={conversation} />
             ) : (
@@ -98,7 +99,7 @@ const ConversationCard_ChatsPage_Sidebar = ({
         <div className={`hidden lg:block ${isShowAllWidth ? "!block" : ""}`}>
           <p className="font-semibold text-sm">
             {conversation?.conversation?.type == "private"
-              ? conversation?.users[0]?.user?.fullName
+              ? otherUser?.user?.fullName
               : conversation?.conversation?.name}
           </p>
 

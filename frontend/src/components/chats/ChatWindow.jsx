@@ -646,6 +646,13 @@ const ChatWindow = () => {
     if (selectedConversation.conversation.type !== "chatbot") initChat();
   }, [authUser.user._id, videoCallToken?.data.token]);
 
+  let otherUser = null;
+  if (selectedConversation.conversation.type === "private") {
+    otherUser = selectedConversation.users.find(
+      (user) => user.user._id !== authUser.user._id
+    );
+  }
+
   return (
     <>
       <div className="h-[calc(100vh-64px)] w-[calc(100vw-80px)] lg:w-[calc(100vw-256px)] flex relative overflow-x-hidden">
@@ -656,13 +663,7 @@ const ChatWindow = () => {
               <div className="avatar">
                 <div className="w-10 rounded-full">
                   {selectedConversation.conversation?.type == "private" ? (
-                    <img
-                      src={
-                        selectedConversation?.users[0]?.user?.profile
-                          ?.profilePic
-                      }
-                      alt=""
-                    />
+                    <img src={otherUser?.user?.profile?.profilePic} alt="" />
                   ) : selectedConversation.conversation.type == "group" ? (
                     <CostumedAvatarGroupChat
                       conversation={selectedConversation}
@@ -677,7 +678,7 @@ const ChatWindow = () => {
               <div className="hidden sm:block">
                 <h3 className="font-semibold text-sm line-clamp-1">
                   {selectedConversation?.conversation?.type == "private"
-                    ? selectedConversation?.users[0]?.user?.fullName
+                    ? otherUser?.user?.fullName
                     : selectedConversation?.conversation?.name}
                 </h3>
                 {selectedConversation?.conversation?.type !== "chatbot" ? (
@@ -1496,7 +1497,7 @@ const ChatWindow = () => {
                 <div className="pb-6 text-sm">
                   {t("deleteConversationModal.subtitle.private")}{" "}
                   <span className="font-semibold">
-                    {selectedConversation?.users[0]?.user?.fullName}
+                    {otherUser?.user?.fullName}
                   </span>
                   ?
                 </div>
@@ -1623,7 +1624,7 @@ const ChatWindow = () => {
               //     Bạn có chắc muốn rời khỏi cuộc trò chuyện với{" "}
               //     <span className="font-semibold">
               //       {
-              //         selectedConversation?.users[0]?.user
+              //         otherUser?.user
               //           ?.fullName
               //       }
               //     </span>{" "}
