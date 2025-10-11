@@ -25,6 +25,11 @@ io.on("connection", (socket) => {
     }
     if (!userSocketMap[userId].includes(socket.id)) {
       userSocketMap[userId].push(socket.id);
+    } else {
+      userSocketMap[userId] = userSocketMap[userId].filter(
+        (id) => id !== socket.id
+      );
+      userSocketMap[userId].push(socket.id);
     }
   }
 
