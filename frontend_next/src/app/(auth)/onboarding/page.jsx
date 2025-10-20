@@ -126,8 +126,11 @@ const OnboardingPage = () => {
   useEffect(() => {
     setNativeLanguageSelection(languages);
     setLearningLanguageSelection(languages);
-    handleRandomAvatar();
   }, [languages]);
+
+  useEffect(() => {
+    handleRandomAvatar();
+  }, []);
 
   return (
     <>
