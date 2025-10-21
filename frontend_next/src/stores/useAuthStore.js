@@ -73,7 +73,7 @@ export const useAuthStore = create(
 
       connectSocket: () => {
         const { authUser, socketChat } = get();
-        if (!authUser || !authUser.user.isOnboarded || socketChat?.connected)
+        if (!authUser || !authUser?.user?.isOnboarded || socketChat?.connected)
           return;
         const s_chat = io(BACKEND_CHAT_URL, {
           autoConnect: false,

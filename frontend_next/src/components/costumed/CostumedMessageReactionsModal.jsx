@@ -73,7 +73,7 @@ const CostumedMessageReactionsModal = ({ message }) => {
     } else {
       setDisplayedFriends([]);
     }
-  }, [reaction]);
+  }, [friends, reaction]);
 
   useEffect(() => {
     if (!displayedFriends || displayedFriends.length === 0) return;
