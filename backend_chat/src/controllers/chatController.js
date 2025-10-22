@@ -694,10 +694,10 @@ export const markAllMessagesAsSeen = async (req, res) => {
     return res.status(200).json({
       message: "",
       data: {
-        total: {
-          messages: messageIds.length,
-          inserted: insertedCount,
-        },
+        // total: {
+        //   messages: messageIds.length,
+        //   inserted: insertedCount,
+        // },
       },
     });
   } catch (error) {
@@ -1414,8 +1414,6 @@ export const deleteReactBy = async (req, res) => {
   try {
     const { id: messageId } = req.params;
     const { type, conversationId } = req.query;
-    console.log("type", type);
-    console.log("conversationId", conversationId);
     const userId = req.user._id;
     const message = await Message.findById(messageId);
     if (!message) {

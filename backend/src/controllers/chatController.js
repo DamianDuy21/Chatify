@@ -59,11 +59,11 @@ export const createPrivateConversation = async (req, res) => {
       return res.status(200).json({
         success: true,
         data: {
-          conversation: {
-            conversation: {
-              ...conversation.toObject(),
-            },
-          },
+          // conversation: {
+          //   conversation: {
+          //     ...conversation.toObject(),
+          //   },
+          // },
           isNewCreated: false,
         },
         message: "",

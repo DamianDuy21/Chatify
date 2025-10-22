@@ -49,6 +49,6 @@ chatRoute.post("/leave-group/:id", leaveGroup);
 // reaction
 chatRoute.post("/message/reaction/:id", createUpdateReactBy);
 chatRoute.delete("/message/reaction/:id", deleteReactBy);
-chatRoute.post("/message/reaction/members/:id", getReactMemberList);
+// chatRoute.post("/message/reaction/members/:id", getReactMemberList);
 
 export default chatRoute;

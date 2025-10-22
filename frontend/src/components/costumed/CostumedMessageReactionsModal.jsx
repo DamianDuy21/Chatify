@@ -1,10 +1,9 @@
 import { Heart, LoaderIcon, ThumbsDown, ThumbsUp } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
+import { useTranslation } from "react-i18next";
+import { pluralToSingular, singularToPlural } from "../../lib/utils";
 import { useChatStore } from "../../stores/useChatStore";
 import FriendCard_MessageReactions from "../cards/FriendCard_MessageReactions";
-import { useTranslation } from "react-i18next";
-import { getReactMemberListAPI } from "../../lib/api";
-import { pluralToSingular, singularToPlural } from "../../lib/utils";
 
 const CostumedMessageReactionsModal = ({ message }) => {
   const { t } = useTranslation("components", {
@@ -25,58 +24,48 @@ const CostumedMessageReactionsModal = ({ message }) => {
 
   const firstItemRef = useRef();
 
-  const getReactMemberList = async () => {
-    try {
-      const memberInGroupIds = selectedConversation.users.map(
-        (u) => u.user._id
-      );
-      const keyMemberId = selectedConversation.users.find((u) => u.isKeyMember)
-        ?.user._id;
-      const conversationType = selectedConversation.conversation.type;
-
-      const { data } = await getReactMemberListAPI({
-        messageId: message.message._id,
-        memberInGroupIds,
-        keyMemberId,
-        conversationType,
-      });
-
-      const reactionTypes = ["like", "dislike", "heart"];
-      const fullUserMap = new Map(
-        selectedConversation.users.map((usr) => [usr.user._id.toString(), usr])
-      );
-      const reactionMemberData = reactionTypes.map((type) => {
-        const apiUsers = Array.isArray(data.users?.[type])
-          ? data.users[type]
-          : [];
-
-        const users = apiUsers.map((u) => {
-          const userId = u?.user?._id ? u.user._id.toString() : null;
-          if (!userId) return u;
-
-          const full = fullUserMap.get(userId);
-          if (full) {
-            return full;
-          }
-          return u;
-        });
-
-        return { [type]: users };
-      });
-
-      setFriends({
-        like: reactionMemberData.find((r) => r.like)?.like || [],
-        dislike: reactionMemberData.find((r) => r.dislike)?.dislike || [],
-        heart: reactionMemberData.find((r) => r.heart)?.heart || [],
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   useEffect(() => {
-    getReactMemberList();
-  }, []);
+    if (!message || !selectedConversation?.users) {
+      setFriends({ heart: [], like: [], dislike: [] });
+      return;
+    }
+
+    const toId = (v) => (v == null ? "" : String(v));
+
+    const userMap = new Map(
+      (selectedConversation.users ?? [])
+        .map((userObj) => {
+          const id = toId(userObj?.user?._id ?? userObj?._id);
+          return id ? [id, userObj] : null;
+        })
+        .filter(Boolean)
+    );
+
+    const reactionsTotal = message?.reactions?.total ?? {};
+
+    const usersFromReacts = (key) => {
+      const arr = Array.isArray(reactionsTotal[key]) ? reactionsTotal[key] : [];
+      const reactedIds = [];
+      const seen = new Set();
+
+      arr.forEach((r) => {
+        const rid = toId(r?.userId ?? r?.user?._id ?? r?._id);
+        if (!rid) return;
+        if (!userMap.has(rid)) return;
+        if (seen.has(rid)) return;
+        seen.add(rid);
+        reactedIds.push(rid);
+      });
+
+      return reactedIds.map((id) => userMap.get(id)).filter(Boolean);
+    };
+
+    setFriends({
+      heart: usersFromReacts("heart"),
+      like: usersFromReacts("like"),
+      dislike: usersFromReacts("dislike"),
+    });
+  }, [message, selectedConversation]);
 
   useEffect(() => {
     if (friends && friends.heart && friends.heart.length > 0) {

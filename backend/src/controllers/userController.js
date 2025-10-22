@@ -1159,13 +1159,13 @@ export const getFriendsCouldBeAddedToGroup = async (req, res) => {
             })
             .filter(Boolean); // loại bỏ null
 
-          let conversation;
-          if (conversationId.length > 0) {
-            conversation = await Conversation.findOne({
-              _id: { $in: conversationId },
-              type: "private",
-            });
-          }
+          // let conversation;
+          // if (conversationId.length > 0) {
+          //   conversation = await Conversation.findOne({
+          //     _id: { $in: conversationId },
+          //     type: "private",
+          //   });
+          // }
 
           if (!user || user.length === 0) return null;
 
@@ -1176,7 +1176,7 @@ export const getFriendsCouldBeAddedToGroup = async (req, res) => {
                 ...profile.toObject(),
               },
             },
-            conversation,
+            // conversation,
           };
         })
       )

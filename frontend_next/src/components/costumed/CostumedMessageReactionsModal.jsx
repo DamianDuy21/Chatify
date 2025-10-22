@@ -1,5 +1,4 @@
 "use client";
-import { getReactMemberListAPI } from "@/lib/api";
 import { Heart, LoaderIcon, ThumbsDown, ThumbsUp } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { useChatStore } from "../../stores/useChatStore";
