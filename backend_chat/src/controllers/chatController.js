@@ -906,6 +906,38 @@ export const addMembersToGroup = async (req, res) => {
           language: new mongoose.Types.ObjectId("68b26fe629f59a1a322ae67c"),
           translatedTo: new mongoose.Types.ObjectId("68b26fe629f59a1a322ae67c"),
         });
+
+        const newUser = fullDataNewMembers.find(
+          (member) => member.user._id.toString() === memberId.toString()
+        )?.user;
+        const newMessageNotification = await Message.create({
+          conversationId,
+          senderId: null,
+          content: `added_to_group-${newUser.fullName}-${memberId}`,
+          type: "notification",
+        });
+
+        const fullDataNewMessageNotification = {
+          sender: null,
+          message: {
+            ...newMessageNotification.toObject(),
+            attachments: { images: [], videos: [], files: [] },
+          },
+          reactions: {
+            total: { like: [], dislike: [], heart: [] },
+            my: { like: 0, dislike: 0, heart: 0 },
+          },
+        };
+
+        const receiverSocketIds = await getReceiverSocketIds(conversationId);
+        if (receiverSocketIds.length > 0) {
+          receiverSocketIds.forEach((socketId) => {
+            io.to(socketId).emit(
+              "newMessageNotification",
+              fullDataNewMessageNotification
+            );
+          });
+        }
       })
     );
 
@@ -988,6 +1020,39 @@ export const deleteMemberFromGroup = async (req, res) => {
       conversationId,
       userId: memberId,
     });
+
+    const deletedUser = await User.findById(memberId).select(
+      "-password -createdAt -updatedAt -__v"
+    );
+
+    const newMessageNotification = await Message.create({
+      conversationId,
+      senderId: null,
+      content: `deleted_from_group-${deletedUser.fullName}-${memberId}`,
+      type: "notification",
+    });
+
+    const fullDataNewMessageNotification = {
+      sender: null,
+      message: {
+        ...newMessageNotification.toObject(),
+        attachments: { images: [], videos: [], files: [] },
+      },
+      reactions: {
+        total: { like: [], dislike: [], heart: [] },
+        my: { like: 0, dislike: 0, heart: 0 },
+      },
+    };
+
+    const receiverSocketIds = await getReceiverSocketIds(conversationId);
+    if (receiverSocketIds.length > 0) {
+      receiverSocketIds.forEach((socketId) => {
+        io.to(socketId).emit(
+          "newMessageNotification",
+          fullDataNewMessageNotification
+        );
+      });
+    }
 
     const notifications = [
       {
@@ -1304,6 +1369,35 @@ export const leaveGroup = async (req, res) => {
         conversationId,
         userId: currentUserId,
       }).session(session);
+
+      const newMessageNotification = await Message.create({
+        conversationId,
+        senderId: null,
+        content: `leave_group-${req.user.fullName}-${req.user._id}`,
+        type: "notification",
+      });
+
+      const fullDataNewMessageNotification = {
+        sender: null,
+        message: {
+          ...newMessageNotification.toObject(),
+          attachments: { images: [], videos: [], files: [] },
+        },
+        reactions: {
+          total: { like: [], dislike: [], heart: [] },
+          my: { like: 0, dislike: 0, heart: 0 },
+        },
+      };
+
+      const receiverSocketIds = await getReceiverSocketIds(conversationId);
+      if (receiverSocketIds.length > 0) {
+        receiverSocketIds.forEach((socketId) => {
+          io.to(socketId).emit(
+            "newMessageNotification",
+            fullDataNewMessageNotification
+          );
+        });
+      }
 
       const usersPayload =
         isKeyMember && newKeyMemberId

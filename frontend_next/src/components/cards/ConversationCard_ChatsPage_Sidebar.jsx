@@ -31,6 +31,27 @@ const ConversationCard_ChatsPage_Sidebar = ({
   );
 
   const t = useTranslations("Components.conversationCard_ChatsPage_Sidebar");
+  const tMessageNotification = useTranslations(
+    "Components.messageNotification"
+  );
+
+  const displayLastMessage = {
+    userId: null,
+    fullName: null,
+    action: null,
+  };
+
+  if (
+    conversation?.conversation?.lastMessage?.message?.type === "notification"
+  ) {
+    displayLastMessage.userId =
+      conversation?.conversation?.lastMessage?.message?.content.split("-")[2];
+    displayLastMessage.fullName =
+      conversation?.conversation?.lastMessage?.message?.content.split("-")[1];
+    displayLastMessage.action =
+      conversation?.conversation?.lastMessage?.message?.content.split("-")[0];
+  }
+
   return (
     <div
       className={`h-16 ${
@@ -119,18 +140,41 @@ const ConversationCard_ChatsPage_Sidebar = ({
 
           <p className="text-xs opacity-70 line-clamp-1">
             <span>
-              {conversation?.conversation?.lastMessage?.message?.content
-                ? conversation?.conversation?.lastMessage?.sender?.fullName
-                  ? conversation?.conversation?.lastMessage?.sender?._id ===
-                    authUser?.user?._id
-                    ? `${t("lastMessage.sender.you")}: `
-                    : `${conversation.conversation.lastMessage.sender.fullName}: `
-                  : `${t("lastMessage.sender.chatbot")}: `
-                : null}
+              {conversation?.conversation?.lastMessage?.message?.content ? (
+                <>
+                  {conversation?.conversation?.lastMessage?.message?.type !==
+                  "notification" ? (
+                    <>
+                      {conversation?.conversation?.lastMessage?.sender?.fullName
+                        ? conversation?.conversation?.lastMessage?.sender
+                            ?._id === authUser?.user?._id
+                          ? `${t("lastMessage.sender.you")}: `
+                          : `${conversation.conversation.lastMessage.sender.fullName}: `
+                        : `${t("lastMessage.sender.chatbot")}: `}
+                    </>
+                  ) : null}
+                </>
+              ) : null}
             </span>
 
-            {conversation?.conversation?.lastMessage?.message?.content ||
-              t("lastMessage.noData")}
+            {conversation?.conversation?.lastMessage?.message?.type !==
+            "notification" ? (
+              conversation?.conversation?.lastMessage?.message?.content ||
+              t("lastMessage.noData")
+            ) : (
+              <>
+                {displayLastMessage.userId === authUser?.user?._id
+                  ? tMessageNotification("user.you")
+                  : displayLastMessage.fullName}{" "}
+                {displayLastMessage.action === "leave_group"
+                  ? tMessageNotification("action.leave_group")
+                  : displayLastMessage.action === "added_to_group"
+                  ? tMessageNotification("action.added_to_group")
+                  : displayLastMessage.action === "deleted_from_group"
+                  ? tMessageNotification("action.deleted_from_group")
+                  : ""}
+              </>
+            )}
           </p>
         </div>
       </div>

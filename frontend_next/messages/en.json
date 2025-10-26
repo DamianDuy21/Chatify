@@ -24,6 +24,16 @@
         }
       }
     },
+    "messageNotification": {
+      "user": {
+        "you": "You"
+      },
+      "action": {
+        "leave_group": "left the group",
+        "added_to_group": "joined the group",
+        "deleted_from_group": "was removed from the group"
+      }
+    },
     "friendFilterInput": {
       "fullName": {
         "label": "Full Name",

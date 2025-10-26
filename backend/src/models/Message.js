@@ -16,6 +16,10 @@ const messageSchema = new mongoose.Schema(
       type: String,
       required: false,
     },
+    type: {
+      type: String,
+      enum: ["text", "notification"],
+    },
   },
   { timestamps: true }
 );

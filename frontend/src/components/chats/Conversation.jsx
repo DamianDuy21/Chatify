@@ -9,6 +9,7 @@ import Message from "./Message";
 import { formatISOToParts } from "../../lib/utils";
 import { useTranslation } from "react-i18next";
 import { showToast } from "../costumed/CostumedToast";
+import MessageNotification from "./MessageNotification";
 
 const getSenderId = (m) => m?.sender?._id ?? m?.message?.senderId ?? null;
 
@@ -213,7 +214,17 @@ const Conversation = ({ translatedTo }) => {
           }
 
           const prev = index > 0 ? flat[index - 1] : undefined;
-          const next = index < flat.length - 1 ? flat[index + 1] : undefined;
+          // const next = index < flat.length - 1 ? flat[index + 1] : undefined;
+
+          let next = undefined;
+          for (let i = index + 1; i < flat.length; i++) {
+            const candidate = flat[i];
+            if (candidate?.__typing) continue; // bỏ qua typing
+            if (getSenderId(candidate) != null) {
+              next = candidate;
+              break;
+            }
+          }
 
           const currSender = getSenderId(item);
           const prevSender = prev && !prev.__typing ? getSenderId(prev) : null;
@@ -257,7 +268,8 @@ const Conversation = ({ translatedTo }) => {
               ? currSeenBy.filter(
                   (u) =>
                     convUserIds.has(String(u?.user?._id)) &&
-                    String(u?.user?._id) !== String(nextSender)
+                    String(u?.user?._id) !== String(nextSender) &&
+                    String(u?.user?._id) !== String(item?.sender?._id)
                 )
               : currSeenBy.filter(
                   (u) =>
@@ -265,7 +277,8 @@ const Conversation = ({ translatedTo }) => {
                     !nextSeenBy.some(
                       (n) => String(n?.user?._id) === String(u?.user?._id)
                     ) &&
-                    String(u?.user?._id) !== String(nextSender)
+                    String(u?.user?._id) !== String(nextSender) &&
+                    String(u?.user?._id) !== String(item?.sender?._id)
                 );
 
           const isGroupHead =
@@ -277,31 +290,44 @@ const Conversation = ({ translatedTo }) => {
           const mine = isMine(item);
 
           return (
-            <div className={`${padClass}`}>
-              <div
-                onMouseDown={(e) => e.stopPropagation()}
-                className={`flex ${
-                  mine ? "justify-end" : "justify-start"
-                } gap-2`}
-              >
-                <Message
-                  side={mine ? "right" : "left"}
-                  message={item}
-                  seenByList={seenByList}
-                  isOpen={openedIndex === index}
-                  onToggle={() =>
-                    setOpenedIndex((prev) => (prev === index ? -1 : index))
-                  }
-                  translatedTo={translatedTo}
-                  isShowAvatar={isGroupHead || currDate !== prevDate}
-                  isShowTime={isGroupTail || currDate !== nextDate}
-                  isShowName={
-                    selectedConversation?.conversation?.type === "group" &&
-                    (isGroupHead || currDate !== prevDate)
-                  }
-                />
-              </div>
-            </div>
+            <>
+              {item.sender ? (
+                <div className={`${padClass}`}>
+                  <div
+                    onMouseDown={(e) => e.stopPropagation()}
+                    className={`flex ${
+                      mine ? "justify-end" : "justify-start"
+                    } gap-2`}
+                  >
+                    <Message
+                      side={mine ? "right" : "left"}
+                      message={item}
+                      seenByList={seenByList}
+                      isOpen={openedIndex === index}
+                      onToggle={() =>
+                        setOpenedIndex((prev) => (prev === index ? -1 : index))
+                      }
+                      translatedTo={translatedTo}
+                      isShowAvatar={isGroupHead || currDate !== prevDate}
+                      isShowTime={isGroupTail || currDate !== nextDate}
+                      isShowName={
+                        selectedConversation?.conversation?.type === "group" &&
+                        (isGroupHead || currDate !== prevDate)
+                      }
+                    />
+                  </div>
+                </div>
+              ) : (
+                <div className={`${padClass}`}>
+                  <div
+                    onMouseDown={(e) => e.stopPropagation()}
+                    className={`flex`}
+                  >
+                    <MessageNotification message={item} />
+                  </div>
+                </div>
+              )}
+            </>
           );
         }}
       />

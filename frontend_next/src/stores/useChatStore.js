@@ -329,6 +329,187 @@ export const useChatStore = create((set, get) => ({
   subscribeToMessages: () => {
     const socketChat = useAuthStore.getState().socketChat;
     if (!socketChat) return;
+
+    socketChat.on("newMessageNotification", async (newMessage) => {
+      const { selectedConversation, conversations, conversationNameFilter } =
+        get();
+      const newMessageConversationId = newMessage.message.conversationId;
+      const isNewMessageConversationInList = conversations.some(
+        (c) => c.conversation._id === newMessageConversationId
+      );
+
+      if (!isNewMessageConversationInList) {
+        const { data } = await getConversationsAPI({
+          conversationId: newMessageConversationId,
+        });
+        let isFitFilter = isConversationFitFilter({
+          conversation: data.conversations[0],
+          conversationNameFilter,
+          authUser: useAuthStore.getState().authUser,
+        });
+        if (isFitFilter) {
+          set((state) => ({
+            conversations: [data.conversations[0], ...state.conversations],
+          }));
+        }
+        if (
+          selectedConversation &&
+          selectedConversation.conversation?._id === newMessageConversationId
+        ) {
+          set((state) => ({
+            selectedConversation: state.selectedConversation
+              ? {
+                  ...state.selectedConversation,
+                  conversation: {
+                    ...state.selectedConversation.conversation,
+                    lastMessage: newMessage,
+                    updatedAt: newMessage.message.createdAt,
+                  },
+                  messages: [
+                    ...(state.selectedConversation.messages || []),
+                    newMessage,
+                  ],
+                }
+              : null,
+          }));
+          if (
+            newMessage.sender?._id ===
+              useAuthStore.getState().authUser?.user?._id &&
+            selectedConversation?.conversation?.type === "chatbot"
+          ) {
+            return;
+          }
+        }
+      }
+
+      if (!selectedConversation) {
+        set((state) => ({
+          conversations: state.conversations.map((conversation) => {
+            if (
+              conversation.conversation._id ===
+              newMessage.message.conversationId
+            ) {
+              return {
+                ...conversation,
+                conversation: {
+                  ...conversation.conversation,
+                  lastMessage: newMessage,
+                  updatedAt: newMessage.message.createdAt,
+                },
+                messages: [...(conversation.messages || []), newMessage],
+              };
+            }
+            return conversation;
+          }),
+        }));
+
+        set((state) => ({
+          conversations: state.conversations.sort((a, b) => {
+            if (!a.conversation.updatedAt) return 1;
+            if (!b.conversation.updatedAt) return -1;
+            return (
+              new Date(b.conversation.updatedAt) -
+              new Date(a.conversation.updatedAt)
+            );
+          }),
+        }));
+
+        return;
+      }
+
+      const isMessageSentToSelectedConversation =
+        newMessage.message.conversationId ===
+        selectedConversation?.conversation?._id;
+      if (!isMessageSentToSelectedConversation) {
+        set((state) => ({
+          conversations: state.conversations.map((conversation) => {
+            if (
+              conversation.conversation._id ===
+              newMessage.message.conversationId
+            ) {
+              return {
+                ...conversation,
+                conversation: {
+                  ...conversation.conversation,
+                  lastMessage: newMessage,
+                  updatedAt: newMessage.message.createdAt,
+                },
+                messages: [...(conversation.messages || []), newMessage],
+              };
+            }
+            return conversation;
+          }),
+        }));
+        set((state) => ({
+          conversations: state.conversations.sort((a, b) => {
+            if (!a.conversation.updatedAt) return 1;
+            if (!b.conversation.updatedAt) return -1;
+            return (
+              new Date(b.conversation.updatedAt) -
+              new Date(a.conversation.updatedAt)
+            );
+          }),
+        }));
+        return;
+      } else {
+        set((state) => ({
+          conversations: state.conversations.map((conversation) => {
+            if (
+              conversation.conversation._id ===
+              selectedConversation.conversation._id
+            ) {
+              return {
+                ...conversation,
+                conversation: {
+                  ...conversation.conversation,
+                  lastMessage: newMessage,
+                  updatedAt: newMessage.message.createdAt,
+                },
+                messages: [...(conversation.messages || []), newMessage],
+              };
+            }
+            return conversation;
+          }),
+        }));
+
+        set((state) => ({
+          selectedConversation: state.selectedConversation
+            ? {
+                ...state.selectedConversation,
+                conversation: {
+                  ...state.selectedConversation.conversation,
+                  lastMessage: newMessage,
+                  updatedAt: newMessage.message.createdAt,
+                },
+                messages: [
+                  ...(state.selectedConversation.messages || []),
+                  newMessage,
+                ],
+              }
+            : null,
+        }));
+
+        set((state) => ({
+          conversations: state.conversations.sort((a, b) => {
+            if (!a.conversation.updatedAt) return 1;
+            if (!b.conversation.updatedAt) return -1;
+            return (
+              new Date(b.conversation.updatedAt) -
+              new Date(a.conversation.updatedAt)
+            );
+          }),
+        }));
+
+        if (
+          newMessage.sender?._id ===
+            useAuthStore.getState().authUser?.user?._id &&
+          selectedConversation?.conversation?.type === "chatbot"
+        ) {
+          return;
+        }
+      }
+    });
+
     socketChat.on("newMessage", async (newMessage) => {
       const { selectedConversation, conversations, conversationNameFilter } =
         get();

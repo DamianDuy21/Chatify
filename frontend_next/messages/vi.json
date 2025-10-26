@@ -24,6 +24,16 @@
         }
       }
     },
+    "messageNotification": {
+      "user": {
+        "you": "Bạn"
+      },
+      "action": {
+        "leave_group": "đã rời nhóm",
+        "added_to_group": "đã tham gia nhóm",
+        "deleted_from_group": "đã bị xóa khỏi nhóm"
+      }
+    },
     "friendFilterInput": {
       "fullName": {
         "label": "Họ và tên",

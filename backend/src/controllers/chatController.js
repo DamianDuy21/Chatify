@@ -316,6 +316,7 @@ export const getConversations = async (req, res) => {
         const notMyRecentMessage = await Message.find({
           conversationId: { $in: conversation._id },
           senderId: { $ne: currentUserId },
+          type: { $ne: "notification" },
         })
           .sort({ createdAt: -1 })
           .limit(10)
@@ -616,6 +617,7 @@ export const getConversationsHaveUnSeenMessages = async (req, res) => {
     const notMyRecentMessage = await Message.find({
       conversationId: { $in: myConversationIds },
       senderId: { $ne: currentUserId },
+      type: { $ne: "notification" },
     }).select("_id conversationId");
     const unSeenMessages = notMyRecentMessage.map(async (msg) => {
       const isSeen = await SeenBy.findOne({
