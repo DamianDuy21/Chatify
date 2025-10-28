@@ -237,7 +237,7 @@ export const changePasswordVerificationAPI = async (otp) => {
 // CHAT PAGE
 export const deleteConversationAPI = async (conversationId) => {
   const response = await axiosInstanceChat.delete(
-    `/chat/delete-conversation/${conversationId}`
+    `/chat/conversation/${conversationId}`
   );
   return response.data;
 };

@@ -43,7 +43,7 @@ chatRoute.post("/message/mark-all/:id", markAllMessagesAsSeen);
 chatRoute.post("/group", createGroup);
 chatRoute.post("/group/members/:id", addMembersToGroup);
 chatRoute.delete("/group/member/:id", deleteMemberFromGroup);
-chatRoute.delete("/delete-conversation/:id", deleteConversation);
+chatRoute.delete("/conversation/:id", deleteConversation);
 chatRoute.post("/leave-group/:id", leaveGroup);
 
 // reaction
