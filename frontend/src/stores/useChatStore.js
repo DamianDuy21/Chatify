@@ -1045,6 +1045,10 @@ export const useChatStore = create((set, get) => ({
                   seenBy: [...(m.seenBy || []), { ...seenByUser }],
                 };
               }),
+              unSeenMessageQuantity:
+                seenByUserId === useAuthStore.getState().authUser?.user?._id
+                  ? 0
+                  : conversation.unSeenMessageQuantity || 0,
             };
           }
           return conversation;
