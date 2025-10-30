@@ -1,5 +1,5 @@
-import { useAuthStore } from "@/stores/useAuthStore";
 import { useTranslation } from "react-i18next";
+import { useAuthStore } from "../../stores/useAuthStore";
 
 const MessageNotification = ({ message }) => {
   const authUser = useAuthStore((s) => s.authUser);
