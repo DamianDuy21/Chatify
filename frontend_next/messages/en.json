@@ -792,7 +792,9 @@
     },
     "tooltip": {
       "turnOnTooltip": "Turn on tooltip",
-      "turnOffTooltip": "Turn off tooltip"
+      "turnOffTooltip": "Turn off tooltip",
+      "openSidebar": "Open sidebar",
+      "closeSidebar": "Close sidebar"
     }
   },
   "HomePage": {

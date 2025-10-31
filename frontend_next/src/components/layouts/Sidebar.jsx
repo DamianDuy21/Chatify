@@ -150,13 +150,13 @@ const Sidebar = () => {
                   setIsOpenSidebarInSmallScreen(true);
                 }}
                 className={"mx-auto"}
-                // tooltip={{
-                //   isShowTooltip: true,
-                //   positionTooltip: "right",
-                //   classNameTooltip: "",
-                //   idTooltip: "tooltip-chat-sidebar-open",
-                //   contentTooltip: t("tooltip.openChatSidebar"),
-                // }}
+                tooltip={{
+                  isShowTooltip: true,
+                  positionTooltip: "right",
+                  classNameTooltip: "",
+                  idTooltip: "tooltip-sidebar-open",
+                  contentTooltip: t("tooltip.openSidebar"),
+                }}
               >
                 <ChevronRight className="size-4" />
               </CommonRoundedButton>
@@ -166,13 +166,13 @@ const Sidebar = () => {
                   setIsOpenSidebarInSmallScreen(false);
                 }}
                 className={"mx-auto"}
-                // tooltip={{
-                //   isShowTooltip: true,
-                //   positionTooltip: "right",
-                //   classNameTooltip: "",
-                //   idTooltip: "tooltip-chat-sidebar-open",
-                //   contentTooltip: t("tooltip.openChatSidebar"),
-                // }}
+                tooltip={{
+                  isShowTooltip: true,
+                  positionTooltip: "right",
+                  classNameTooltip: "",
+                  idTooltip: "tooltip-sidebar-close",
+                  contentTooltip: t("tooltip.closeSidebar"),
+                }}
               >
                 <ChevronLeft className="size-4" />
               </CommonRoundedButton>

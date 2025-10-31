@@ -793,7 +793,9 @@
     },
     "tooltip": {
       "turnOnTooltip": "Bật gợi ý",
-      "turnOffTooltip": "Tắt gợi ý"
+      "turnOffTooltip": "Tắt gợi ý",
+      "openSidebar": "Mở thanh bên",
+      "closeSidebar": "Đóng thanh bên"
     }
   },
   "HomePage": {
