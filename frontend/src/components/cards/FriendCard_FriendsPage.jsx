@@ -12,6 +12,7 @@ import {
   capitalize,
   getFlagToLanguage,
   getLocaleById,
+  isConversationFitFilter,
 } from "../../lib/utils.js";
 import { useChatStore } from "../../stores/useChatStore";
 import CommonRoundedButton from "../buttons/CommonRoundedButton.jsx";
@@ -19,6 +20,8 @@ import CountAndMessageBadge from "../buttons/CountAndMessageBadge.jsx";
 import CostumedModal from "../costumed/CostumedModal.jsx";
 import { showToast } from "../costumed/CostumedToast.jsx";
 import { getLanguageFlag } from "./FriendCard_Func.jsx";
+import { useAuthStore } from "../../stores/useAuthStore.js";
+
 const FriendCard_v2_FriendsPage = ({
   friend,
   isOnline = false,
@@ -37,12 +40,29 @@ const FriendCard_v2_FriendsPage = ({
   const [isLoading, setIsLoading] = useState(false);
   const [isOpenDeleteFriendModal, setIsOpenDeleteFriendModal] = useState(false);
 
+  const authUser = useAuthStore((s) => s.authUser);
+
   const navigate = useNavigate();
   const setSelectedConversation = useChatStore(
     (s) => s.setSelectedConversation
   );
   const conversations = useChatStore((s) => s.conversations);
   const setConversations = useChatStore((s) => s.setConversations);
+
+  const conversationNameFilter = useChatStore((s) => s.conversationNameFilter);
+  const totalConversationQuantityAboveFilter = useChatStore(
+    (s) => s.totalConversationQuantityAboveFilter
+  );
+  const totalConversationQuantityUnderFilter = useChatStore(
+    (s) => s.totalConversationQuantityUnderFilter
+  );
+  const setTotalConversationQuantityAboveFilter = useChatStore(
+    (s) => s.setTotalConversationQuantityAboveFilter
+  );
+  const setTotalConversationQuantityUnderFilter = useChatStore(
+    (s) => s.setTotalConversationQuantityUnderFilter
+  );
+
   const setConversationsHaveUnSeenMessages = useChatStore(
     (s) => s.setConversationsHaveUnSeenMessages
   );
@@ -100,7 +120,22 @@ const FriendCard_v2_FriendsPage = ({
           newConvData.isNewCreated &&
           newConvData.conversation
         ) {
-          setConversations([newConvData.conversation, ...conversations]);
+          setTotalConversationQuantityAboveFilter(
+            totalConversationQuantityAboveFilter + 1
+          );
+          const isFitFilter = isConversationFitFilter({
+            conversation: newConvData.conversation,
+            conversationNameFilter,
+            authUser,
+          });
+
+          if (isFitFilter) {
+            setConversations([newConvData.conversation, ...conversations]);
+            setTotalConversationQuantityUnderFilter(
+              totalConversationQuantityUnderFilter + 1
+            );
+          }
+
           setSelectedConversation(newConvData.conversation);
           navigate(`/chats`);
         }

@@ -118,6 +118,10 @@ const Message = ({
     }
   }, [isOpen]);
 
+  useEffect(() => {
+    setTranslatedText("");
+  }, [selectedConversation?.conversation?._id]);
+
   const [isTranslatingText, setIsTranslatingText] = useState(false);
   const handleTranslateTextOpenaiAPI = async (
     text,
@@ -272,7 +276,7 @@ const Message = ({
                 }`}
               >
                 <div
-                  className="!w-[fit-content] bg-base-300 px-4 py-3 rounded-btn flex flex-col gap-2 cursor-pointer relative group"
+                  className="!w-[fit-content] bg-base-300 border border-base-300 px-4 py-3 rounded-btn flex flex-col gap-2 cursor-pointer relative group"
                   onClick={onToggle}
                 >
                   <div className="text-sm break-words whitespace-pre-wrap">

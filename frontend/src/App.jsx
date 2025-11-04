@@ -107,161 +107,161 @@ const App = () => {
     };
   }, [socketNotification]);
 
-  if (isGettingAuthUser) {
+  if (!isGettingAuthUser && authUser?.user?._id) {
+    return (
+      <>
+        <div
+          className="min-h-screen w-screen bg-base-100 text-base-content"
+          data-theme={theme}
+        >
+          <Routes>
+            <Route
+              path="/"
+              element={
+                isAuthenticated && isOnboarded ? (
+                  <MainLayout>
+                    <HomePage />
+                  </MainLayout>
+                ) : (
+                  <Navigate to={!isAuthenticated ? "/signin" : "/onboarding"} />
+                )
+              }
+            />
+            <Route
+              path="/chats"
+              element={
+                isAuthenticated && isOnboarded ? (
+                  <MainLayout>
+                    <ChatsPage />
+                  </MainLayout>
+                ) : (
+                  <Navigate to={!isAuthenticated ? "/signin" : "/onboarding"} />
+                )
+              }
+            />
+            <Route
+              path="/video-call/:id"
+              element={
+                isAuthenticated && isOnboarded ? (
+                  <VideoCallPage />
+                ) : (
+                  <Navigate to={!isAuthenticated ? "/signin" : "/onboarding"} />
+                )
+              }
+            />
+            <Route
+              path="/notifications"
+              element={
+                isAuthenticated && isOnboarded ? (
+                  <MainLayout>
+                    <NotificationsPage />
+                  </MainLayout>
+                ) : (
+                  <Navigate to={!isAuthenticated ? "/signin" : "/onboarding"} />
+                )
+              }
+            />
+            <Route
+              path="/friends"
+              element={
+                isAuthenticated && isOnboarded ? (
+                  <MainLayout>
+                    <FriendsPage />
+                  </MainLayout>
+                ) : (
+                  <Navigate to={!isAuthenticated ? "/signin" : "/onboarding"} />
+                )
+              }
+            />
+            <Route
+              path="/profile"
+              element={
+                isAuthenticated && isOnboarded ? (
+                  <MainLayout>
+                    <ProfilePage />
+                  </MainLayout>
+                ) : (
+                  <Navigate to={!isAuthenticated ? "/signin" : "/onboarding"} />
+                )
+              }
+            />
+            <Route
+              path="/change-password"
+              element={
+                isAuthenticated && isOnboarded ? (
+                  <MainLayout>
+                    <ChangePasswordPage />
+                  </MainLayout>
+                ) : (
+                  <Navigate to={!isAuthenticated ? "/signin" : "/onboarding"} />
+                )
+              }
+            />
+
+            <Route
+              path="/onboarding"
+              element={
+                isAuthenticated ? (
+                  !isOnboarded ? (
+                    <OnboardingPage />
+                  ) : (
+                    <Navigate to={"/"} />
+                  )
+                ) : (
+                  <Navigate to={"/signin"} />
+                )
+              }
+            />
+            <Route
+              path="/signup"
+              element={
+                !isAuthenticated ? (
+                  <SignUpPage />
+                ) : (
+                  <Navigate to={!isOnboarded ? "/onboarding" : "/"} />
+                )
+              }
+            />
+            <Route
+              path="/signin"
+              element={
+                !isAuthenticated ? (
+                  <LoginPage />
+                ) : (
+                  <Navigate to={!isOnboarded ? "/onboarding" : "/"} />
+                )
+              }
+            />
+            <Route
+              path="/forgot-password"
+              element={
+                !isAuthenticated ? (
+                  <ForgotPasswordPage />
+                ) : (
+                  <Navigate to={!isOnboarded ? "/onboarding" : "/"} />
+                )
+              }
+            />
+          </Routes>
+
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              duration: 3000,
+              style: {
+                fontSize: "14px",
+                minHeight: "48px",
+                padding: "8px 16px",
+              },
+            }}
+            gutter={8}
+          />
+        </div>
+      </>
+    );
+  } else {
     return <CommonPageLoader />;
   }
-
-  return (
-    <>
-      <div
-        className="min-h-screen w-screen bg-base-100 text-base-content"
-        data-theme={theme}
-      >
-        <Routes>
-          <Route
-            path="/"
-            element={
-              isAuthenticated && isOnboarded ? (
-                <MainLayout>
-                  <HomePage />
-                </MainLayout>
-              ) : (
-                <Navigate to={!isAuthenticated ? "/signin" : "/onboarding"} />
-              )
-            }
-          />
-          <Route
-            path="/chats"
-            element={
-              isAuthenticated && isOnboarded ? (
-                <MainLayout>
-                  <ChatsPage />
-                </MainLayout>
-              ) : (
-                <Navigate to={!isAuthenticated ? "/signin" : "/onboarding"} />
-              )
-            }
-          />
-          <Route
-            path="/video-call/:id"
-            element={
-              isAuthenticated && isOnboarded ? (
-                <VideoCallPage />
-              ) : (
-                <Navigate to={!isAuthenticated ? "/signin" : "/onboarding"} />
-              )
-            }
-          />
-          <Route
-            path="/notifications"
-            element={
-              isAuthenticated && isOnboarded ? (
-                <MainLayout>
-                  <NotificationsPage />
-                </MainLayout>
-              ) : (
-                <Navigate to={!isAuthenticated ? "/signin" : "/onboarding"} />
-              )
-            }
-          />
-          <Route
-            path="/friends"
-            element={
-              isAuthenticated && isOnboarded ? (
-                <MainLayout>
-                  <FriendsPage />
-                </MainLayout>
-              ) : (
-                <Navigate to={!isAuthenticated ? "/signin" : "/onboarding"} />
-              )
-            }
-          />
-          <Route
-            path="/profile"
-            element={
-              isAuthenticated && isOnboarded ? (
-                <MainLayout>
-                  <ProfilePage />
-                </MainLayout>
-              ) : (
-                <Navigate to={!isAuthenticated ? "/signin" : "/onboarding"} />
-              )
-            }
-          />
-          <Route
-            path="/change-password"
-            element={
-              isAuthenticated && isOnboarded ? (
-                <MainLayout>
-                  <ChangePasswordPage />
-                </MainLayout>
-              ) : (
-                <Navigate to={!isAuthenticated ? "/signin" : "/onboarding"} />
-              )
-            }
-          />
-
-          <Route
-            path="/onboarding"
-            element={
-              isAuthenticated ? (
-                !isOnboarded ? (
-                  <OnboardingPage />
-                ) : (
-                  <Navigate to={"/"} />
-                )
-              ) : (
-                <Navigate to={"/signin"} />
-              )
-            }
-          />
-          <Route
-            path="/signup"
-            element={
-              !isAuthenticated ? (
-                <SignUpPage />
-              ) : (
-                <Navigate to={!isOnboarded ? "/onboarding" : "/"} />
-              )
-            }
-          />
-          <Route
-            path="/signin"
-            element={
-              !isAuthenticated ? (
-                <LoginPage />
-              ) : (
-                <Navigate to={!isOnboarded ? "/onboarding" : "/"} />
-              )
-            }
-          />
-          <Route
-            path="/forgot-password"
-            element={
-              !isAuthenticated ? (
-                <ForgotPasswordPage />
-              ) : (
-                <Navigate to={!isOnboarded ? "/onboarding" : "/"} />
-              )
-            }
-          />
-        </Routes>
-
-        <Toaster
-          position="top-right"
-          toastOptions={{
-            duration: 3000,
-            style: {
-              fontSize: "14px",
-              minHeight: "48px",
-              padding: "8px 16px",
-            },
-          }}
-          gutter={8}
-        />
-      </div>
-    </>
-  );
 };
 
 export default App;

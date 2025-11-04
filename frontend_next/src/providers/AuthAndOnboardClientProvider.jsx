@@ -107,9 +107,9 @@ export default function AuthAndOnboardClientProvider({ children }) {
     };
   }, [socketNotification]);
 
-  if (isGettingAuthUser || !authUser) {
+  if (!isGettingAuthUser && authUser?.user?._id) {
+    return children;
+  } else {
     return <CommonPageLoader />;
   }
-
-  return children;
 }

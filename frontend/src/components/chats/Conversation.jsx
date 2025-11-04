@@ -291,7 +291,8 @@ const Conversation = ({ translatedTo }) => {
 
           return (
             <>
-              {item.sender ? (
+              {item.sender ||
+              selectedConversation?.conversation?.type === "chatbot" ? (
                 <div className={`${padClass}`}>
                   <div
                     onMouseDown={(e) => e.stopPropagation()}
